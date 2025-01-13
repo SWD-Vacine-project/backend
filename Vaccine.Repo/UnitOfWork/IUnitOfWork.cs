@@ -1,24 +1,25 @@
-﻿//using MilkStore.Repo.Repository;
+﻿using MilkStore.Repo.Repository;
+using Vaccine.Repo.Entities;
 
-//namespace MilkStore.Repo.UnitOfWork
-//{
-//    public interface IUnitOfWork : IDisposable
-//    {
-//        void Save();
-//        Task<int> SaveAsync();
+namespace MilkStore.Repo.UnitOfWork
+{
+    public interface IUnitOfWork : IDisposable
+    {
+        void Save();
+        Task<int> SaveAsync();
 
-//        public GenericRepository<Admin> AdminRepository { get; }
-//        public GenericRepository<AgeRange> AgeRangeRepository { get; }
-//        public GenericRepository<BrandMilk> BrandMilkRepository { get; }
-//        public GenericRepository<Company> CompanyRepository { get; }
-//        public GenericRepository<Country> CountryRepository { get; }
-//        public GenericRepository<Customer> CustomerRepository { get; }
-//        public GenericRepository<DeliveryMan> DeliveryManRepository { get; }
 
-//        public GenericRepository<Order> OrderRepository { get; }
-//        public GenericRepository<OrderDetail> OrderDetailRepository { get; }
-//        //public GenericRepository<Payment> PaymentRepository { get; }
-//        public GenericRepository<ProductItem> ProductItemRepository { get; }
-//        public GenericRepository<Storage> StorageRepository { get; }
-//    }
-//}
+        public GenericRepository<Appointment> AppointmentRepository{ get; }
+        public GenericRepository<Child> ChildRepository           { get; }
+        public GenericRepository<Feedback> FeedbackRepository     { get; }
+        public GenericRepository<Notification> NotificationRepository { get; }
+        public GenericRepository<PackageDetail> PackageDetailRepository { get; }
+        public GenericRepository<Payment> PaymentRepository { get; }
+        public GenericRepository<Role> RoleRepository { get; }
+        public GenericRepository<ServicePackage> ServicePackageRepository { get; }
+        public GenericRepository<UserAccount> UserAccountRepository { get; }
+        public GenericRepository<VaccinationRecord> VaccinationRecordRepository { get; }
+        public GenericRepository<VaccineReaction> VaccineReactionRepository { get; }
+
+    }
+}
