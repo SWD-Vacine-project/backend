@@ -1,5 +1,67 @@
 [
   {
+    "ContainingType": "Vaccine.API.Controllers.AuthController",
+    "Method": "Get",
+    "RelativePath": "api/auth",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine.API.Controllers.AuthController",
+    "Method": "GoogleSignIn",
+    "RelativePath": "api/auth/signin-google",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine.API.Controllers.AuthController",
+    "Method": "VerifyGoogleToken",
+    "RelativePath": "api/auth/verify-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Vaccine.API.Controllers.AuthController\u002BTokenRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine.API.Controllers.ChildController",
+    "Method": "GetAll",
+    "RelativePath": "Child",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine.API.Controllers.RoleController",
+    "Method": "GetAll",
+    "RelativePath": "Role",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Vaccine.Controllers.WeatherForecastController",
     "Method": "Get",
     "RelativePath": "WeatherForecast",

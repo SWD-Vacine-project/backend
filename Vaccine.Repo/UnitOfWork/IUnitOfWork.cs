@@ -1,7 +1,7 @@
-﻿using MilkStore.Repo.Repository;
+﻿using Vaccine.Repo.Repository;
 using Vaccine.Repo.Entities;
 
-namespace MilkStore.Repo.UnitOfWork
+namespace Vaccine.Repo.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
