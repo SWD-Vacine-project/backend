@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Vaccine.Repo.Entities;
 
-namespace MilkStore.Repo.Repository
+namespace Vaccine.Repo.Repository
 {
     public class GenericRepository<TEntity> where TEntity : class
     {

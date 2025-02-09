@@ -171,3 +171,11 @@ C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\runtimes\win\li
 C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\Vaccine.Repo.dll
+C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\Vaccine.Repo.pdb
+C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\Google.Apis.dll
+C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\Google.Apis.Auth.dll
+C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\Google.Apis.Core.dll
+C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\System.Management.dll
+C:\Study\Study\Semester 7\SWD392\SWD392\Vaccine\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
