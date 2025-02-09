@@ -1,0 +1,8 @@
+chạy link này để lấy Access Code, truyền code vào api sign-in lấy id_token và truyền id_token vào verify để lấy thông tin
+https://accounts.google.com/o/oauth2/auth?client_id=1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com&response_type=code&approval_prompt=force&access_type=offline&redirect_uri=https://localhost:7090/signin-google&scope=openid email profile https://mail.google.com/
+
+
+sau đó nó chuyển qua link này
+https://localhost:7090/signin-google?code=4/0ASVgi3Lx6zYWNXXT-hKNJXqvPFzWsMyX4k-1pFTt5bAu6c7K9F1bET1XGNlKCjTM7jsVhA&scope=email%20profile%20https://mail.google.com/%20openid%20https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email&authuser=0&prompt=consent
+
+thì code là 4/0ASVgi3Lx6zYWNXXT-hKNJXqvPFzWsMyX4k-1pFTt5bAu6c7K9F1bET1XGNlKCjTM7jsVhA
