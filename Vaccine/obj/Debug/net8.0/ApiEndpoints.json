@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Vaccine.API.Controllers.AuthController",
-    "Method": "Get",
+    "Method": "GetLink",
     "RelativePath": "api/auth",
     "HttpMethod": "GET",
     "IsController": true,
@@ -55,6 +55,56 @@
     "ContainingType": "Vaccine.API.Controllers.RoleController",
     "Method": "GetAll",
     "RelativePath": "Role",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine.API.Controllers.VnPayController",
+    "Method": "Callback",
+    "RelativePath": "VnPay/Callback",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "VNPAY.NET.Models.PaymentResult",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Vaccine.API.Controllers.VnPayController",
+    "Method": "CreatePaymentUrl",
+    "RelativePath": "VnPay/CreatePaymentUrl",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Vaccine.API.Controllers.VnPayController",
+    "Method": "IpnAction",
+    "RelativePath": "VnPay/IpnAction",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

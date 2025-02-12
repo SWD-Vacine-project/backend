@@ -2,6 +2,7 @@
 using Microsoft.OpenApi.Models;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
+using VNPAY.NET;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
 
 builder.Services.AddSwaggerGen();
+
+// Add VNPAY service to the container.
+builder.Services.AddSingleton<IVnpay, Vnpay>();
+
 
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
