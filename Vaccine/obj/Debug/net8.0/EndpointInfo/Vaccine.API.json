@@ -98,6 +98,23 @@
         "tags": [
           "VnPay"
         ],
+        "parameters": [
+          {
+            "name": "moneyToPay",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",

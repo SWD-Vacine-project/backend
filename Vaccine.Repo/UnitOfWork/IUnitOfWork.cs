@@ -9,9 +9,9 @@ namespace Vaccine.Repo.UnitOfWork
         Task<int> SaveAsync();
 
 
-        public GenericRepository<Appointment> AppointmentRepository{ get; }
-        public GenericRepository<Child> ChildRepository           { get; }
-        public GenericRepository<Feedback> FeedbackRepository     { get; }
+        public GenericRepository<Appointment> AppointmentRepository { get; }
+        public GenericRepository<Child> ChildRepository { get; }
+        public GenericRepository<Feedback> FeedbackRepository { get; }
         public GenericRepository<Notification> NotificationRepository { get; }
         public GenericRepository<PackageDetail> PackageDetailRepository { get; }
         public GenericRepository<Payment> PaymentRepository { get; }

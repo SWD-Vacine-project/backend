@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Vaccine.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+92caed253849f342c6eb9eb6a186c849e9e77759")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2fc06d150400d5e1ae692407908c8415005d1081")]
 [assembly: System.Reflection.AssemblyProductAttribute("Vaccine.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Vaccine.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

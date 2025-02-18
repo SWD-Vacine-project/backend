@@ -3,101 +3,73 @@
   "WorkspaceRootPath": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\controllers\\vnpaycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:controllers\\vnpaycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\unitofwork\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\unitofwork\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\staff.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\repository\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\old-entities\\appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\vaccine.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
-      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:vaccine.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\vaccinedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\old-entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\old-entities\\child.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\controllers\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:controllers\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\controllers\\vnpaycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:controllers\\vnpaycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\controllers\\childcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:controllers\\childcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\models\\vnpaymodel\\vnpaypayment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:models\\vnpaymodel\\vnpaypayment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\users\\nh0kb\\.nuget\\packages\\vnpay.net\\8.5.0\\contentfiles\\any\\net8.0\\icon.ico||{177559E0-D141-11D0-92DF-00A0C9138C45}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\unitofwork\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\repository\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\unitofwork\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\vaccinedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\vaccine.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:vaccine.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\child.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\appointment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\feedback.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\vaccinereaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\vaccine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\vaccinationrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\useraccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\servicepackage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\packagedetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{94BC23B4-4CAC-48DB-AC3C-6E0337E63319}|..\\Vaccine.Repo\\Vaccine.Repo.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine.repo\\entities\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E519E63E-4931-43B9-B75A-168D5D7B13B5}|Vaccine.API.csproj|c:\\study\\study\\semester 7\\swd392\\swd392\\vaccine\\vaccine.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -111,7 +83,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 13,
           "Children": [
             {
               "$type": "Bookmark",
@@ -151,71 +123,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "VnPayController.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\VnPayController.cs",
-              "RelativeDocumentMoniker": "Controllers\\VnPayController.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\VnPayController.cs",
-              "RelativeToolTip": "Controllers\\VnPayController.cs",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAYwFkAAAAZAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "Staff.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Staff.cs",
+              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Staff.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Staff.cs",
+              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Staff.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAA3wAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-11T10:45:51.37Z",
+              "WhenOpened": "2025-02-18T06:17:30.93Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "VnpayPayment.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Models\\VNPayModel\\VnpayPayment.cs",
-              "RelativeDocumentMoniker": "Models\\VNPayModel\\VnpayPayment.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Models\\VNPayModel\\VnpayPayment.cs",
-              "RelativeToolTip": "Models\\VNPayModel\\VnpayPayment.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-11T10:47:32.091Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "Controllers\\AuthController.cs",
-              "ViewState": "AgIAAEsAAAAAAAAAAADwv1sAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-09T03:53:19.817Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-01-14T04:36:29.047Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-14T04:34:56.337Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 17,
               "Title": "ChildController.cs",
               "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\ChildController.cs",
               "RelativeDocumentMoniker": "Controllers\\ChildController.cs",
@@ -227,129 +148,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Vaccine.http",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Vaccine.http",
-              "RelativeDocumentMoniker": "Vaccine.http",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Vaccine.http",
-              "RelativeToolTip": "Vaccine.http",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
-              "WhenOpened": "2025-01-17T01:53:56.35Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "WeatherForecastController.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\WeatherForecastController.cs",
-              "RelativeDocumentMoniker": "Controllers\\WeatherForecastController.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\WeatherForecastController.cs",
-              "RelativeToolTip": "Controllers\\WeatherForecastController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:29:31.52Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "RoleController.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\RoleController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RoleController.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\RoleController.cs",
-              "RelativeToolTip": "Controllers\\RoleController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-14T04:30:16.488Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Icon.ico - Icon [128x100, 32 bit, BMP]",
-              "DocumentMoniker": "C:\\Users\\nh0kb\\.nuget\\packages\\vnpay.net\\8.5.0\\contentFiles\\any\\net8.0\\Icon.ico",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Users\\nh0kb\\.nuget\\packages\\vnpay.net\\8.5.0\\contentFiles\\any\\net8.0\\Icon.ico",
-              "ToolTip": "C:\\Users\\nh0kb\\.nuget\\packages\\vnpay.net\\8.5.0\\contentFiles\\any\\net8.0\\Icon.ico - Icon [128x100, 32 bit, BMP]",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Users\\nh0kb\\.nuget\\packages\\vnpay.net\\8.5.0\\contentFiles\\any\\net8.0\\Icon.ico - Icon [128x100, 32 bit, BMP]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001525|",
-              "WhenOpened": "2025-02-11T10:43:45.614Z",
-              "EditorCaption": " - Icon [128x100, 32 bit, BMP]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "Microsoft.Common.CurrentVersion.targets",
-              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
-              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
-              "ViewState": "AgIAALoUAAAAAAAAAAApwMkUAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2025-01-14T03:48:49.175Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "VaccineDbContext.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
-              "ViewState": "AgIAACcAAAAAAAAAAAAiwCwAAACiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:33:21.446Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 1,
               "Title": "IUnitOfWork.cs",
               "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\UnitOfWork\\IUnitOfWork.cs",
               "RelativeDocumentMoniker": "..\\Vaccine.Repo\\UnitOfWork\\IUnitOfWork.cs",
               "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\UnitOfWork\\IUnitOfWork.cs",
               "RelativeToolTip": "..\\Vaccine.Repo\\UnitOfWork\\IUnitOfWork.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAIBJwAAAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAqwAwAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:47:18.05Z"
+              "WhenOpened": "2025-01-13T04:47:18.05Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "GenericRepository.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Repository\\GenericRepository.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Repository\\GenericRepository.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Repository\\GenericRepository.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Repository\\GenericRepository.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAAAQwI8AAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-14T00:23:40.529Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "UnitOfWork.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\UnitOfWork\\UnitOfWork.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\UnitOfWork\\UnitOfWork.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\UnitOfWork\\UnitOfWork.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\UnitOfWork\\UnitOfWork.cs",
-              "ViewState": "AgIAAJkAAAAAAAAAAAAiwAAAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-14T03:51:08.295Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Role.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Role.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Role.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Role.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Role.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:51:43.787Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 9,
               "Title": "Class1.cs",
               "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Class1.cs",
               "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Class1.cs",
@@ -361,151 +173,203 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "VaccinationRecord.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\VaccinationRecord.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\VaccinationRecord.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\VaccinationRecord.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\VaccinationRecord.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAWAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "UnitOfWork.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\UnitOfWork\\UnitOfWork.cs",
+              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\UnitOfWork\\UnitOfWork.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\UnitOfWork\\UnitOfWork.cs",
+              "RelativeToolTip": "..\\Vaccine.Repo\\UnitOfWork\\UnitOfWork.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwBsAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:40:15.938Z"
+              "WhenOpened": "2025-01-14T03:51:08.295Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "Feedback.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Feedback.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Feedback.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Feedback.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Feedback.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAArAAAAAAAAAA==",
+              "DocumentIndex": 13,
+              "Title": "RoleController.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\RoleController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RoleController.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\RoleController.cs",
+              "RelativeToolTip": "Controllers\\RoleController.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAswAUAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:51:31.484Z"
+              "WhenOpened": "2025-01-14T04:30:16.488Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "Child.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Child.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Child.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Child.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Child.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAgAAAAAAAAAA==",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAAAEQAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:51:28.045Z"
+              "WhenOpened": "2025-01-14T04:34:56.337Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "VaccineReaction.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\VaccineReaction.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\VaccineReaction.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\VaccineReaction.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\VaccineReaction.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:52:26.202Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "Appointment.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Appointment.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Appointment.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Appointment.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Appointment.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:51:24.968Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Payment.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Payment.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Payment.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Payment.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Payment.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAA9wAQAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:51:40.881Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "Vaccine.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Vaccine.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Vaccine.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Vaccine.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Vaccine.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAIBQwAUAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:47:15.19Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "UserAccount.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\UserAccount.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\UserAccount.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\UserAccount.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\UserAccount.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:48:00.814Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "ServicePackage.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\ServicePackage.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\ServicePackage.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\ServicePackage.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\ServicePackage.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:51:46.661Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "PackageDetail.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\PackageDetail.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\PackageDetail.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\PackageDetail.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\PackageDetail.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:51:37.6Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "Notification.cs",
-              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Notification.cs",
-              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Notification.cs",
-              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Notification.cs",
-              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Notification.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:51:34.776Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 5,
               "Title": "launchSettings.json",
               "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "Properties\\launchSettings.json",
               "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Properties\\launchSettings.json",
               "RelativeToolTip": "Properties\\launchSettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB0AAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-01-13T04:29:25.962Z"
+              "WhenOpened": "2025-01-13T04:29:25.962Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 3,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Repository\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Repository\\GenericRepository.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Repository\\GenericRepository.cs",
+              "RelativeToolTip": "..\\Vaccine.Repo\\Repository\\GenericRepository.cs",
+              "ViewState": "AgIAAPoAAAAAAAAAAAAAAAgAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-14T00:23:40.529Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAAABoAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-01-14T04:36:29.047Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Appointment.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Old-Entities\\Appointment.cs",
+              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Old-Entities\\Appointment.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Old-Entities\\Appointment.cs",
+              "RelativeToolTip": "..\\Vaccine.Repo\\Old-Entities\\Appointment.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-18T03:40:04.685Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "VaccineDbContext.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
+              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
+              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAuwDoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-18T03:57:06.991Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Child.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Old-Entities\\Child.cs",
+              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Old-Entities\\Child.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Old-Entities\\Child.cs",
+              "RelativeToolTip": "..\\Vaccine.Repo\\Old-Entities\\Child.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-18T03:40:10.016Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Admin.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Admin.cs",
+              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Entities\\Admin.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Entities\\Admin.cs",
+              "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Admin.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-18T03:55:04.513Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Role.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Old-Entities\\Role.cs",
+              "RelativeDocumentMoniker": "..\\Vaccine.Repo\\Old-Entities\\Role.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine.Repo\\Old-Entities\\Role.cs",
+              "RelativeToolTip": "..\\Vaccine.Repo\\Old-Entities\\Role.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-18T03:57:51.644Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "WeatherForecastController.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\WeatherForecastController.cs",
+              "RelativeDocumentMoniker": "Controllers\\WeatherForecastController.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\WeatherForecastController.cs",
+              "RelativeToolTip": "Controllers\\WeatherForecastController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-13T04:29:31.52Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Microsoft.Common.CurrentVersion.targets",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ViewState": "AgIAALoUAAAAAAAAAAApwMkUAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2025-01-14T03:48:49.175Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Controllers\\AuthController.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAAAAwAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-09T03:53:19.817Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "VnPayController.cs",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\VnPayController.cs",
+              "RelativeDocumentMoniker": "Controllers\\VnPayController.cs",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\VnPayController.cs",
+              "RelativeToolTip": "Controllers\\VnPayController.cs",
+              "ViewState": "AgIAAEoAAAAAAAAAAADwv2AAAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-12T13:55:15.709Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Vaccine.http",
+              "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Vaccine.http",
+              "RelativeDocumentMoniker": "Vaccine.http",
+              "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Vaccine.http",
+              "RelativeToolTip": "Vaccine.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-01-17T01:53:56.35Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
               "Title": "Vaccine.API.csproj",
               "DocumentMoniker": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Vaccine.API.csproj",
               "RelativeDocumentMoniker": "Vaccine.API.csproj",
