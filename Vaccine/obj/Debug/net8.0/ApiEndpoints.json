@@ -52,16 +52,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "Vaccine.API.Controllers.RoleController",
-    "Method": "GetAll",
-    "RelativePath": "Role",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "Vaccine.API.Controllers.VnPayController",
     "Method": "Callback",
     "RelativePath": "VnPay/Callback",
@@ -88,18 +78,7 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "moneyToPay",
-        "Type": "System.Double",
-        "IsRequired": false
-      },
-      {
-        "Name": "description",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": [
       {
         "Type": "System.String",

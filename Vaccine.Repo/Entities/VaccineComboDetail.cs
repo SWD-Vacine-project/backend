@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vaccine.Repo.Models;
-
+namespace Vaccine.Repo.Entities;
 public partial class VaccineComboDetail
 {
     public int? ComboId { get; set; }

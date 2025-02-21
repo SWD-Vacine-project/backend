@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Vaccine.Repo.Entities;
 
-namespace Vaccine.Repo.Models;
-
+namespace Vaccine.Repo.Entities;
 public partial class VaccineDbContext : DbContext
 {
     public VaccineDbContext()

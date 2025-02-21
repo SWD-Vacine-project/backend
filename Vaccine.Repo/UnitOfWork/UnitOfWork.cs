@@ -6,17 +6,30 @@ namespace Vaccine.Repo.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private VaccineDbContext _context;
+        private GenericRepository<Admin> _admin;
         private GenericRepository<Appointment> _appointment;
         private GenericRepository<Child> _child;
+        private GenericRepository<Customer> _customer;
+        private GenericRepository<Doctor> _doctor;
         private GenericRepository<Feedback> _feedback;
-        private GenericRepository<Notification> _notification;
-        private GenericRepository<PackageDetail> _packageDetail;
-        private GenericRepository<Payment> _payment;
-        private GenericRepository<Role> _role;
-        private GenericRepository<ServicePackage> _servicePackage;
-        private GenericRepository<UserAccount> _userAccount;
-        private GenericRepository<VaccinationRecord> _vaccinationRecord;
-        private GenericRepository<VaccineReaction> _vaccineReaction;
+        private GenericRepository<HealthRecord> _healthRecord;
+        private GenericRepository<Holiday> _holiday;
+        private GenericRepository<Invoice> _invoice;
+        private GenericRepository<InvoiceDetail> _invoiceDetail;
+        private GenericRepository<Staff> _staff;
+        private GenericRepository<VaccineBatch> _vaccineBatch;
+        private GenericRepository<VaccineBatchDetail> _vaccineBatchDetail;
+        private GenericRepository<VaccineCombo> _vaccineCombo;
+        private GenericRepository<VaccineComboDetail> _vaccineComboDetail;
+        //private GenericRepository<Vaccine> _vaccine;
+        //private GenericRepository<Notification> _notification;
+        //private GenericRepository<PackageDetail> _packageDetail;
+        //private GenericRepository<Payment> _payment;
+        //private GenericRepository<Role> _role;
+        //private GenericRepository<ServicePackage> _servicePackage;
+        //private GenericRepository<UserAccount> _userAccount;
+        //private GenericRepository<VaccinationRecord> _vaccinationRecord;
+        //private GenericRepository<VaccineReaction> _vaccineReaction;
 
         public UnitOfWork(VaccineDbContext context)
         {
@@ -53,7 +66,22 @@ namespace Vaccine.Repo.UnitOfWork
             GC.SuppressFinalize(this);
         }
 
+
         // property IUnitOfWork ket noi voi repo thong qua UnitOfWork
+
+        public GenericRepository<Admin> AdminRepository
+        {
+            get
+            {
+                if (_admin == null)
+                {
+                    _admin = new GenericRepository<Admin>(_context);
+                }
+                return _admin;
+            }
+        }
+
+
         public GenericRepository<Appointment> AppointmentRepository
         {
             get
@@ -90,99 +118,136 @@ namespace Vaccine.Repo.UnitOfWork
             }
         }
 
-        public GenericRepository<Notification> NotificationRepository
+       
+        public GenericRepository<Customer> CustomerRepository
         {
             get
             {
-                if (_notification == null)
+                if (_customer == null)
                 {
-                    _notification = new GenericRepository<Notification>(_context);
+                    _customer = new GenericRepository<Customer>(_context);
                 }
-                return _notification;
+                return _customer;
             }
         }
 
-        public GenericRepository<PackageDetail> PackageDetailRepository
+        public GenericRepository<Doctor> DoctorRepository
         {
             get
             {
-                if (_packageDetail == null)
+                if (_doctor == null)
                 {
-                    _packageDetail = new GenericRepository<PackageDetail>(_context);
+                    _doctor = new GenericRepository<Doctor>(_context);
                 }
-                return _packageDetail;
+                return _doctor;
             }
         }
 
-        public GenericRepository<Payment> PaymentRepository
+        public GenericRepository<HealthRecord> HealthRecordRepository
         {
             get
             {
-                if (_payment == null)
+                if (_healthRecord == null)
                 {
-                    _payment = new GenericRepository<Payment>(_context);
+                    _healthRecord = new GenericRepository<HealthRecord>(_context);
                 }
-                return _payment;
+                return _healthRecord;
+            }
+        }
+        public GenericRepository<Holiday> HolidayRepository
+        {
+            get
+            {
+                if (_holiday == null)
+                {
+                    _holiday = new GenericRepository<Holiday>(_context);
+                }
+                return _holiday;
+            }
+        }
+        public GenericRepository<Invoice> InvoiceRepository
+        {
+            get
+            {
+                if (_invoice == null)
+                {
+                    _invoice = new GenericRepository<Invoice>(_context);
+                }
+                return _invoice;
             }
         }
 
-        public GenericRepository<Role> RoleRepository
+        public GenericRepository<InvoiceDetail> InvoiceDetailRepository
         {
             get
             {
-                if (_role == null)
+                if (_invoiceDetail == null)
                 {
-                    _role = new GenericRepository<Role>(_context);
+                    _invoiceDetail = new GenericRepository<InvoiceDetail>(_context);
                 }
-                return _role;
+                return _invoiceDetail;
             }
         }
 
-        public GenericRepository<ServicePackage> ServicePackageRepository
+
+        public GenericRepository<Staff> StaffRepository
         {
             get
             {
-                if (_servicePackage == null)
+                if (_staff == null)
                 {
-                    _servicePackage = new GenericRepository<ServicePackage>(_context);
+                    _staff = new GenericRepository<Staff>(_context);
                 }
-                return _servicePackage;
+                return _staff;
             }
         }
 
-        public GenericRepository<UserAccount> UserAccountRepository
+        public GenericRepository<VaccineBatch> VaccineBatchRepository
         {
             get
             {
-                if (_userAccount == null)
+                if (_vaccineBatch == null)
                 {
-                    _userAccount = new GenericRepository<UserAccount>(_context);
+                    _vaccineBatch = new GenericRepository<VaccineBatch>(_context);
                 }
-                return _userAccount;
+                return _vaccineBatch;
             }
         }
 
-        public GenericRepository<VaccinationRecord> VaccinationRecordRepository
+
+        public GenericRepository<VaccineBatchDetail> VaccineBatchDetailRepository
         {
             get
             {
-                if (_vaccinationRecord == null)
+                if (_vaccineBatchDetail == null)
                 {
-                    _vaccinationRecord = new GenericRepository<VaccinationRecord>(_context);
+                    _vaccineBatchDetail = new GenericRepository<VaccineBatchDetail>(_context);
                 }
-                return _vaccinationRecord;
+                return _vaccineBatchDetail;
             }
         }
 
-        public GenericRepository<VaccineReaction> VaccineReactionRepository
+        public GenericRepository<VaccineCombo> VaccineComboRepository
         {
             get
             {
-                if (_vaccineReaction == null)
+                if (_vaccineCombo == null)
                 {
-                    _vaccineReaction = new GenericRepository<VaccineReaction>(_context);
+                    _vaccineCombo = new GenericRepository<VaccineCombo>(_context);
                 }
-                return _vaccineReaction;
+                return _vaccineCombo;
+            }
+        }
+
+        public GenericRepository<VaccineComboDetail> VaccineComboDetailRepository
+        {
+            get
+            {
+                if (_vaccineComboDetail == null)
+                {
+                    _vaccineComboDetail = new GenericRepository<VaccineComboDetail>(_context);
+                }
+                return _vaccineComboDetail;
             }
         }
     }

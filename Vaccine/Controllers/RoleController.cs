@@ -14,22 +14,22 @@ namespace Vaccine.API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            try
-            {
-                // Lấy tất cả các role
-                var roles = _unitOfWork.RoleRepository.Get();
+        //[HttpGet]
+        //public IActionResult GetAll()
+        //{
+        //    try
+        //    {
+        //        // Lấy tất cả các role
+        //        var roles = _unitOfWork.RoleRepository.Get();
 
-                // Trả về danh sách các role dưới dạng JSON
-                return Ok(roles);
-            }
-            catch (Exception ex)
-            {
-                // Xử lý lỗi và trả về phản hồi lỗi
-                return StatusCode(500, new { Message = "An error occurred while retrieving roles.", Error = ex.Message });
-            }
-        }
+        //        // Trả về danh sách các role dưới dạng JSON
+        //        return Ok(roles);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Xử lý lỗi và trả về phản hồi lỗi
+        //        return StatusCode(500, new { Message = "An error occurred while retrieving roles.", Error = ex.Message });
+        //    }
+        //}
     }
 }
