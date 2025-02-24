@@ -13,12 +13,21 @@ namespace Vaccine.API.Controllers
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
+        string accessCode ="https://accounts.google.com/o/oauth2/auth?client_id=1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com&response_type=code&approval_prompt=force&access_type=offline&redirect_uri=https://localhost:7090/signin-google&scope=openid email profile https://mail.google.com/ ";
 
         public AuthController(IConfiguration config, IHttpClientFactory httpClientFactory)
         {
             _config = config;
             _httpClient = httpClientFactory.CreateClient();
         }
+
+        [HttpGet]
+        public IActionResult GetLink()
+        {
+            return Ok(accessCode);
+        }
+
+
 
         [HttpGet("signin-google")]
         public async Task<IActionResult> GoogleSignIn([FromQuery] string code)

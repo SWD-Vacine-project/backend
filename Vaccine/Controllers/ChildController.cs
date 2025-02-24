@@ -10,7 +10,7 @@ namespace Vaccine.API.Controllers
     [ApiController]
     public class ChildController : ControllerBase
     {
-        public static List<Child> hangHoas = new List<Child>();
+        //public static List<Child> childs = new List<Child>();
         private readonly UnitOfWork _unitOfWork;
 
         public ChildController(UnitOfWork unitOfWork)
@@ -20,14 +20,9 @@ namespace Vaccine.API.Controllers
 
         [HttpGet]
         public IActionResult GetAll()
-        {
-            //var childs = _unitOfWork.ChildRepository.Get();
+        { 
 
-           
-
-            return Ok(hangHoas);
-
-
+            return Ok(childs);
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Vaccine.Repo.Entities;
-using Vaccine.Repo.UnitOfWork;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -14,6 +9,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
 
 builder.Services.AddSwaggerGen();
+
+// Add VNPAY service to the container.
+builder.Services.AddSingleton<IVnpay, Vnpay>();
+
 
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
