@@ -20,8 +20,8 @@ namespace Vaccine.API.Controllers
 
         [HttpGet]
         public IActionResult GetAll()
-        { 
-
+        {
+            var childs = _unitOfWork.ChildRepository.Get();
             return Ok(childs);
         }
     }
