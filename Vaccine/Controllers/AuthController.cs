@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Vaccine.Repo.Entities;
+using Vaccine.Repo.UnitOfWork;
 
 namespace Vaccine.API.Controllers
 {
@@ -13,12 +15,14 @@ namespace Vaccine.API.Controllers
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
+        private  UnitOfWork _unitOfWork;
         string accessCode ="https://accounts.google.com/o/oauth2/auth?client_id=1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com&response_type=code&approval_prompt=force&access_type=offline&redirect_uri=https://localhost:7090/signin-google&scope=openid email profile https://mail.google.com/ ";
 
-        public AuthController(IConfiguration config, IHttpClientFactory httpClientFactory)
+        public AuthController(IConfiguration config, IHttpClientFactory httpClientFactory, UnitOfWork unitOfWork)
         {
             _config = config;
             _httpClient = httpClientFactory.CreateClient();
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -105,5 +109,66 @@ namespace Vaccine.API.Controllers
         {
             public string IdToken { get; set; }
         }
+
+        // -----------------------Login Customer------------------------
+        [HttpPost("login")]
+        public IActionResult Login(LoginRequest login)
+        {
+
+            if (login == null || String.IsNullOrEmpty(login.UserName) || String.IsNullOrEmpty(login.Password))
+            {
+                return BadRequest(new { message = "Username and password are required" });
+            }
+            dynamic user = null;
+            string userRole;
+            string preFix = login.UserName.Substring(0, 2);
+            if (preFix=="ST")
+            {
+                user = _unitOfWork.StaffRepository.
+                    Get(s => s.UserName==login.UserName).
+                    FirstOrDefault();
+                userRole = "Staff";
+            }
+            else if (preFix == "AD")
+            {
+                user = _unitOfWork.AdminRepository.
+                    Get(a => a.UserName==login.UserName).
+                    FirstOrDefault();
+                userRole = "Admin";
+            }
+            else
+            {
+                user = _unitOfWork.CustomerRepository.
+                    Get(u => u.UserName==login.UserName).
+                    FirstOrDefault();
+                userRole = "Customer";
+            }
+
+
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Account does not exist" });
+            }
+            if(user.Password != login.Password)
+            {
+                return Unauthorized(new { message = "Password is incorrect" }); 
+            }
+            return Ok(new 
+            { 
+                user.Email,
+                user.Name, 
+                user.Phone, 
+                user.Address, 
+                //Role= userRole,
+                //Children = user.Children?? new List<Child>()
+            });
+            
+        }
+        public class LoginRequest
+        {
+            public string UserName { get; set; }
+            public string Password { get; set; }
+        }
+
     }
 }

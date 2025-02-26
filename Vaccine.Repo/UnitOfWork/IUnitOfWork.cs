@@ -1,6 +1,5 @@
 ﻿using Vaccine.Repo.Repository;
 using Vaccine.Repo.Entities;
-
 namespace Vaccine.Repo.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
