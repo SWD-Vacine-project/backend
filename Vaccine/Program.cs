@@ -75,8 +75,8 @@ var app = builder.Build();
 //    app.UseSwaggerUI();
 //}
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -85,7 +85,7 @@ if (app.Environment.IsDevelopment())
         c.OAuthClientSecret("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");
         c.OAuthUsePkce(); // Bật PKCE
     });
-}
+//}
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
