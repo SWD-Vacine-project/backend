@@ -60,8 +60,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Register UnitOfWork
-builder.Services.AddScoped<UnitOfWork>();
+// Register UnitOfWork, IUnitOfWo
+builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 // DbContext
 builder.Services.AddDbContext<VaccineDbContext>(options =>
