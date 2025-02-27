@@ -158,9 +158,9 @@ namespace Vaccine.API.Controllers
                 user.Email,
                 user.Name, 
                 user.Phone, 
-                user.Address, 
-                //Role= userRole,
-                //Children = user.Children?? new List<Child>()
+                user.Address,
+                Role = userRole,
+                Children = user.Children ?? new List<Child>()
             });
             
         }
