@@ -65,7 +65,7 @@ builder.Services.AddScoped<UnitOfWork>();
 // DbContext
 builder.Services.AddDbContext<VaccineDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbContext")));
-var app = builder.Build();
+
 // addcors
 builder.Services.AddCors(options =>
 {
@@ -74,7 +74,7 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
-
+var app = builder.Build();
 app.UseCors("AllowAll"); // Kích hoạt CORS
 app.UseAuthorization();
 app.MapControllers();
