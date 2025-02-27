@@ -121,15 +121,15 @@ namespace Vaccine.API.Controllers
             }
             dynamic user = null;
             string userRole;
-            string preFix = login.UserName.Substring(0, 2);
-            if (preFix=="ST")
+            string preFix = login.UserName.Substring(0, 3);
+            if (preFix=="ST_")
             {
                 user = _unitOfWork.StaffRepository.
                     Get(s => s.UserName==login.UserName).
                     FirstOrDefault();
                 userRole = "Staff";
             }
-            else if (preFix == "AD")
+            else if (preFix == "AD_")
             {
                 user = _unitOfWork.AdminRepository.
                     Get(a => a.UserName==login.UserName).
@@ -153,16 +153,38 @@ namespace Vaccine.API.Controllers
             {
                 return Unauthorized(new { message = "Password is incorrect" }); 
             }
-            return Ok(new 
-            { 
+            //return Ok(new 
+            //{ 
+            //    user.Email,
+            //    user.Name, 
+            //    user.Phone, 
+            //    user.Address,
+            //    Role = userRole,
+            //    Children = user.Children ?? new List<Child>()
+            //});
+            var response = new
+            {
                 user.Email,
-                user.Name, 
-                user.Phone, 
-                user.Address,
-                Role = userRole,
-                Children = user.Children ?? new List<Child>()
-            });
-            
+                user.Name,
+                user.Phone,
+                Role = userRole
+            };
+
+            if (userRole == "Customer")
+            {
+                return Ok(new
+                {
+                    response.Email,
+                    response.Name,
+                    response.Phone,
+                    response.Role,
+                    Address = user.Address,
+                    Children = user.Children ?? new List<Child>()
+                });
+            }
+
+            return Ok(response);
+
         }
         public class LoginRequest
         {
