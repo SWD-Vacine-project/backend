@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - vaccinesystem
 on:
   push:
     branches:
-      - main
+      - submain
   workflow_dispatch:
 
 jobs:
