@@ -5,7 +5,7 @@ using Vaccine.Repo.UnitOfWork;
 using VNPAY.NET;
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -18,18 +18,7 @@ builder.Services.AddSwaggerGen();
 
 // Add VNPAY service to the container.
 builder.Services.AddSingleton<IVnpay, Vnpay>();
-// addcors
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
-});
 
-app.UseCors("AllowAll"); // Kích hoạt CORS
-app.UseAuthorization();
-app.MapControllers();
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
 {
@@ -77,7 +66,18 @@ builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddDbContext<VaccineDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbContext")));
 var app = builder.Build();
+// addcors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 
+app.UseCors("AllowAll"); // Kích hoạt CORS
+app.UseAuthorization();
+app.MapControllers();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
@@ -87,7 +87,7 @@ var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
