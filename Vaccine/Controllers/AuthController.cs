@@ -16,9 +16,9 @@ namespace Vaccine.API.Controllers
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
-        private  UnitOfWork _unitOfWork;
+        //private  UnitOfWork _unitOfWork;
         string accessCode ="https://accounts.google.com/o/oauth2/auth?client_id=1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com&response_type=code&approval_prompt=force&access_type=offline&redirect_uri=https://localhost:7090/signin-google&scope=openid email profile https://mail.google.com/ ";
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly UnitOfWork _unitOfWork;
 
         public AuthController(IConfiguration config, IHttpClientFactory httpClientFactory, UnitOfWork unitOfWork)
         {

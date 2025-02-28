@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 // Add VNPAY service to the container.
 builder.Services.AddSingleton<IVnpay, Vnpay>();
 
+
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
 {
@@ -59,25 +60,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Register UnitOfWork, IUnitOfWo
-builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+// Register UnitOfWork
+builder.Services.AddScoped<UnitOfWork>();
 
 // DbContext
 builder.Services.AddDbContext<VaccineDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbContext")));
-
-// addcors
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
-});
 var app = builder.Build();
-app.UseCors("AllowAll"); // Kích hoạt CORS
-app.UseAuthorization();
-app.MapControllers();
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
@@ -86,8 +76,8 @@ app.MapControllers();
 //}
 
 //if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger();
+{
+    app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
@@ -95,7 +85,7 @@ app.UseSwagger();
         c.OAuthClientSecret("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");
         c.OAuthUsePkce(); // Bật PKCE
     });
-//}
+}
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
