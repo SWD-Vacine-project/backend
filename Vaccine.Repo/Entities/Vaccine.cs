@@ -9,7 +9,8 @@ public partial class Vaccine
 
     public string Name { get; set; } = null!;
 
-    public DateOnly? MaxLateDate { get; set; }
+    //public DateOnly? MaxLateDate { get; set; }
+    public int? MaxLateDate { get; set; }
 
     public decimal Price { get; set; }
 

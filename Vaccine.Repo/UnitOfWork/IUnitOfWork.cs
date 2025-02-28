@@ -33,7 +33,7 @@ namespace Vaccine.Repo.UnitOfWork
         public GenericRepository<Invoice> InvoiceRepository { get; }
         public GenericRepository<InvoiceDetail> InvoiceDetailRepository { get; }
         public GenericRepository<Staff> StaffRepository { get; }
-        //public GenericRepository<Vaccine> VaccineRepository { get; }
+        public GenericRepository<Vaccine.Repo.Entities.Vaccine> VaccineRepository { get; }
         public GenericRepository<VaccineBatch> VaccineBatchRepository { get; }
         public GenericRepository<VaccineBatchDetail> VaccineBatchDetailRepository { get; }
         public GenericRepository<VaccineCombo> VaccineComboRepository { get; }

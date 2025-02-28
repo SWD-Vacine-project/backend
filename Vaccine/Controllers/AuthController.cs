@@ -1,9 +1,14 @@
 ﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MilkStore.API.Models.CustomerModel;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Vaccine.API.Models.CustomerModel;
+using Vaccine.Repo.Entities;
+using Vaccine.Repo.UnitOfWork;
 
 namespace Vaccine.API.Controllers
 {
@@ -13,10 +18,12 @@ namespace Vaccine.API.Controllers
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
+        private readonly UnitOfWork _unitOfWork;
         string accessCode ="https://accounts.google.com/o/oauth2/auth?client_id=1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com&response_type=code&approval_prompt=force&access_type=offline&redirect_uri=https://localhost:7090/signin-google&scope=openid email profile https://mail.google.com/ ";
 
-        public AuthController(IConfiguration config, IHttpClientFactory httpClientFactory)
+        public AuthController(IConfiguration config, IHttpClientFactory httpClientFactory, UnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _config = config;
             _httpClient = httpClientFactory.CreateClient();
         }
@@ -69,6 +76,43 @@ namespace Vaccine.API.Controllers
             }
         }
 
+        [HttpPost("create")]
+        //[AllowAnonymous]
+        public IActionResult CreateCustomer(RequestCreateCustomerModel requestCreateCustomerModel)
+        {
+            // Kiểm tra xem email đã tồn tại chưa
+            var existingCustomer = _unitOfWork.CustomerRepository.Get(c => c.Email == requestCreateCustomerModel.Email).FirstOrDefault();
+            if (existingCustomer != null)
+            {
+                return BadRequest(new { message = "Email đã được sử dụng để đăng ký tài khoản khác." });
+            }
+
+            // para input to create 
+            var customerEntity = new Customer
+            {
+                Name = requestCreateCustomerModel.Name,
+                Email = requestCreateCustomerModel.Email,
+                Password = requestCreateCustomerModel.Password,
+                Dob = DateOnly.FromDateTime(DateTime.Today), // Default to today's date
+                Phone = "0000000000", // Placeholder phone number
+                UserName = requestCreateCustomerModel.Email, // Use email as username
+            };
+
+            _unitOfWork.CustomerRepository.Insert(customerEntity);
+            _unitOfWork.Save();
+
+            var responseCustomer = new ResponseCreateCustomerModel
+            {
+                CustomerName = customerEntity.UserName,
+                Email = customerEntity.Email,
+                Password = customerEntity.Password,
+            };
+
+            return Ok(responseCustomer);
+        }
+
+
+
         [HttpPost("verify-token")]
         public async Task<IActionResult> VerifyGoogleToken([FromBody] TokenRequest request)
         {
@@ -78,7 +122,7 @@ namespace Vaccine.API.Controllers
             try
             {
                 var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken);
-                return Ok(new { payload.Email, payload.Name, payload.Picture });
+                return Ok(new {payload.Subject, payload.Email, payload.Name, payload.Picture });
             }
             catch
             {

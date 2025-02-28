@@ -17,19 +17,11 @@ namespace Vaccine.Repo.UnitOfWork
         private GenericRepository<Invoice> _invoice;
         private GenericRepository<InvoiceDetail> _invoiceDetail;
         private GenericRepository<Staff> _staff;
+        private GenericRepository<Vaccine.Repo.Entities.Vaccine> _vaccine;
         private GenericRepository<VaccineBatch> _vaccineBatch;
         private GenericRepository<VaccineBatchDetail> _vaccineBatchDetail;
         private GenericRepository<VaccineCombo> _vaccineCombo;
         private GenericRepository<VaccineComboDetail> _vaccineComboDetail;
-        //private GenericRepository<Vaccine> _vaccine;
-        //private GenericRepository<Notification> _notification;
-        //private GenericRepository<PackageDetail> _packageDetail;
-        //private GenericRepository<Payment> _payment;
-        //private GenericRepository<Role> _role;
-        //private GenericRepository<ServicePackage> _servicePackage;
-        //private GenericRepository<UserAccount> _userAccount;
-        //private GenericRepository<VaccinationRecord> _vaccinationRecord;
-        //private GenericRepository<VaccineReaction> _vaccineReaction;
 
         public UnitOfWork(VaccineDbContext context)
         {
@@ -248,6 +240,18 @@ namespace Vaccine.Repo.UnitOfWork
                     _vaccineComboDetail = new GenericRepository<VaccineComboDetail>(_context);
                 }
                 return _vaccineComboDetail;
+            }
+        }
+
+        public GenericRepository<Vaccine.Repo.Entities.Vaccine> VaccineRepository
+        {
+            get
+            {
+                if (_vaccine == null)
+                {
+                    _vaccine = new GenericRepository<Vaccine.Repo.Entities.Vaccine>(_context);
+                }
+                return _vaccine;
             }
         }
     }
