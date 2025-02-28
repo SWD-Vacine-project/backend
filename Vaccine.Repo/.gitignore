@@ -12,6 +12,11 @@
 .vs/
 .vscode/
 
+# Ignore build output directories
+bin/
+obj/
+
+
 # Thư mục build và kết quả biên dịch
 [Bb]in/
 [Oo]bj/

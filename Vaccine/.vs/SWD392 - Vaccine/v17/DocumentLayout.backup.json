@@ -203,8 +203,7 @@
               "RelativeToolTip": "..\\Vaccine.Repo\\Repository\\GenericRepository.cs",
               "ViewState": "AgIAACYAAAAAAAAAAAAswD8AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-14T00:23:40.529Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-14T00:23:40.529Z"
             },
             {
               "$type": "Document",
@@ -228,8 +227,7 @@
               "RelativeToolTip": "Models\\CustomerModel\\RequestCreateCustomerModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-25T06:20:35.974Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-25T06:20:35.974Z"
             },
             {
               "$type": "Document",
@@ -241,8 +239,7 @@
               "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\VaccineDbContext.cs",
               "ViewState": "AgIAACYAAAAAAAAAAAAmwDQAAAAiAQAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-18T03:57:06.991Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-18T03:57:06.991Z"
             },
             {
               "$type": "Document",
@@ -254,8 +251,7 @@
               "RelativeToolTip": "..\\Vaccine.Repo\\Entities\\Vaccine.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-18T07:05:46.723Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-18T07:05:46.723Z"
             },
             {
               "$type": "Document",
@@ -265,7 +261,7 @@
               "RelativeDocumentMoniker": "Controllers\\VaccineController.cs",
               "ToolTip": "C:\\Study\\Study\\Semester 7\\SWD392\\SWD392\\Vaccine\\Controllers\\VaccineController.cs",
               "RelativeToolTip": "Controllers\\VaccineController.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABYAAAA8AAAAAAAAAA==",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAkwBYAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-25T07:16:42.614Z",
               "EditorCaption": ""
@@ -280,8 +276,7 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAOAQAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-01-14T04:36:29.047Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-14T04:36:29.047Z"
             },
             {
               "$type": "Document",
