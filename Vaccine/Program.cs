@@ -75,7 +75,7 @@ var app = builder.Build();
 //    app.UseSwaggerUI();
 //}
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>

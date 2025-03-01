@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Vaccine.Repo.Entities;
 
 namespace Vaccine.Repo.Entities;
@@ -47,10 +48,19 @@ public partial class VaccineDbContext : DbContext
 
     public virtual DbSet<VaccineComboDetail> VaccineComboDetails { get; set; }
 
+    public static string GetConnectionString(string connectionStringName)
+    {
+        var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        string connectionString = config.GetConnectionString(connectionStringName);
+        return connectionString;
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        //=> optionsBuilder.UseSqlServer("Server=ALIEN\\SQLEXPRESS;Database=VaccinationSystem;Trusted_Connection=True;TrustServerCertificate=True;");
-        => optionsBuilder.UseSqlServer("Server=tcp:vaccinationsystem.database.windows.net,1433;Initial Catalog=VaccinationSystem;Persist Security Info=False;User ID=baohd;Password=StrongPass123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

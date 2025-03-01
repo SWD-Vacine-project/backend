@@ -64,7 +64,6 @@ namespace Vaccine.Repo.Repository
             return query.ToList();
         }
 
-
         // New Search method
         public virtual IEnumerable<TEntity> Search(
     Expression<Func<TEntity, bool>> searchExpression,
