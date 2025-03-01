@@ -5,7 +5,7 @@ using Vaccine.Repo.UnitOfWork;
 
 namespace Vaccine.API.Controllers
 {
-    //[EnableCors("MyPolicy")]
+    [EnableCors("MyPolicy")]
     [Route("[controller]")]
     [ApiController]
     public class ChildController : ControllerBase

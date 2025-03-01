@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MilkStore.API.Models.CustomerModel;
 using System.Net.Http;
@@ -12,6 +13,7 @@ using Vaccine.Repo.UnitOfWork;
 
 namespace Vaccine.API.Controllers
 {
+    [EnableCors("MyPolicy")]
     [ApiController]
     [Route("api/auth")]
     public class AuthController : ControllerBase
@@ -76,7 +78,7 @@ namespace Vaccine.API.Controllers
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost("create-google")]
         //[AllowAnonymous]
         public IActionResult CreateCustomer(RequestCreateCustomerModel requestCreateCustomerModel)
         {

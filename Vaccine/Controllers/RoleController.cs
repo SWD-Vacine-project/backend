@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Vaccine.Repo.UnitOfWork;
 
 namespace Vaccine.API.Controllers
 {
+    [EnableCors("MyPolicy")]
     [Route("[controller]")]
     [ApiController]
     public class RoleController : ControllerBase

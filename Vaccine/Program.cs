@@ -19,11 +19,14 @@ builder.Services.AddSwaggerGen();
 // Add VNPAY service to the container.
 builder.Services.AddSingleton<IVnpay, Vnpay>();
 
+//allow cros
+builder.Services.AddCors(options => options.AddPolicy(name: "MyPolicy", policy =>
+policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SWD392- Vaccine", Version = "v1" });
 
     c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
@@ -80,7 +83,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Vaccine Shop");
         c.OAuthClientId("1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com"); // Thay YOUR_GOOGLE_CLIENT_ID bằng Client ID đã lấy từ Google
         c.OAuthClientSecret("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");
         c.OAuthUsePkce(); // Bật PKCE
@@ -92,4 +95,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseCors();
 app.Run();

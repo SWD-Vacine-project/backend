@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.PortableExecutable;
 using Vaccine.Repo.Entities;
@@ -6,6 +7,7 @@ using Vaccine.Repo.UnitOfWork;
 
 namespace Vaccine.API.Controllers
 {
+    [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class VaccineController : ControllerBase

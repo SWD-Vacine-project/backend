@@ -5,9 +5,11 @@ using VNPAY.NET.Enums;
 using VNPAY.NET.Models;
 using VNPAY.NET.Utilities;
 using Vaccine.Repo.UnitOfWork;
+using Microsoft.AspNetCore.Cors;
 
 namespace Vaccine.API.Controllers
 {
+    [EnableCors("MyPolicy")]
     [Route("[controller]")]
     [ApiController]
     public class VnPayController : ControllerBase
