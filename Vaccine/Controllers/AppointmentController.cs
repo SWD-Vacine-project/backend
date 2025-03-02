@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MilkStore.API.Models.CustomerModel;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
+using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
 
@@ -38,11 +43,53 @@ namespace Vaccine.API.Controllers
         }
 
         [HttpPost("create-appointment")]
-        public IActionResult CreateAppointment([FromBody] Appointment appointment)
+        public IActionResult CreateAppointment(RequestCreateInvoice requestCreateAppointmentModel)
         {
-            _unitOfWork.AppointmentRepository.Insert(appointment);
+            //var existingappoint = _unitofwork.appointmentrepository.get(c => c.appointmentid == requestcreatecappointmentmodel.appointmentid).firstordefault();
+            //if (existingappoint != null)
+            //{
+            //    return badrequest(new { message = "appointment đã tồn tại." });
+            //}
+            
+
+            // para input to create 
+            var appointEntity = new Appointment
+            {
+                //AppointmentId = requestCreateCAppointmentModel.AppointmentId,
+                AppointmentDate = requestCreateAppointmentModel.AppointmentDate,
+                Status = requestCreateAppointmentModel.Status,
+                Notes = requestCreateAppointmentModel.Notes,
+                CreatedAt = requestCreateAppointmentModel.CreatedAt,
+                ChildId = requestCreateAppointmentModel.ChildId == 0 ? null : requestCreateAppointmentModel.ChildId,
+                StaffId = requestCreateAppointmentModel.StaffId == 0 ? null : requestCreateAppointmentModel.StaffId,
+                DoctorId = requestCreateAppointmentModel.DoctorId == 0 ? null : requestCreateAppointmentModel.DoctorId,
+                // if null set null, not null require single or combo
+                VaccineType = string.IsNullOrEmpty(requestCreateAppointmentModel.VaccineType) ? null : requestCreateAppointmentModel.VaccineType,
+                ComboId = requestCreateAppointmentModel.ComboId == 0 ? null : requestCreateAppointmentModel.ComboId,
+                CustomerId = requestCreateAppointmentModel.CustomerId == 0 ? null : requestCreateAppointmentModel.CustomerId,
+                VaccineId = requestCreateAppointmentModel.VaccineId == 0 ? null : requestCreateAppointmentModel.VaccineId,
+            };
+
+            _unitOfWork.AppointmentRepository.Insert(appointEntity);
             _unitOfWork.Save();
-            return Ok(new { message = "Appointment created successfully." });
+
+            var responseAppoint = new RequestResponeAppointmentModel
+            {
+                AppointmentId = appointEntity.AppointmentId,
+                AppointmentDate = requestCreateAppointmentModel.AppointmentDate,
+                Status = requestCreateAppointmentModel.Status,
+                Notes = requestCreateAppointmentModel.Notes,
+                CreatedAt = requestCreateAppointmentModel.CreatedAt,
+                ChildId = requestCreateAppointmentModel.ChildId,
+                StaffId = requestCreateAppointmentModel.StaffId,
+                DoctorId = requestCreateAppointmentModel.DoctorId,
+                VaccineType = requestCreateAppointmentModel.VaccineType,
+                ComboId = requestCreateAppointmentModel.ComboId,
+                CustomerId = requestCreateAppointmentModel.CustomerId,
+                VaccineId = requestCreateAppointmentModel.VaccineId,
+            };
+
+            return Ok(responseAppoint);
         }
 
 

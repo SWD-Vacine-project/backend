@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
 using VNPAY.NET;
+using static Vaccine.API.Controllers.AuthController;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +26,14 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 builder.Services.AddCors(options => options.AddPolicy(name: "MyPolicy", policy =>
 policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
+builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
+
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SWD392- Vaccine", Version = "v1" });
-
+    c.EnableAnnotations(); // Optional for better documentation
+    c.ExampleFilters();    // Register example filters
     c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.OAuth2,
