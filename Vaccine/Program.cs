@@ -66,6 +66,14 @@ builder.Services.AddScoped<UnitOfWork>();
 // DbContext
 builder.Services.AddDbContext<VaccineDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbContext")));
+// addcors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
