@@ -504,8 +504,9 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<VaccineBatchDetail>(entity =>
         {
+            entity.HasKey(vbd => new { vbd.BatchNumber, vbd.VaccineId }); // Composite primary key
             entity
-                .HasNoKey()
+                //.HasNoKey()
                 .ToTable("VaccineBatchDetail");
 
             entity.Property(e => e.BatchNumber)

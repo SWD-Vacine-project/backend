@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
+using Vaccine.API.Models.CustomerModel;
 using Vaccine.API.Models.InvoiceModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -44,7 +47,7 @@ namespace Vaccine.API.Controllers
             {
                 CustomerId = requestCreateInvoiceModel.CustomerId == 0 ? null : requestCreateInvoiceModel.CustomerId,
                 TotalAmount = requestCreateInvoiceModel.TotalAmount,
-                Status = requestCreateInvoiceModel.Status,
+                //Status = "Unpaid",
                 Type = requestCreateInvoiceModel.Type,
                 CreatedAt = requestCreateInvoiceModel.CreatedAt,
                 UpdatedAt = requestCreateInvoiceModel.UpdatedAt
@@ -53,6 +56,53 @@ namespace Vaccine.API.Controllers
             _unitOfWork.InvoiceRepository.Insert(invoiceEntity);
             _unitOfWork.Save();
             return Ok(invoiceEntity);
+        }
+
+        [HttpPut("update-invoice-status/{id}")]
+        [SwaggerOperation(
+        Summary = "Update status of invoice to paid",
+        Description = "get id of invoice" +
+            "Get purchased vaccines from InvoiceDetail "
+    )]
+        public IActionResult UpdateInvoiceStatusToPaid(int id)
+        {
+            var invoice = _unitOfWork.InvoiceRepository.GetByID(id);
+            if (invoice == null)
+            {
+                return NotFound(new { message = "Invoice not found." });
+            }
+
+            if (invoice.Status == "Paid")
+            {
+                return BadRequest(new { message = "Invoice is already paid." });
+            }
+
+            // Update invoice status
+            invoice.Status = "Paid";
+            _unitOfWork.InvoiceRepository.Update(invoice);
+
+            // Get purchased vaccines from InvoiceDetail (assuming InvoiceDetail stores vaccine purchases)
+            var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == id);
+
+            foreach (var detail in invoiceDetails)
+            {
+                var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
+                    .Get(vb => vb.VaccineId == detail.VaccineId)
+                    .OrderBy(vb => vb.BatchNumber)
+                    .FirstOrDefault();
+
+                if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
+                {
+                    return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
+                }
+
+                // Deduct vaccine quantity
+                vaccineBatch.Quantity -= detail.Quantity;
+                _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
+            }
+
+            _unitOfWork.Save();
+            return Ok(new { message = "Invoice updated to Paid and stock deducted." });
         }
     }
 }

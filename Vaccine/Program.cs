@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Vaccine.API.Models.ChildModel;
 using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -27,6 +28,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "MyPolicy", policy =
 policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleRequestCreateChildModel>();
 
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
