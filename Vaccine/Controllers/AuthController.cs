@@ -74,6 +74,90 @@ namespace Vaccine.API.Controllers
             }
         }
 
+        // -----------------------Login Customer------------------------
+        [HttpPost("login")]
+        public IActionResult Login(LoginRequest login)
+        {
+
+            if (login == null || String.IsNullOrEmpty(login.UserName) || String.IsNullOrEmpty(login.Password))
+            {
+                return BadRequest(new { message = "Username and password are required" });
+            }
+            dynamic user = null;
+            string userRole;
+            string preFix = login.UserName.Substring(0, 3);
+            if (preFix == "ST_")
+            {
+                user = _unitOfWork.StaffRepository.
+                    Get(s => s.UserName == login.UserName).
+                    FirstOrDefault();
+                userRole = "Staff";
+            }
+            else if (preFix == "AD_")
+            {
+                user = _unitOfWork.AdminRepository.
+                    Get(a => a.UserName == login.UserName).
+                    FirstOrDefault();
+                userRole = "Admin";
+            }
+            else
+            {
+                user = _unitOfWork.CustomerRepository.
+                    Get(u => u.UserName == login.UserName).
+                    FirstOrDefault();
+                userRole = "Customer";
+            }
+
+
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Account does not exist" });
+            }
+            if (user.Password != login.Password)
+            {
+                return Unauthorized(new { message = "Password is incorrect" });
+            }
+            //return Ok(new 
+            //{ 
+            //    user.Email,
+            //    user.Name, 
+            //    user.Phone, 
+            //    user.Address,
+            //    Role = userRole,
+            //    Children = user.Children ?? new List<Child>()
+            //});
+            var response = new
+            {
+                user.Email,
+                user.Name,
+                user.Phone,
+                Role = userRole
+            };
+
+            if (userRole == "Customer")
+            {
+                return Ok(new
+                {
+                    response.Email,
+                    response.Name,
+                    response.Phone,
+                    response.Role,
+                    Address = user.Address,
+                    Children = user.Children ?? new List<Child>()
+                });
+            }
+
+            return Ok(response);
+
+        }
+        public class LoginRequest
+        {
+            public string UserName { get; set; }
+            public string Password { get; set; }
+        }
+
+    
+
         //=========== Signup Customer =====================
         [HttpPost("signup")]
 
