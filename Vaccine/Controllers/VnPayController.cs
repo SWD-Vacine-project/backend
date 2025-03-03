@@ -5,15 +5,18 @@ using VNPAY.NET.Enums;
 using VNPAY.NET.Models;
 using VNPAY.NET.Utilities;
 using Vaccine.Repo.UnitOfWork;
+using Microsoft.AspNetCore.Cors;
+using Azure.Core;
 
 namespace Vaccine.API.Controllers
 {
+    [EnableCors("MyPolicy")]
     [Route("[controller]")]
     [ApiController]
     public class VnPayController : ControllerBase
     {
         private readonly IVnpay _vnpay;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _config;
         private readonly UnitOfWork _unitOfWork;
         private readonly ILogger<VnPayController> _logger;
 
@@ -21,20 +24,14 @@ namespace Vaccine.API.Controllers
         public VnPayController(IVnpay vnpay, IConfiguration configuration, UnitOfWork unitOfWork, ILogger<VnPayController> logger)
         {
             _vnpay = vnpay;
-            _configuration = configuration;
+            _config = configuration;
             _unitOfWork = unitOfWork;
-            _vnpay.Initialize(_configuration["Vnpay:TmnCode"], _configuration["Vnpay:HashSecret"], _configuration["Vnpay:BaseUrl"], _configuration["Vnpay:CallbackUrl"]);
+            _vnpay.Initialize(_config["Vnpay:TmnCode"], _config["Vnpay:HashSecret"], _config["Vnpay:BaseUrl"], _config["Vnpay:CallbackUrl"]);
             _logger = logger;
         }
 
 
-        /// <summary>
-        /// Tạo url thanh toán
-        /// </summary>
-        /// <param name="money">Số tiền phải thanh toán</param>
-        /// <param name="description">Mô tả giao dịch</param>
-        /// <returns></returns>
-        [HttpGet("CreatePaymentUrl")]
+
         //public ActionResult<string> CreatePaymentUrl(double money, string description)
         //{
         //    try
@@ -63,16 +60,30 @@ namespace Vaccine.API.Controllers
         //    }
         //}
 
+        /// <summary>
+        /// Tạo url thanh toán
+        /// </summary>
+        /// <param name="money">Số tiền phải thanh toán</param>
+        /// <param name="description">Mô tả giao dịch</param>
+        /// <returns></returns>
+        [HttpGet("CreatePaymentUrl")]
         public ActionResult<string> CreatePaymentUrl()
         {
+            Console.WriteLine($"TmnCode: {_config["Vnpay:TmnCode"]}");
+            Console.WriteLine($"HashSecret: {_config["Vnpay:HashSecret"]}");
+            Console.WriteLine($"BaseUrl: {_config["Vnpay:BaseUrl"]}");
+            Console.WriteLine($"CallbackUrl: {_config["Vnpay:CallbackUrl"]}");
             try
             {
+                // Reinitialize to ensure correct configuration
+                _vnpay.Initialize(_config["Vnpay:TmnCode"], _config["Vnpay:HashSecret"], _config["Vnpay:BaseUrl"], _config["Vnpay:CallbackUrl"]);
                 var ipAddress = NetworkHelper.GetIpAddress(HttpContext); // Lấy địa chỉ IP của thiết bị thực hiện giao dịch
                 Console.WriteLine($"[CreatePaymentUrl] IP Address: {ipAddress}");
 
                 var request = new PaymentRequest
                 {
-                    PaymentId = DateTime.Now.Ticks,
+                    //PaymentId = DateTime.Now.Ticks,
+                    PaymentId = long.Parse(DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999)),
                     Money = 5000,
                     Description = "hihihaha",
                     IpAddress = ipAddress,

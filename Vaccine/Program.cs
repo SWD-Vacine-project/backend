@@ -19,6 +19,9 @@ builder.Services.AddSwaggerGen();
 // Add VNPAY service to the container.
 builder.Services.AddSingleton<IVnpay, Vnpay>();
 
+//allow cros
+builder.Services.AddCors(options => options.AddPolicy(name: "MyPolicy", policy =>
+policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -91,5 +94,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors();
 app.Run();
