@@ -1,4 +1,5 @@
-﻿using Vaccine.Repo.Entities;
+﻿using Swashbuckle.AspNetCore.Filters;
+using Vaccine.Repo.Entities;
 
 namespace Vaccine.API.Models.CustomerModel
 {
@@ -11,6 +12,23 @@ namespace Vaccine.API.Models.CustomerModel
         public string Password { get; set; } = null!;
 
         //public string? Phone { get; set; } = null!; // Ensure it's required
-
     }
+
+    /// <summary>
+    /// Example request model for Swagger documentation
+    /// </summary>
+    public class ExampleCreateCustomerModel : IExamplesProvider<RequestCreateCustomerModel>
+    {
+        public RequestCreateCustomerModel GetExamples()
+        {
+            return new RequestCreateCustomerModel
+            {
+                Name = "John Doe",
+                Email = "johndoe@gmail.com",
+                Password = "ggid"
+            };
+        }
+    }
+
+
 }

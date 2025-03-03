@@ -5,15 +5,18 @@ using VNPAY.NET.Enums;
 using VNPAY.NET.Models;
 using VNPAY.NET.Utilities;
 using Vaccine.Repo.UnitOfWork;
+using Microsoft.AspNetCore.Cors;
+using Azure.Core;
 
 namespace Vaccine.API.Controllers
 {
+    [EnableCors("MyPolicy")]
     [Route("[controller]")]
     [ApiController]
     public class VnPayController : ControllerBase
     {
         private readonly IVnpay _vnpay;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _config;
         private readonly UnitOfWork _unitOfWork;
         private readonly ILogger<VnPayController> _logger;
 
@@ -21,11 +24,13 @@ namespace Vaccine.API.Controllers
         public VnPayController(IVnpay vnpay, IConfiguration configuration, UnitOfWork unitOfWork, ILogger<VnPayController> logger)
         {
             _vnpay = vnpay;
-            _configuration = configuration;
+            _config = configuration;
             _unitOfWork = unitOfWork;
-            _vnpay.Initialize(_configuration["Vnpay:TmnCode"], _configuration["Vnpay:HashSecret"], _configuration["Vnpay:BaseUrl"], _configuration["Vnpay:CallbackUrl"]);
+            _vnpay.Initialize(_config["Vnpay:TmnCode"], _config["Vnpay:HashSecret"], _config["Vnpay:BaseUrl"], _config["Vnpay:CallbackUrl"]);
             _logger = logger;
         }
+
+
 
 
         /// <summary>
@@ -35,46 +40,17 @@ namespace Vaccine.API.Controllers
         /// <param name="description">Mô tả giao dịch</param>
         /// <returns></returns>
         [HttpGet("CreatePaymentUrl")]
-        //public ActionResult<string> CreatePaymentUrl(double money, string description)
-        //{
-        //    try
-        //    {
-        //        var ipAddress = NetworkHelper.GetIpAddress(HttpContext); // Lấy địa chỉ IP của thiết bị thực hiện giao dịch
-
-        //        var request = new PaymentRequest
-        //        {
-        //            PaymentId = DateTime.Now.Ticks,
-        //            Money = money,
-        //            Description = description,
-        //            IpAddress = ipAddress,
-        //            BankCode = BankCode.VNBANK, // Tùy chọn. Mặc định là tất cả phương thức giao dịch
-        //            CreatedDate = DateTime.Now, // Tùy chọn. Mặc định là thời điểm hiện tại
-        //            Currency = Currency.VND, // Tùy chọn. Mặc định là VND (Việt Nam đồng)
-        //            Language = DisplayLanguage.Vietnamese // Tùy chọn. Mặc định là tiếng Việt
-        //        };
-
-        //        var paymentUrl = _vnpay.GetPaymentUrl(request);
-
-        //        return Created(paymentUrl, paymentUrl);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-        public ActionResult<string> CreatePaymentUrl()
+        public ActionResult<string> CreatePaymentUrl(double moneyToPay, string description)
         {
             try
             {
                 var ipAddress = NetworkHelper.GetIpAddress(HttpContext); // Lấy địa chỉ IP của thiết bị thực hiện giao dịch
-                Console.WriteLine($"[CreatePaymentUrl] IP Address: {ipAddress}");
 
                 var request = new PaymentRequest
                 {
                     PaymentId = DateTime.Now.Ticks,
-                    Money = 5000,
-                    Description = "hihihaha",
+                    Money = moneyToPay,
+                    Description = description,
                     IpAddress = ipAddress,
                     //BankCode = BankCode.ANY, // Tùy chọn. Mặc định là tất cả phương thức giao dịch
                     CreatedDate = DateTime.Now, // Tùy chọn. Mặc định là thời điểm hiện tại
@@ -82,19 +58,16 @@ namespace Vaccine.API.Controllers
                     Language = DisplayLanguage.Vietnamese // Tùy chọn. Mặc định là tiếng Việt
                 };
 
-                Console.WriteLine($"[CreatePaymentUrl] Request Data: {System.Text.Json.JsonSerializer.Serialize(request)}");
-
                 var paymentUrl = _vnpay.GetPaymentUrl(request);
-                Console.WriteLine($"[CreatePaymentUrl] Generated Payment URL: {paymentUrl}");
 
                 return Created(paymentUrl, paymentUrl);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[CreatePaymentUrl] Error: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
+       
 
         /// <summary>
         /// Thực hiện hành động sau khi thanh toán. URL này cần được khai báo với VNPAY để API này hoạt đồng (ví dụ: http://localhost:1234/api/Vnpay/IpnAction)

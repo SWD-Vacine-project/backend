@@ -1,17 +1,22 @@
 ﻿using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MilkStore.API.Models.CustomerModel;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Vaccine.API.Models.CustomerModel;
+using Vaccine.API.Models.GoogleModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
 
 namespace Vaccine.API.Controllers
 {
+    [EnableCors("MyPolicy")]
     [ApiController]
     [Route("api/auth")]
     public class AuthController : ControllerBase
@@ -76,8 +81,17 @@ namespace Vaccine.API.Controllers
             }
         }
 
-        [HttpPost("create")]
-        //[AllowAnonymous]
+        /// <summary>
+        /// Create a new customer using Google sign-up.
+        /// </summary>
+        /// <param name="requestCreateCustomerModel">Customer details</param>
+        /// <returns>Created customer information</returns>
+        [HttpPost("create-google")]
+        [SwaggerOperation(
+        Summary = "Create a customer",
+        Description = "Creates a new customer using Google sign-up."
+    )]
+        [SwaggerRequestExample(typeof(RequestCreateCustomerModel), typeof(ExampleCreateCustomerModel))]
         public IActionResult CreateCustomer(RequestCreateCustomerModel requestCreateCustomerModel)
         {
             // Kiểm tra xem email đã tồn tại chưa
@@ -130,24 +144,24 @@ namespace Vaccine.API.Controllers
             }
         }
 
-        public class GoogleTokenResponse
-        {
-            [JsonPropertyName("access_token")]
-            public string AccessToken { get; set; }
+        //public class GoogleTokenResponse
+        //{
+        //    [JsonPropertyName("access_token")]
+        //    public string AccessToken { get; set; }
 
-            [JsonPropertyName("id_token")]
-            public string IdToken { get; set; }
+        //    [JsonPropertyName("id_token")]
+        //    public string IdToken { get; set; }
 
-            [JsonPropertyName("refresh_token")]
-            public string RefreshToken { get; set; }
+        //    [JsonPropertyName("refresh_token")]
+        //    public string RefreshToken { get; set; }
 
-            [JsonPropertyName("expires_in")]
-            public int ExpiresIn { get; set; }
-        }
+        //    [JsonPropertyName("expires_in")]
+        //    public int ExpiresIn { get; set; }
+        //}
 
-        public class TokenRequest
-        {
-            public string IdToken { get; set; }
-        }
+        //public class TokenRequest
+        //{
+        //    public string IdToken { get; set; }
+        //}
     }
 }
