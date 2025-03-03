@@ -68,7 +68,7 @@ builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 // DbContext
 builder.Services.AddDbContext<VaccineDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbContext")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

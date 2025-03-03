@@ -60,7 +60,7 @@ public partial class VaccineDbContext : DbContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString("MyDbContext")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
