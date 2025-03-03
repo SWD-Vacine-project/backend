@@ -42,8 +42,14 @@ namespace Vaccine.API.Controllers
         [HttpGet("CreatePaymentUrl")]
         public ActionResult<string> CreatePaymentUrl(double moneyToPay, string description)
         {
+            Console.WriteLine($"TmnCode: {_config["Vnpay:TmnCode"]}");
+            Console.WriteLine($"HashSecret: {_config["Vnpay:HashSecret"]}");
+            Console.WriteLine($"BaseUrl: {_config["Vnpay:BaseUrl"]}");
+            Console.WriteLine($"CallbackUrl: {_config["Vnpay:CallbackUrl"]}");
             try
             {
+                // Reinitialize to ensure correct configuration
+                _vnpay.Initialize(_config["Vnpay:TmnCode"], _config["Vnpay:HashSecret"], _config["Vnpay:BaseUrl"], _config["Vnpay:CallbackUrl"]);
                 var ipAddress = NetworkHelper.GetIpAddress(HttpContext); // Lấy địa chỉ IP của thiết bị thực hiện giao dịch
 
                 var request = new PaymentRequest
