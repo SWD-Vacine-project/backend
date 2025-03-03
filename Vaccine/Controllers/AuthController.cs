@@ -25,6 +25,7 @@ namespace Vaccine.API.Controllers
         private readonly HttpClient _httpClient;
         private readonly UnitOfWork _unitOfWork;
         string accessCode ="https://accounts.google.com/o/oauth2/auth?client_id=1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com&response_type=code&approval_prompt=force&access_type=offline&redirect_uri=https://localhost:7090/signin-google&scope=openid email profile https://mail.google.com/ ";
+        private object requestCreateCustomerModel;
 
         public AuthController(IConfiguration config, IHttpClientFactory httpClientFactory, UnitOfWork unitOfWork)
         {
@@ -163,45 +164,60 @@ namespace Vaccine.API.Controllers
             public string Password { get; set; }
         }
 
-    
+
 
         //=========== Signup Customer =====================
         [HttpPost("signup")]
 
         public IActionResult Signup(SignupRequest newCustomer)
         {
-            // Kiểm tra xem email đã tồn tại chưa
-            var existingCustomer = _unitOfWork.CustomerRepository.Get(c => c.Email == requestCreateCustomerModel.Email).FirstOrDefault();
-            if (existingCustomer != null)
+            if (newCustomer == null || string.IsNullOrEmpty(newCustomer.UserName) ||
+                string.IsNullOrEmpty(newCustomer.Password) || string.IsNullOrEmpty(newCustomer.Name) ||
+                string.IsNullOrEmpty(newCustomer.Phone))
             {
-                return BadRequest(new { message = "Email đã được sử dụng để đăng ký tài khoản khác." });
+                return BadRequest(new { message = "Missing required fields." });
             }
 
-            // para input to create 
-            var customerEntity = new Customer
+            var existingUser = _unitOfWork.CustomerRepository.Get(c => c.UserName == newCustomer.UserName).FirstOrDefault();
+            if (existingUser != null)
             {
-                Name = requestCreateCustomerModel.Name,
-                Email = requestCreateCustomerModel.Email,
-                Password = requestCreateCustomerModel.Password,
-                Dob = DateOnly.FromDateTime(DateTime.Today), // Default to today's date
-                Phone = "0000000000", // Placeholder phone number
-                UserName = requestCreateCustomerModel.Email, // Use email as username
+                return BadRequest(new { message = "Username already exists." });
+            }
+
+            var customer = new Customer
+            {
+                UserName = newCustomer.UserName,
+                Password = newCustomer.Password,
+                Name = newCustomer.Name,
+                Dob = newCustomer.Dob,
+                Gender = newCustomer.Gender,
+                Phone = newCustomer.Phone,
+                Email = newCustomer.Email,
+                Address = newCustomer.Address,
+                BloodType = newCustomer.BloodType
             };
 
-            _unitOfWork.CustomerRepository.Insert(customerEntity);
+            _unitOfWork.CustomerRepository.Insert(customer);
             _unitOfWork.Save();
 
-            var responseCustomer = new ResponseCreateCustomerModel
-            {
-                CustomerName = customerEntity.UserName,
-                Email = customerEntity.Email,
-                Password = customerEntity.Password,
-            };
-
-            return Ok(responseCustomer);
+            return Ok(new { message = "Signup successful", customerId = customer.CustomerId });
         }
 
 
+        public class SignupRequest
+        {
+            public string UserName { get; set; }
+            public string Password { get; set; }
+            public string Name { get; set; }
+            public DateOnly Dob { get; set; }
+            public string? Gender { get; set; }
+            public string Phone { get; set; }
+            public string? Email { get; set; }
+            public string? Address { get; set; }
+            public string? BloodType { get; set; }
+        }
+
+        //=============================================================================
 
         [HttpPost("verify-token")]
         public async Task<IActionResult> VerifyGoogleToken([FromBody] TokenRequest request)
