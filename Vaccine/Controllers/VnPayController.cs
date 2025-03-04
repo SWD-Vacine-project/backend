@@ -20,7 +20,6 @@ namespace Vaccine.API.Controllers
         private readonly UnitOfWork _unitOfWork;
         private readonly ILogger<VnPayController> _logger;
 
-
         public VnPayController(IVnpay vnpay, IConfiguration configuration, UnitOfWork unitOfWork, ILogger<VnPayController> logger)
         {
             _vnpay = vnpay;
@@ -30,32 +29,22 @@ namespace Vaccine.API.Controllers
             _logger = logger;
         }
 
-
-
-
-        /// <summary>
-        /// Tạo url thanh toán
-        /// </summary>
-        /// <param name="money">Số tiền phải thanh toán</param>
-        /// <param name="description">Mô tả giao dịch</param>
-        /// <returns></returns>
         [HttpGet("CreatePaymentUrl")]
-        public ActionResult<string> CreatePaymentUrl(double moneyToPay, string description)
+        public ActionResult<string> CreatePaymentUrl(double moneyToPay, string description, int invoiceId)
         {
             try
             {
-                var ipAddress = NetworkHelper.GetIpAddress(HttpContext); // Lấy địa chỉ IP của thiết bị thực hiện giao dịch
+                var ipAddress = NetworkHelper.GetIpAddress(HttpContext);
 
                 var request = new PaymentRequest
                 {
-                    PaymentId = DateTime.Now.Ticks,
+                    PaymentId = invoiceId, // Use the invoiceId as the PaymentId for tracking
                     Money = moneyToPay,
                     Description = description,
                     IpAddress = ipAddress,
-                    //BankCode = BankCode.ANY, // Tùy chọn. Mặc định là tất cả phương thức giao dịch
-                    CreatedDate = DateTime.Now, // Tùy chọn. Mặc định là thời điểm hiện tại
-                    Currency = Currency.VND, // Tùy chọn. Mặc định là VND (Việt Nam đồng)
-                    Language = DisplayLanguage.Vietnamese // Tùy chọn. Mặc định là tiếng Việt
+                    CreatedDate = DateTime.Now,
+                    Currency = Currency.VND,
+                    Language = DisplayLanguage.Vietnamese
                 };
 
                 var paymentUrl = _vnpay.GetPaymentUrl(request);
@@ -67,42 +56,7 @@ namespace Vaccine.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-       
 
-        /// <summary>
-        /// Thực hiện hành động sau khi thanh toán. URL này cần được khai báo với VNPAY để API này hoạt đồng (ví dụ: http://localhost:1234/api/Vnpay/IpnAction)
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("IpnAction")]
-        public IActionResult IpnAction()
-        {
-            if (Request.QueryString.HasValue)
-            {
-                try
-                {
-                    var paymentResult = _vnpay.GetPaymentResult(Request.Query);
-                    if (paymentResult.IsSuccess)
-                    {
-                        // Thực hiện hành động nếu thanh toán thành công tại đây. Ví dụ: Cập nhật trạng thái đơn hàng trong cơ sở dữ liệu.
-                        return Ok();
-                    }
-
-                    // Thực hiện hành động nếu thanh toán thất bại tại đây. Ví dụ: Hủy đơn hàng.
-                    return BadRequest("Thanh toán thất bại");
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-
-            return NotFound("Không tìm thấy thông tin thanh toán.");
-        }
-
-        /// <summary>
-        /// Trả kết quả thanh toán về cho người dùng
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("Callback")]
         public ActionResult<PaymentResult> Callback()
         {
@@ -114,10 +68,53 @@ namespace Vaccine.API.Controllers
 
                     if (paymentResult.IsSuccess)
                     {
-                        return Ok(paymentResult);
+                        // Retrieve the invoice using the PaymentId
+                        var invoice = _unitOfWork.InvoiceRepository.GetByID((int)paymentResult.PaymentId);
+
+                        if (invoice == null)
+                        {
+                            return NotFound(new { message = "Invoice not found." });
+                        }
+
+                        if (invoice.Status == "Paid")
+                        {
+                            return BadRequest(new { message = "Invoice is already paid." });
+                        }
+
+                        // Update invoice status
+                        invoice.Status = "Paid";
+                        _unitOfWork.InvoiceRepository.Update(invoice);
+
+                        // Get purchased vaccines from InvoiceDetail
+                        var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice.InvoiceId);
+
+                        foreach (var detail in invoiceDetails)
+                        {
+                            var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
+                                .Get(vb => vb.VaccineId == detail.VaccineId)
+                                .OrderBy(vb => vb.BatchNumber)
+                                .FirstOrDefault();
+
+                            if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
+                            {
+                                return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
+                            }
+
+                            // Deduct vaccine quantity
+                            vaccineBatch.Quantity -= detail.Quantity;
+                            _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
+                        }
+
+                        _unitOfWork.Save();
+
+                        return Ok(new
+                        {
+                            message = "Payment successful, invoice updated, and stock deducted.",
+                            paymentResult = paymentResult
+                        });
                     }
 
-                    return BadRequest(paymentResult);
+                    return BadRequest("Payment failed.");
                 }
                 catch (Exception ex)
                 {
@@ -129,4 +126,3 @@ namespace Vaccine.API.Controllers
         }
     }
 }
-

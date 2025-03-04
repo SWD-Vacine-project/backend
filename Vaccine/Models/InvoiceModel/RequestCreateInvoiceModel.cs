@@ -13,8 +13,8 @@ namespace Vaccine.API.Models.InvoiceModel
         [Required(ErrorMessage = "Total Amount is required")]
         public decimal TotalAmount { get; set; }
 
-        //[RegularExpression("Paid|Unpaid|Cancelled", ErrorMessage = "Status must be 'Paid' or 'Unpaid' or 'Cancelled'")]
-        public string? Status { get; set; } = "Unpaid";
+        //[RegularExpression("Unpaid", ErrorMessage = "Status must be 'Paid' or 'Unpaid'")] 
+        //public string? Status { get; set; } = "Unpaid";
 
         [RegularExpression("Single|Combo", ErrorMessage = "Type must be 'Single' or 'Combo'")]
         public string? Type { get; set; }
