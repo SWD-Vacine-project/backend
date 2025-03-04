@@ -25,6 +25,7 @@ namespace Vaccine.API.Controllers
         private readonly HttpClient _httpClient;
         private readonly UnitOfWork _unitOfWork;
         string accessCode ="https://accounts.google.com/o/oauth2/auth?client_id=1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com&response_type=code&approval_prompt=force&access_type=offline&redirect_uri=https://localhost:7090/signin-google&scope=openid email profile https://mail.google.com/ ";
+        private object requestCreateCustomerModel;
 
         public AuthController(IConfiguration config, IHttpClientFactory httpClientFactory, UnitOfWork unitOfWork)
         {
@@ -81,51 +82,142 @@ namespace Vaccine.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Create a new customer using Google sign-up.
-        /// </summary>
-        /// <param name="requestCreateCustomerModel">Customer details</param>
-        /// <returns>Created customer information</returns>
-        [HttpPost("create-google")]
-        [SwaggerOperation(
-        Summary = "Create a customer",
-        Description = "Creates a new customer using Google sign-up."
-    )]
-        [SwaggerRequestExample(typeof(RequestCreateCustomerModel), typeof(ExampleCreateCustomerModel))]
-        public IActionResult CreateCustomer(RequestCreateCustomerModel requestCreateCustomerModel)
+        // -----------------------Login Customer------------------------
+        [HttpPost("login")]
+        public IActionResult Login(LoginRequest login)
         {
-            // Kiểm tra xem email đã tồn tại chưa
-            var existingCustomer = _unitOfWork.CustomerRepository.Get(c => c.Email == requestCreateCustomerModel.Email).FirstOrDefault();
-            if (existingCustomer != null)
+
+            if (login == null || String.IsNullOrEmpty(login.UserName) || String.IsNullOrEmpty(login.Password))
             {
-                return BadRequest(new { message = "Email đã được sử dụng để đăng ký tài khoản khác." });
+                return BadRequest(new { message = "Username and password are required" });
+            }
+            dynamic user = null;
+            string userRole;
+            string preFix = login.UserName.Substring(0, 3);
+            if (preFix == "ST_")
+            {
+                user = _unitOfWork.StaffRepository.
+                    Get(s => s.UserName == login.UserName).
+                    FirstOrDefault();
+                userRole = "Staff";
+            }
+            else if (preFix == "AD_")
+            {
+                user = _unitOfWork.AdminRepository.
+                    Get(a => a.UserName == login.UserName).
+                    FirstOrDefault();
+                userRole = "Admin";
+            }
+            else
+            {
+                user = _unitOfWork.CustomerRepository.
+                    Get(u => u.UserName == login.UserName).
+                    FirstOrDefault();
+                userRole = "Customer";
             }
 
-            // para input to create 
-            var customerEntity = new Customer
+
+            if (user == null)
             {
-                Name = requestCreateCustomerModel.Name,
-                Email = requestCreateCustomerModel.Email,
-                Password = requestCreateCustomerModel.Password,
-                Dob = DateOnly.FromDateTime(DateTime.Today), // Default to today's date
-                Phone = "0000000000", // Placeholder phone number
-                UserName = requestCreateCustomerModel.Email, // Use email as username
+                return Unauthorized(new { message = "Account does not exist" });
+            }
+            if (user.Password != login.Password)
+            {
+                return Unauthorized(new { message = "Password is incorrect" });
+            }
+            //return Ok(new 
+            //{ 
+            //    user.Email,
+            //    user.Name, 
+            //    user.Phone, 
+            //    user.Address,
+            //    Role = userRole,
+            //    Children = user.Children ?? new List<Child>()
+            //});
+            var response = new
+            {
+                user.Email,
+                user.Name,
+                user.Phone,
+                Role = userRole
             };
 
-            _unitOfWork.CustomerRepository.Insert(customerEntity);
-            _unitOfWork.Save();
-
-            var responseCustomer = new ResponseCreateCustomerModel
+            if (userRole == "Customer")
             {
-                CustomerName = customerEntity.UserName,
-                Email = customerEntity.Email,
-                Password = customerEntity.Password,
-            };
+                return Ok(new
+                {
+                    response.Email,
+                    response.Name,
+                    response.Phone,
+                    response.Role,
+                    Address = user.Address,
+                    Children = user.Children ?? new List<Child>()
+                });
+            }
 
-            return Ok(responseCustomer);
+            return Ok(response);
+
+        }
+        public class LoginRequest
+        {
+            public string UserName { get; set; }
+            public string Password { get; set; }
         }
 
 
+
+        //=========== Signup Customer =====================
+        [HttpPost("signup")]
+
+        public IActionResult Signup(SignupRequest newCustomer)
+        {
+            if (newCustomer == null || string.IsNullOrEmpty(newCustomer.UserName) ||
+                string.IsNullOrEmpty(newCustomer.Password) || string.IsNullOrEmpty(newCustomer.Name) ||
+                string.IsNullOrEmpty(newCustomer.Phone))
+            {
+                return BadRequest(new { message = "Missing required fields." });
+            }
+
+            var existingUser = _unitOfWork.CustomerRepository.Get(c => c.UserName == newCustomer.UserName).FirstOrDefault();
+            if (existingUser != null)
+            {
+                return BadRequest(new { message = "Username already exists." });
+            }
+
+            var customer = new Customer
+            {
+                UserName = newCustomer.UserName,
+                Password = newCustomer.Password,
+                Name = newCustomer.Name,
+                Dob = newCustomer.Dob,
+                Gender = newCustomer.Gender,
+                Phone = newCustomer.Phone,
+                Email = newCustomer.Email,
+                Address = newCustomer.Address,
+                BloodType = newCustomer.BloodType
+            };
+
+            _unitOfWork.CustomerRepository.Insert(customer);
+            _unitOfWork.Save();
+
+            return Ok(new { message = "Signup successful", customerId = customer.CustomerId });
+        }
+
+
+        public class SignupRequest
+        {
+            public string UserName { get; set; }
+            public string Password { get; set; }
+            public string Name { get; set; }
+            public DateOnly Dob { get; set; }
+            public string? Gender { get; set; }
+            public string Phone { get; set; }
+            public string? Email { get; set; }
+            public string? Address { get; set; }
+            public string? BloodType { get; set; }
+        }
+
+        //=============================================================================
 
         [HttpPost("verify-token")]
         public async Task<IActionResult> VerifyGoogleToken([FromBody] TokenRequest request)

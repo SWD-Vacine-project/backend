@@ -32,6 +32,10 @@ namespace Vaccine.API.Controllers
         [HttpGet("CreatePaymentUrl")]
         public ActionResult<string> CreatePaymentUrl(double moneyToPay, string description, int invoiceId)
         {
+            Console.WriteLine($"TmnCode: {_config["Vnpay:TmnCode"]}");
+            Console.WriteLine($"HashSecret: {_config["Vnpay:HashSecret"]}");
+            Console.WriteLine($"BaseUrl: {_config["Vnpay:BaseUrl"]}");
+            Console.WriteLine($"CallbackUrl: {_config["Vnpay:CallbackUrl"]}");
             try
             {
                 var ipAddress = NetworkHelper.GetIpAddress(HttpContext);
