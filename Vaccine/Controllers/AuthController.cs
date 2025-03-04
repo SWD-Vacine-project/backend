@@ -136,6 +136,7 @@ namespace Vaccine.API.Controllers
             //});
             var response = new
             {
+                CustomerId = user.CustomerId,
                 user.Email,
                 user.Name,
                 user.Phone,
@@ -146,6 +147,7 @@ namespace Vaccine.API.Controllers
             {
                 return Ok(new
                 {
+                    response.CustomerId,
                     response.Email,
                     response.Name,
                     response.Phone,
