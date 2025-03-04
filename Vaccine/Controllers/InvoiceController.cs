@@ -41,13 +41,23 @@ namespace Vaccine.API.Controllers
         }
 
         [HttpPost("create-invoice")]
+        [SwaggerOperation(
+        Description = "customerID \n"
+            + " totalAmount: tổng tiền\n"
+            + " status: unpaid\n"
+            + " type: single or combo\n"
+)]
         public IActionResult CreateInvoice(RequestCreateInvoiceModel requestCreateInvoiceModel)
         {
+            if(requestCreateInvoiceModel.CustomerId == 0)
+            {
+                return BadRequest(new { message = "Customer ID is required." });
+            }
             var invoiceEntity = new Invoice
             {
-                CustomerId = requestCreateInvoiceModel.CustomerId == 0 ? null : requestCreateInvoiceModel.CustomerId,
+                CustomerId = requestCreateInvoiceModel.CustomerId ,
                 TotalAmount = requestCreateInvoiceModel.TotalAmount,
-                //Status = "Unpaid",
+                Status = "Unpaid",
                 Type = requestCreateInvoiceModel.Type,
                 CreatedAt = requestCreateInvoiceModel.CreatedAt,
                 UpdatedAt = requestCreateInvoiceModel.UpdatedAt
@@ -64,9 +74,9 @@ namespace Vaccine.API.Controllers
         Description = "get id of invoice" +
             "Get purchased vaccines from InvoiceDetail "
     )]
-        public IActionResult UpdateInvoiceStatusToPaid(int id)
+        public IActionResult UpdateInvoiceStatusToPaid(int invoice_id)
         {
-            var invoice = _unitOfWork.InvoiceRepository.GetByID(id);
+            var invoice = _unitOfWork.InvoiceRepository.GetByID(invoice_id);
             if (invoice == null)
             {
                 return NotFound(new { message = "Invoice not found." });
@@ -82,7 +92,7 @@ namespace Vaccine.API.Controllers
             _unitOfWork.InvoiceRepository.Update(invoice);
 
             // Get purchased vaccines from InvoiceDetail (assuming InvoiceDetail stores vaccine purchases)
-            var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == id);
+            var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice_id);
 
             foreach (var detail in invoiceDetails)
             {
