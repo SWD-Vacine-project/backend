@@ -45,8 +45,7 @@ namespace Vaccine.API.Controllers
         Description = "customerID \n"
             + " totalAmount: tổng tiền\n"
             + " status: unpaid\n"
-            + " type: single or combo\n"
-)]
+            + " type: single or combo\n")]
         public IActionResult CreateInvoice(RequestCreateInvoiceModel requestCreateInvoiceModel)
         {
             if(requestCreateInvoiceModel.CustomerId == 0)

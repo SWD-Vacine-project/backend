@@ -43,7 +43,10 @@ namespace Vaccine.API.Controllers
         }
 
         [HttpPost("create-appointment")]
-        public IActionResult CreateAppointment(RequestCreateInvoice requestCreateAppointmentModel)
+        [SwaggerOperation(
+            Description = "Create appointment with status = Pending "
+        )]
+        public IActionResult CreateAppointment(RequestCreateAppointmentModel requestCreateAppointmentModel)
         {
             //var existingappoint = _unitofwork.appointmentrepository.get(c => c.appointmentid == requestcreatecappointmentmodel.appointmentid).firstordefault();
             //if (existingappoint != null)
@@ -57,17 +60,17 @@ namespace Vaccine.API.Controllers
             {
                 //AppointmentId = requestCreateCAppointmentModel.AppointmentId,
                 AppointmentDate = requestCreateAppointmentModel.AppointmentDate,
-                Status = requestCreateAppointmentModel.Status,
+                Status = "Pending",
                 Notes = requestCreateAppointmentModel.Notes,
                 CreatedAt = requestCreateAppointmentModel.CreatedAt,
-                ChildId = requestCreateAppointmentModel.ChildId == 0 ? null : requestCreateAppointmentModel.ChildId,
-                StaffId = requestCreateAppointmentModel.StaffId == 0 ? null : requestCreateAppointmentModel.StaffId,
-                DoctorId = requestCreateAppointmentModel.DoctorId == 0 ? null : requestCreateAppointmentModel.DoctorId,
+                ChildId = requestCreateAppointmentModel.ChildId,
+                StaffId = requestCreateAppointmentModel.StaffId,
+                DoctorId = requestCreateAppointmentModel.DoctorId,
                 // if null set null, not null require single or combo
                 VaccineType = string.IsNullOrEmpty(requestCreateAppointmentModel.VaccineType) ? null : requestCreateAppointmentModel.VaccineType,
-                ComboId = requestCreateAppointmentModel.ComboId == 0 ? null : requestCreateAppointmentModel.ComboId,
-                CustomerId = requestCreateAppointmentModel.CustomerId == 0 ? null : requestCreateAppointmentModel.CustomerId,
-                VaccineId = requestCreateAppointmentModel.VaccineId == 0 ? null : requestCreateAppointmentModel.VaccineId,
+                ComboId = requestCreateAppointmentModel.ComboId,
+                CustomerId = requestCreateAppointmentModel.CustomerId,
+                VaccineId = requestCreateAppointmentModel.VaccineId,
             };
 
             _unitOfWork.AppointmentRepository.Insert(appointEntity);
@@ -77,7 +80,7 @@ namespace Vaccine.API.Controllers
             {
                 AppointmentId = appointEntity.AppointmentId,
                 AppointmentDate = requestCreateAppointmentModel.AppointmentDate,
-                Status = requestCreateAppointmentModel.Status,
+                Status = "Pending",
                 Notes = requestCreateAppointmentModel.Notes,
                 CreatedAt = requestCreateAppointmentModel.CreatedAt,
                 ChildId = requestCreateAppointmentModel.ChildId,
@@ -92,6 +95,28 @@ namespace Vaccine.API.Controllers
             return Ok(responseAppoint);
         }
 
+        [HttpPut("Approved-status-appointment/{id}")]
+        [SwaggerOperation(
+            Description = "Confirm an appointment by setting the status to Approved."
+        )]
+        public IActionResult ApprovedAppointment(int id)
+        {
+            var appointment = _unitOfWork.AppointmentRepository.GetByID(id);
+            if (appointment == null)
+            {
+                return NotFound(new { message = "Appointment not found." });
+            }
+            // Ensure the appointment is not already confirmed
+            if (appointment.Status == "Approved")
+            {
+                return BadRequest(new { message = "Appointment is already confirmed." });
+            }
+            // Update the appointment status to Confirmed
+            appointment.Status = "Approved";
+            _unitOfWork.AppointmentRepository.Update(appointment);
+            _unitOfWork.Save();
+            return Ok(new { message = "Appointment approved successfully." });
+        }
 
         [HttpDelete("delete-appointment/{id}")]
 
@@ -129,6 +154,29 @@ namespace Vaccine.API.Controllers
 
             return Ok(new { message = "Appointment date updated successfully." });
         }
+
+        //[HttpPut("update-appointment-status/{id}")]
+        //[SwaggerOperation(
+        //    Description = "Update appointment status"
+        //)]
+        //public IActionResult UpdateAppointmentStatus(int id)
+        //{
+        //    var appointment = _unitOfWork.AppointmentRepository.GetByID(id);
+        //    if (appointment == null)
+        //    {
+        //        return NotFound(new { message = "Appointment not found." });
+        //    }
+        //    // Ensure the appointment is not already confirmed
+        //    if (appointment.Status == "Approved")
+        //    {
+        //        return BadRequest(new { message = "Appointment is already confirmed." });
+        //    }
+        //    // Update the appointment status to Confirmed
+        //    appointment.Status = "Approved";
+        //    _unitOfWork.AppointmentRepository.Update(appointment);
+        //    _unitOfWork.Save();
+        //    return Ok(new { message = "Appointment approved successfully." });
+        //}
 
     }
 }

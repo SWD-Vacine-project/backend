@@ -34,7 +34,7 @@ namespace Vaccine.API.Controllers
             _httpClient = httpClientFactory.CreateClient();
         }
 
-        [HttpGet]
+        [HttpGet("link-google")]
         public IActionResult GetLink()
         {
             return Ok(accessCode);
@@ -160,6 +160,8 @@ namespace Vaccine.API.Controllers
             return Ok(response);
 
         }
+
+
         public class LoginRequest
         {
             public string UserName { get; set; }
@@ -204,8 +206,6 @@ namespace Vaccine.API.Controllers
 
             return Ok(new { message = "Signup successful", customerId = customer.CustomerId });
         }
-
-
         public class SignupRequest
         {
             public string UserName { get; set; }
