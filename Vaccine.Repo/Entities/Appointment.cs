@@ -6,13 +6,13 @@ public partial class Appointment
 {
     public int AppointmentId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
-    public int? ChildId { get; set; }
+    public int ChildId { get; set; }
 
-    public int? StaffId { get; set; }
+    public int StaffId { get; set; }
 
-    public int? DoctorId { get; set; }
+    public int DoctorId { get; set; }
 
     public string? VaccineType { get; set; }
 
