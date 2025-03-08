@@ -22,22 +22,21 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
-
       -  name: Restore dependencies
          run: dotnet restore "Vaccine/SWD392 - Vaccine.sln"
-           
+          
       - name: Build with dotnet
         run: dotnet build "Vaccine/SWD392 - Vaccine.sln" --configuration Release --no-restore
- 
-      - name: dotnet publish
-        run: dotnet publish "Vaccine/Vaccine.API.csproj" -c Release --self-contained false -r win-x86 -o "${{ github.workspace }}/Vaccine/publish"
 
- 
+      - name: dotnet publish
+        run: dotnet publish "Vaccine/Vaccine.API.csproj" -c Release -o ./publish
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-           name: .net-app
-           path:  ${{ github.workspace }}/Vaccine/publish
+          name: .net-app
+          path: ./publish
+    
 
   deploy:
     runs-on: windows-latest
@@ -67,5 +66,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'vaccine-system'
-          package: ${{ github.workspace }}/Vaccine/publish
-          
+          slot-name: 'Production'
+          package: .
