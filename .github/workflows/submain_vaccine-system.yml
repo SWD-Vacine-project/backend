@@ -24,10 +24,10 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build "Vaccine/SWD392 - Vaccine.sln" --configuration Release
+        run: dotnet build "./Vaccine/SWD392 - Vaccine.sln" --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish "Vaccine.API/Vaccine.API.csproj" -c Release --self-contained false -r win-x86 -o "${{ github.workspace }}/publish"
+        run: dotnet publish "./Vaccine.API/Vaccine.API.csproj" -c Release --self-contained false -r win-x86 -o "${{ github.workspace }}/publish"
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
