@@ -26,7 +26,7 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 //allow cros
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("MyPolicy",
         policy =>
         {
             policy.AllowAnyOrigin() // Cho phép tất cả domain (*)
@@ -107,7 +107,7 @@ var app = builder.Build();
 //}
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+//app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 app.UseCors();
