@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{ github.workspace }}/publish
 
   deploy:
     runs-on: windows-latest
@@ -61,7 +61,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'vaccine-system-hxczh3e5apdjdbfe'
-          slot-name: 'Production'
-          package:  'package: ${{ github.workspace }}/publish'
+          app-name: 'vaccine-system'
+          resource-group: 'VaccinationSystem'
+          package: ${{ github.workspace }}/publish
           
