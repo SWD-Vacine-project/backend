@@ -42,6 +42,21 @@ namespace Vaccine.API.Controllers
             return Ok(appointment);
         }
 
+        [HttpGet("get-appointment-by-childid/{child_id}")]
+        public IActionResult GetAppointmentsByChildId(int child_id)
+        {
+            var appointments = _unitOfWork.AppointmentRepository
+                .Get(filter: a => a.ChildId == child_id);
+
+            if (!appointments.Any())
+            {
+                return NotFound(new { message = "No appointments found for this child." });
+            }
+            return Ok(appointments);
+        }
+
+
+
         [HttpPost("create-appointment")]
         [SwaggerOperation(
             Description = "Create appointment with status = Pending "
