@@ -25,6 +25,8 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build "./Vaccine/SWD392 - Vaccine.sln" --configuration Release
+      - name: Debug check project structure
+        run: ls -R
 
       - name: dotnet publish
         run: dotnet publish "./Vaccine.API/Vaccine.API.csproj" -c Release --self-contained false -r win-x86 -o "${{ github.workspace }}/publish"
