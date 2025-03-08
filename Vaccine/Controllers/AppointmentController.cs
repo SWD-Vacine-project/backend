@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MilkStore.API.Models.CustomerModel;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
+using System.Runtime;
 using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -54,8 +55,29 @@ namespace Vaccine.API.Controllers
             }
             return Ok(appointments);
         }
-
-
+        [HttpGet("get-appointment-checkin")]
+        public IActionResult GetAppointmentsForCheckin()
+        {
+            var appointments = _unitOfWork.AppointmentRepository.Get(x => x.Status == "late" || DateOnly.FromDateTime(x.AppointmentDate) == DateOnly.FromDateTime(DateTime.Now)).ToList();
+            if(appointments == null)
+            {
+                return NotFound(new { message = "No appointments found for today" });
+            }
+            return Ok(appointments);
+        }
+        [HttpPatch("set-appointment-inprogress/{appointmentId}")]
+        public IActionResult SetAppointmentInprogress(int appointmentId)
+        {
+            var appointment = _unitOfWork.AppointmentRepository.GetByID(appointmentId); 
+            if(appointment == null)
+            {
+                return NotFound(new { message = "Cannot find appointment" });
+            }
+            appointment.Status = "InProgress";
+            _unitOfWork.AppointmentRepository.Update(appointment);
+            _unitOfWork.Save();
+            return Ok(new {message=$"Sucessfully update status of appointment: {appointment.AppointmentId}"});
+        }
 
         [HttpPost("create-appointment")]
         [SwaggerOperation(
