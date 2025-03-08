@@ -66,6 +66,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'vaccine-system-hxczh3e5apdjdbfe'
+          app-name: 'vaccine-system'
           package: ${{ github.workspace }}/Vaccine/publish
           
