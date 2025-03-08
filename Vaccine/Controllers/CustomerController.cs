@@ -61,7 +61,7 @@ namespace Vaccine.API.Controllers
 
         }
         [HttpPost("update-customer/{id}")]
-        public IActionResult UpdateCustomer(int id, RequestCreateCustomerModel updatedCustomer)
+        public IActionResult UpdateCustomer(int id, RequestUpdateCustomerModel updatedCustomer)
         {
             if (updatedCustomer == null)
             {
@@ -77,7 +77,7 @@ namespace Vaccine.API.Controllers
 
             // Cập nhật thông tin khách hàng
             existingCustomer.Name = updatedCustomer.Name;
-            existingCustomer.Dob = updatedCustomer.Dob;
+            //existingCustomer.Dob = updatedCustomer.Dob;
             existingCustomer.Gender = updatedCustomer.Gender; 
             existingCustomer.Phone = updatedCustomer.Phone;
             existingCustomer.Email = updatedCustomer.Email;

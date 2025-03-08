@@ -58,8 +58,15 @@ namespace Vaccine.API.Controllers
         [HttpGet("get-appointment-checkin")]
         public IActionResult GetAppointmentsForCheckin()
         {
-            var appointments = _unitOfWork.AppointmentRepository.Get(x => x.Status == "late" || DateOnly.FromDateTime(x.AppointmentDate) == DateOnly.FromDateTime(DateTime.Now)).ToList();
-            if(appointments == null)
+
+            var allAppointments = _unitOfWork.AppointmentRepository.Get().ToList();
+
+            var appointments = allAppointments
+                .Where(x => (x.Status.Trim().ToLower() == "late" ||(x.Status.Trim().ToLower() == "approved"
+                            && x.AppointmentDate.Date == DateTime.Today.Date)))
+                .ToList();
+
+            if (appointments == null)
             {
                 return NotFound(new { message = "No appointments found for today" });
             }
