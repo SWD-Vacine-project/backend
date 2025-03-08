@@ -67,7 +67,76 @@ namespace Vaccine.API.Controllers
             return Ok(invoiceEntity);
         }
 
-        [HttpPut("update-invoice-status/{id}")]
+        [HttpPost("create-invoice1")]
+        [SwaggerOperation(
+        Description = "customerID \n"
+            + " totalAmount: tổng tiền\n"
+            + " status: unpaid\n"
+            + " type: single or combo\n")]
+        public IActionResult CreateInvoice1(RequestCreateInvoiceModel1 requestCreateInvoiceModel)
+        {
+            if (requestCreateInvoiceModel.CustomerId ==  null)
+            {
+                return BadRequest(new { message = "Customer ID is required." });
+            }
+
+            // Determine type (Single or Combo)
+            bool hasCombo = requestCreateInvoiceModel.InvoiceDetails.Any(d => d.ComboId != null);
+
+            string invoiceType = hasCombo ? "Combo" : "Single";
+
+            var invoiceEntity = new Invoice
+            {
+                CustomerId = requestCreateInvoiceModel.CustomerId,
+                TotalAmount = requestCreateInvoiceModel.TotalAmount,
+                Status = "Unpaid",
+                Type = invoiceType,
+                CreatedAt = requestCreateInvoiceModel.CreatedAt,
+                UpdatedAt = requestCreateInvoiceModel.UpdatedAt
+
+            };
+            _unitOfWork.InvoiceRepository.Insert(invoiceEntity);
+            _unitOfWork.Save();
+
+            // Insert Invoice Details
+            var invoiceDetails = requestCreateInvoiceModel.InvoiceDetails.Select(detail => new InvoiceDetail
+            {
+                InvoiceId = invoiceEntity.InvoiceId,
+                VaccineId = detail.VaccineId,
+                AppointmentId = detail.AppointmentId,
+                ComboId = detail.ComboId,
+                Quantity = detail.Quantity,
+                Price = detail.Price
+            }).ToList();
+
+            foreach (var detail in invoiceDetails)
+            {
+                _unitOfWork.InvoiceDetailRepository.Insert(detail);
+            }
+
+            _unitOfWork.Save();
+            // Return Invoice with its Details
+            return Ok(new InvoiceDto
+            {
+                InvoiceId = invoiceEntity.InvoiceId,
+                CustomerId = invoiceEntity.CustomerId,
+                TotalAmount = invoiceEntity.TotalAmount,
+                Status = invoiceEntity.Status,
+                Type = invoiceEntity.Type,
+                CreatedAt = invoiceEntity.CreatedAt,
+                InvoiceDetails = invoiceDetails.Select(d => new InvoiceDetailDto
+                {
+                    VaccineId = d.VaccineId,
+                    AppointmentId = d.AppointmentId,
+                    ComboId = d.ComboId,
+                    Quantity = d.Quantity,
+                    Price = d.Price
+                }).ToList()
+            });
+        }
+
+        //============================================================================
+        [HttpPut("update-invoice-status-to-paid/{id}")]
         [SwaggerOperation(
         Summary = "Update status of invoice to paid",
         Description = "get id of invoice" +

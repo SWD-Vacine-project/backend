@@ -95,7 +95,7 @@ var app = builder.Build();
 //}
 
 //if (app.Environment.IsDevelopment())
-{
+//{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -104,11 +104,12 @@ var app = builder.Build();
         c.OAuthClientSecret("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");
         c.OAuthUsePkce(); // Bật PKCE
     });
-}
+//}
+
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
-
 app.MapControllers();
 app.UseCors();
+
 app.Run();

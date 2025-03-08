@@ -82,6 +82,51 @@ namespace Vaccine.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a new customer using Google sign-up.
+        /// </summary>
+        /// <param name="requestCreateCustomerModel">Customer details</param>
+        /// <returns>Created customer information</returns>
+        [HttpPost("create-google")]
+        [SwaggerOperation(
+        Summary = "Create a customer",
+        Description = "Creates a new customer using Google sign-up."
+    )]
+        [SwaggerRequestExample(typeof(RequestCreateCustomerModel), typeof(ExampleCreateCustomerModel))]
+        public IActionResult CreateCustomer(RequestCreateCustomerModel requestCreateCustomerModel)
+        {
+            // Kiểm tra xem email đã tồn tại chưa
+            var existingCustomer = _unitOfWork.CustomerRepository.Get(c => c.Email == requestCreateCustomerModel.Email).FirstOrDefault();
+            if (existingCustomer != null)
+            {
+                return BadRequest(new { message = "Email đã được sử dụng để đăng ký tài khoản khác." });
+            }
+
+            // para input to create 
+            var customerEntity = new Customer
+            {
+                Name = requestCreateCustomerModel.Name,
+                Email = requestCreateCustomerModel.Email,
+                Password = requestCreateCustomerModel.Password,
+                Dob = DateOnly.FromDateTime(DateTime.Today), // Default to today's date
+                Phone = "0000000000", // Placeholder phone number
+                UserName = requestCreateCustomerModel.Email, // Use email as username
+            };
+
+            _unitOfWork.CustomerRepository.Insert(customerEntity);
+            _unitOfWork.Save();
+
+            var responseCustomer = new ResponseCreateCustomerModel
+            {
+                CustomerName = customerEntity.UserName,
+                Email = customerEntity.Email,
+                Password = customerEntity.Password,
+            };
+
+            return Ok(responseCustomer);
+        }
+
+
         // -----------------------Login Customer------------------------
         [HttpPost("login")]
         public IActionResult Login(LoginRequest login)
