@@ -61,7 +61,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'vaccine-system'
+          app-name: 'vaccine-system-hxczh3e5apdjdbfe'
           slot-name: 'Production'
           package:  'package: ${{ github.workspace }}/publish'
           
