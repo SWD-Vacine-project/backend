@@ -71,76 +71,8 @@ namespace Vaccine.API.Controllers
             }
         }
 
-        [HttpGet("IpnAction")]
-        public IActionResult IpnAction()
-        {
-            if (Request.QueryString.HasValue)
-            {
-                try
-                {
-                    var paymentResult = _vnpay.GetPaymentResult(Request.Query);
-
-                    if (paymentResult.IsSuccess)
-                    {
-                        // Retrieve the invoice using the PaymentId
-                        var invoice = _unitOfWork.InvoiceRepository.GetByID((int)paymentResult.PaymentId);
-
-                        if (invoice == null)
-                        {
-                            return NotFound(new { message = "Invoice not found." });
-                        }
-
-                        if (invoice.Status == "Paid")
-                        {
-                            return BadRequest(new { message = "Invoice is already paid." });
-                        }
-
-                        // Update invoice status
-                        invoice.Status = "Paid";
-                        _unitOfWork.InvoiceRepository.Update(invoice);
-
-                        // Get purchased vaccines from InvoiceDetail
-                        var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice.InvoiceId);
-
-                        foreach (var detail in invoiceDetails)
-                        {
-                            var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
-                                .Get(vb => vb.VaccineId == detail.VaccineId)
-                                .OrderBy(vb => vb.BatchNumber)
-                                .FirstOrDefault();
-
-                            if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
-                            {
-                                return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
-                            }
-
-                            // Deduct vaccine quantity
-                            vaccineBatch.Quantity -= detail.Quantity;
-                            _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
-                        }
-
-                        _unitOfWork.Save();
-
-                        return Ok(new
-                        {
-                            message = "Payment successful, invoice updated, and stock deducted.",
-                            paymentResult = paymentResult
-                        });
-                    }
-
-                    return BadRequest("Payment failed.");
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-
-            return NotFound("Không tìm thấy thông tin thanh toán.");
-        }
-
         [HttpGet("Callback")]
-        public ActionResult<PaymentResult> Callback()
+        public IActionResult Callback()
         {
             if (Request.QueryString.HasValue)
             {
@@ -148,16 +80,56 @@ namespace Vaccine.API.Controllers
                 {
                     var paymentResult = _vnpay.GetPaymentResult(Request.Query);
 
-                    if (paymentResult.IsSuccess)
+                    if (!paymentResult.IsSuccess)
                     {
-                        //return Ok("thanh cong");
-                        Redirect("https://localhost:3000/payment-success");
+                        return BadRequest("Payment failed.");
                     }
 
-                    return BadRequest("that bai");
+                    // Kiểm tra xem PaymentId có khớp với invoiceId không
+                    var invoice = _unitOfWork.InvoiceRepository.GetByID((int)paymentResult.PaymentId);
+
+                    if (invoice == null)
+                    {
+                        return NotFound(new { message = "Invoice not found." });
+                    }
+
+                    if (invoice.Status == "Paid")
+                    {
+                        return BadRequest(new { message = "Invoice is already paid." });
+                    }
+
+                    // Cập nhật trạng thái hóa đơn
+                    invoice.Status = "Paid";
+                    _unitOfWork.InvoiceRepository.Update(invoice);
+
+                    // Lấy danh sách vaccine từ InvoiceDetail
+                    var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice.InvoiceId);
+
+                    foreach (var detail in invoiceDetails)
+                    {
+                        var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
+                            .Get(vb => vb.VaccineId == detail.VaccineId)
+                            .OrderBy(vb => vb.BatchNumber)
+                            .FirstOrDefault();
+
+                        if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
+                        {
+                            return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
+                        }
+
+                        // Trừ số lượng vaccine trong kho
+                        vaccineBatch.Quantity -= detail.Quantity;
+                        _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
+                    }
+
+                    _unitOfWork.Save();
+
+
+                    return Redirect("https://localhost:3000/payment-success");
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError("Lỗi Callback: {Message}", ex.Message);
                     return BadRequest(ex.Message);
                 }
             }
