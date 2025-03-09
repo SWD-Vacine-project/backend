@@ -27,39 +27,39 @@ namespace Vaccine.API.Controllers
             }
             return Ok(customerList);
         }
-        [HttpPost("create-customer")]
-        public IActionResult CreateCustomer(RequestCreateCustomerModel customer)
-        {
-            if(customer == null)
-            {
-                return BadRequest(new { message = "Customer data is required" });
-            }
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var existingEmail = _unitOfWork.CustomerRepository.Get(filter: x=> x.Email== customer.Email);
-            if (existingEmail!= null)
-            {
-                return BadRequest(new { message = "Email is existed" });
-            }
-            var customerEntity = new Customer
-            {
-                Name = customer.Name,
-                Dob = customer.Dob,
-                Gender = customer.Gender,
-                Phone = customer.Phone,
-                Email = customer.Email,
-                Address = customer.Address,
-                BloodType = customer.BloodType,
-                UserName = customer.UserName,
-                Password = customer.Password
-            };
-            _unitOfWork.CustomerRepository.Insert(customerEntity);
-            _unitOfWork.Save();
-            return Ok(new { message ="Customer is created successfully"});
+        //[HttpPost("create-customer")]
+        //public IActionResult CreateCustomer(RequestCreateCustomerModel customer)
+        //{
+        //    if(customer == null)
+        //    {
+        //        return BadRequest(new { message = "Customer data is required" });
+        //    }
+        //    if(!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var existingEmail = _unitOfWork.CustomerRepository.Get(filter: x=> x.Email== customer.Email);
+        //    if (existingEmail!= null)
+        //    {
+        //        return BadRequest(new { message = "Email is existed" });
+        //    }
+        //    var customerEntity = new Customer
+        //    {
+        //        Name = customer.Name,
+        //        Dob = customer.Dob,
+        //        Gender = customer.Gender,
+        //        Phone = customer.Phone,
+        //        Email = customer.Email,
+        //        Address = customer.Address,
+        //        BloodType = customer.BloodType,
+        //        UserName = customer.UserName,
+        //        Password = customer.Password
+        //    };
+        //    _unitOfWork.CustomerRepository.Insert(customerEntity);
+        //    _unitOfWork.Save();
+        //    return Ok(new { message ="Customer is created successfully"});
 
-        }
+        //}
         [HttpPost("update-customer/{id}")]
         public IActionResult UpdateCustomer(int id, RequestUpdateCustomerModel updatedCustomer)
         {
@@ -89,8 +89,20 @@ namespace Vaccine.API.Controllers
             _unitOfWork.CustomerRepository.Update(existingCustomer);
             _unitOfWork.Save();
 
-            return Ok(new { message = "Customer updated successfully", customer = existingCustomer });
+            return Ok(existingCustomer);
 
         }
+        //[HttpDelete("delete-customer/{id}")]
+        //public IActionResult DeleteCustomer(int id)
+        //{
+        //    var cusFound = _unitOfWork.CustomerRepository.GetByID(id);
+        //    if(cusFound== null)
+        //    {
+        //        return BadRequest(new { message = "Customer does not exist" });
+        //    }
+        //    _unitOfWork.CustomerRepository.Delete(cusFound);
+        //    _unitOfWork.Save();
+        //    return Ok(new { message = "Delete customer successfully" });
+        //}
     }
 }

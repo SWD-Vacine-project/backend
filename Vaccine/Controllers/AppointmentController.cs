@@ -63,7 +63,7 @@ namespace Vaccine.API.Controllers
 
             var appointments = allAppointments
                 .Where(x => (x.Status.Trim().ToLower() == "late" ||(x.Status.Trim().ToLower() == "approved"
-                            && x.AppointmentDate.Date == DateTime.Today.Date)))
+                            && x.AppointmentDate.ToLocalTime().Date == DateTime.Today.Date)))
                 .ToList();
 
             if (appointments == null)
@@ -85,7 +85,16 @@ namespace Vaccine.API.Controllers
             _unitOfWork.Save();
             return Ok(new {message=$"Sucessfully update status of appointment: {appointment.AppointmentId}"});
         }
-
+        [HttpGet("get-appointment-pending")]
+        public IActionResult GetAppointmentPenidng()
+        {
+            var appointments = _unitOfWork.AppointmentRepository.Get(filter: x => x.Status == "Pending");
+            if(appointments.Count() == 0)
+            {
+                return Ok(new { message = "No pending appointments found", appointments = new List<Appointment>() });
+            }
+            return Ok(appointments);
+        }
         [HttpPost("create-appointment")]
         [SwaggerOperation(
             Description = "Create appointment with status = Pending "
