@@ -139,6 +139,7 @@ namespace Vaccine.API.Controllers
             dynamic user = null;
             string userRole;
             string preFix = login.UserName.Substring(0, 3);
+            Console.WriteLine(preFix);
             if (preFix == "ST_")
             {
                 user = _unitOfWork.StaffRepository.
@@ -170,21 +171,16 @@ namespace Vaccine.API.Controllers
             {
                 return Unauthorized(new { message = "Password is incorrect" });
             }
-            //return Ok(new 
-            //{ 
-            //    user.Email,
-            //    user.Name, 
-            //    user.Phone, 
-            //    user.Address,
-            //    Role = userRole,
-            //    Children = user.Children ?? new List<Child>()
-            //});
             var response = new
             {
-                CustomerId = user.CustomerId,
+                Id = userRole == "Staff" ? user.StaffId :
+                     userRole == "Admin" ? user.AdminId :
+                     userRole == "Customer" ? user.CustomerId : (int?)null,
                 user.Email,
                 user.Name,
-                user.Phone,
+                Phone = userRole=="Admin" ? null: user.Phone,
+                dob = userRole=="Admin"? null: user.dob,
+                user.Gender,
                 Role = userRole
             };
 
@@ -192,14 +188,16 @@ namespace Vaccine.API.Controllers
             {
                 return Ok(new
                 {
-                    response.CustomerId,
+                    response.Id,
                     response.Email,
                     response.Name,
                     response.Phone,
                     response.Role,
+                    response.dob,
+                    response.Gender,
                     Address = user.Address,
                     Children = user.Children ?? new List<Child>()
-                });
+                }); ;
             }
 
             return Ok(response);
