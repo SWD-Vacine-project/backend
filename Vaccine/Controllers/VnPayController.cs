@@ -25,24 +25,34 @@ namespace Vaccine.API.Controllers
             _vnpay = vnpay;
             _config = configuration;
             _unitOfWork = unitOfWork;
-            _vnpay.Initialize(_config["Vnpay:TmnCode"], _config["Vnpay:HashSecret"], _config["Vnpay:BaseUrl"], _config["Vnpay:CallbackUrl"]);
+            _vnpay.Initialize(_config["Vnpay:TmnCode"],
+                  _config["Vnpay:HashSecret"],
+                  _config["Vnpay:BaseUrl"],
+                  _config["Vnpay:CallbackUrl"]); // Bổ sung IPN URL
             _logger = logger;
         }
 
         [HttpGet("CreatePaymentUrl")]
         public ActionResult<string> CreatePaymentUrl(double moneyToPay, string description, int invoiceId)
         {
-            Console.WriteLine($"TmnCode: {_config["Vnpay:TmnCode"]}");
-            Console.WriteLine($"HashSecret: {_config["Vnpay:HashSecret"]}");
-            Console.WriteLine($"BaseUrl: {_config["Vnpay:BaseUrl"]}");
-            Console.WriteLine($"CallbackUrl: {_config["Vnpay:CallbackUrl"]}");
             try
             {
+                var invoice = _unitOfWork.InvoiceRepository.GetByID(invoiceId);
                 var ipAddress = NetworkHelper.GetIpAddress(HttpContext);
 
+                if (invoice == null)
+                {
+                    return NotFound("Invoice not found.");
+                }
+
+                if (invoice.Status == "Paid")
+                {
+                    return BadRequest("Invoice has already been paid.");
+                }
                 var request = new PaymentRequest
                 {
                     PaymentId = invoiceId, // Use the invoiceId as the PaymentId for tracking
+                    //PaymentId = DateTime.Now.Ticks,
                     Money = moneyToPay,
                     Description = description,
                     IpAddress = ipAddress,
@@ -61,8 +71,8 @@ namespace Vaccine.API.Controllers
             }
         }
 
-        [HttpGet("Callback")]
-        public ActionResult<PaymentResult> Callback()
+        [HttpGet("IpnAction")]
+        public IActionResult IpnAction()
         {
             if (Request.QueryString.HasValue)
             {
@@ -119,6 +129,32 @@ namespace Vaccine.API.Controllers
                     }
 
                     return BadRequest("Payment failed.");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
+            return NotFound("Không tìm thấy thông tin thanh toán.");
+        }
+
+        [HttpGet("Callback")]
+        public ActionResult<PaymentResult> Callback()
+        {
+            if (Request.QueryString.HasValue)
+            {
+                try
+                {
+                    var paymentResult = _vnpay.GetPaymentResult(Request.Query);
+
+                    if (paymentResult.IsSuccess)
+                    {
+                        //return Ok("thanh cong");
+                        Redirect("https://localhost:3000/payment-success");
+                    }
+
+                    return BadRequest("that bai");
                 }
                 catch (Exception ex)
                 {
