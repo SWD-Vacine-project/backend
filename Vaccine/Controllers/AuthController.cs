@@ -179,7 +179,7 @@ namespace Vaccine.API.Controllers
                 user.Email,
                 user.Name,
                 Phone = userRole=="Admin" ? null: user.Phone,
-                dob = userRole=="Admin"? null: user.dob,
+                dob = userRole=="Admin"? null: user.Dob.ToString("yyyy-MM-dd"),
                 user.Gender,
                 Role = userRole
             };
