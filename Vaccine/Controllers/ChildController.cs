@@ -81,7 +81,6 @@ namespace Vaccine.API.Controllers
 
             _unitOfWork.ChildRepository.Update(childEntity);
             _unitOfWork.Save();
-
             return Ok(childEntity);
         }
 
