@@ -154,7 +154,7 @@ namespace Vaccine.API.Controllers
                         Redirect("https://localhost:3000/payment-success");
                     }
 
-                    return BadRequest("that bai");
+                    Redirect("https://localhost:3000/payment-success");
                 }
                 catch (Exception ex)
                 {
