@@ -108,11 +108,11 @@ var app = builder.Build();
         c.OAuthUsePkce(); // Bật PKCE
     });
 //}
-
+app.UseCors("MyPolicy");
 app.UseHttpsRedirection();
 //app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
-app.UseCors("MyPolicy");
+
 
 app.Run();
