@@ -125,7 +125,7 @@ namespace Vaccine.API.Controllers
                     _unitOfWork.Save();
 
 
-                    return Redirect("https://localhost:3000/payment-success");
+                    return Redirect("https://localhost:3000/book/payment-result");
                 }
                 catch (Exception ex)
                 {
