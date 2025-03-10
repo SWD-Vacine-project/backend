@@ -26,13 +26,17 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 //allow cros
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("MyPolicy",
-        policy =>
-        {
-            policy.AllowAnyOrigin() // Cho phép tất cả domain (*)
-                  .AllowAnyMethod() // Cho phép tất cả HTTP methods (GET, POST, PUT, DELETE, ...)
-                  .AllowAnyHeader(); // Cho phép tất cả headers
-        });
+    //options.AddPolicy("MyPolicy",
+    //    policy =>
+    //    {
+    //        policy.AllowAnyOrigin() // Cho phép tất cả domain (*)
+    //              .AllowAnyMethod() // Cho phép tất cả HTTP methods (GET, POST, PUT, DELETE, ...)
+    //              .AllowAnyHeader(); // Cho phép tất cả headers
+    //    });
+    options.AddPolicy("AllowAll", builder =>
+       builder.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
 });
 
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
