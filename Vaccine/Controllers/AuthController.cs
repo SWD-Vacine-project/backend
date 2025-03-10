@@ -171,6 +171,8 @@ namespace Vaccine.API.Controllers
             {
                 return Unauthorized(new { message = "Password is incorrect" });
             }
+            Console.WriteLine(user.Gender);
+
             var response = new
             {
                 Id = userRole == "Staff" ? user.StaffId :
@@ -178,12 +180,12 @@ namespace Vaccine.API.Controllers
                      userRole == "Customer" ? user.CustomerId : (int?)null,
                 user.Email,
                 user.Name,
-                Phone = userRole=="Admin" ? null: user.Phone,
-                dob = userRole=="Admin"? null: user.dob,
+                Phone = userRole == "Admin" ? null : user.Phone,
+                dob = userRole == "Admin" ? null : user.Dob.ToString("yyyy-MM-dd"),
                 user.Gender,
                 Role = userRole
             };
-
+            Console.WriteLine(response.ToString());
             if (userRole == "Customer")
             {
                 return Ok(new
