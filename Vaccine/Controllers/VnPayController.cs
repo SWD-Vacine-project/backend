@@ -82,7 +82,8 @@ namespace Vaccine.API.Controllers
 
                     if (!paymentResult.IsSuccess)
                     {
-                        return BadRequest("Payment failed.");
+                        //return BadRequest("Payment failed.");
+                        return Redirect("http://localhost:3000/book/payment-result");
                     }
 
                     // Kiểm tra xem PaymentId có khớp với invoiceId không
@@ -91,11 +92,6 @@ namespace Vaccine.API.Controllers
                     if (invoice == null)
                     {
                         return NotFound(new { message = "Invoice not found." });
-                    }
-
-                    if (invoice.Status == "Paid")
-                    {
-                        return BadRequest(new { message = "Invoice is already paid." });
                     }
 
                     // Cập nhật trạng thái hóa đơn
@@ -125,7 +121,7 @@ namespace Vaccine.API.Controllers
                     _unitOfWork.Save();
 
 
-                    return Redirect("https://localhost:3000/book/payment-result");
+                    return Redirect("http://localhost:3000/book/payment-result");
                 }
                 catch (Exception ex)
                 {
