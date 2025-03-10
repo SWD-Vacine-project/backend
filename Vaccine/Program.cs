@@ -26,17 +26,16 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 //allow cros
 builder.Services.AddCors(options =>
 {
-    //options.AddPolicy("MyPolicy",
-    //    policy =>
-    //    {
-    //        policy.AllowAnyOrigin() // Cho phép tất cả domain (*)
-    //              .AllowAnyMethod() // Cho phép tất cả HTTP methods (GET, POST, PUT, DELETE, ...)
-    //              .AllowAnyHeader(); // Cho phép tất cả headers
-    //    });
-    options.AddPolicy("AllowAll", builder =>
-       builder.AllowAnyOrigin()
+    options.AddPolicy("MyPolicy",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
               .AllowAnyMethod()
-              .AllowAnyHeader());
+              .AllowAnyHeader()
+              .SetIsOriginAllowed(origin => true)
+              .WithExposedHeaders("Content-Disposition");
+        });
+
 });
 
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
@@ -111,9 +110,9 @@ var app = builder.Build();
 //}
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+//app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
-//app.UseCors();
+app.UseCors("MyPolicy");
 
 app.Run();
