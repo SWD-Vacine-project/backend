@@ -491,7 +491,7 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.Country)
                 .HasMaxLength(255)
                 .HasColumnName("country");
-            entity.Property(e => e.Duration).HasColumnName("duration");
+            //entity.Property(e => e.Duration).HasColumnName("duration");
             entity.Property(e => e.ExpiryDate).HasColumnName("expiry_date");
             entity.Property(e => e.ManufactureDate).HasColumnName("manufacture_date");
             entity.Property(e => e.Manufacturer)
@@ -544,19 +544,39 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<VaccineComboDetail>(entity =>
         {
+            //entity
+            //    .HasNoKey()
+            //    .ToTable("VaccineComboDetail");
+
+            //entity.Property(e => e.ComboId).HasColumnName("combo_id");
+            //entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
+
+            //entity.HasOne(d => d.Combo).WithMany()
+            //    .HasForeignKey(d => d.ComboId)
+            //    .OnDelete(DeleteBehavior.Cascade)
+            //    .HasConstraintName("FK__VaccineCo__combo__6477ECF3");
+
+            //entity.HasOne(d => d.Vaccine).WithMany()
+            //    .HasForeignKey(d => d.VaccineId)
+            //    .OnDelete(DeleteBehavior.Cascade)
+            //    .HasConstraintName("FK__VaccineCo__vacci__656C112C");
+
             entity
-                .HasNoKey()
-                .ToTable("VaccineComboDetail");
+                .HasKey(e => new { e.ComboId, e.VaccineId }); 
+
+            entity.ToTable("VaccineComboDetail");
 
             entity.Property(e => e.ComboId).HasColumnName("combo_id");
             entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
 
-            entity.HasOne(d => d.Combo).WithMany()
+            entity.HasOne(d => d.Combo)
+                .WithMany()
                 .HasForeignKey(d => d.ComboId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__VaccineCo__combo__6477ECF3");
 
-            entity.HasOne(d => d.Vaccine).WithMany()
+            entity.HasOne(d => d.Vaccine)
+                .WithMany()
                 .HasForeignKey(d => d.VaccineId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__VaccineCo__vacci__656C112C");
