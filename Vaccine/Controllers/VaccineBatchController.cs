@@ -39,7 +39,20 @@ namespace Vaccine.API.Controllers
             {
                 return BadRequest("Batch number already exists.");
             }
+            // Lấy danh sách VaccineId hợp lệ từ database
+            var validVaccineIds = _unitOfWork.VaccineRepository
+                .Get()
+                .Select(v => v.VaccineId) 
+                .ToHashSet();
 
+            // Kiểm tra tất cả VaccineId có hợp lệ không trước khi tiếp tục
+            foreach (var detailDto in newBatch.VaccineBatchDetails)
+            {
+                if (!validVaccineIds.Contains(detailDto.VaccineId))
+                {
+                    return BadRequest($"Vaccine ID {detailDto.VaccineId} does not exist.");
+                }
+            }
             var batch = new VaccineBatch
             {
                 BatchNumber = newBatch.BatchNumber,
@@ -93,7 +106,20 @@ namespace Vaccine.API.Controllers
             existingBatch.Country = batchDto.Country;
            // existingBatch.Duration = batchDto.Duration;
             existingBatch.Status = batchDto.Status;
+            // Lấy danh sách VaccineId hợp lệ từ database
+            var validVaccineIds = _unitOfWork.VaccineRepository
+                .Get()
+                .Select(v => v.VaccineId)
+                .ToHashSet();
 
+            // Kiểm tra tất cả VaccineId có hợp lệ không trước khi tiếp tục
+            foreach (var detailDto in batchDto.VaccineBatchDetails)
+            {
+                if (!validVaccineIds.Contains(detailDto.VaccineId))
+                {
+                    return BadRequest($"Vaccine ID {detailDto.VaccineId} does not exist.");
+                }
+            }
             _unitOfWork.VaccineBatchRepository.Update(existingBatch);
             await _unitOfWork.SaveAsync();
 
