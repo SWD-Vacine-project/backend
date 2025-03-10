@@ -8,6 +8,10 @@ using Vaccine.API.Models;
 using Vaccine.API.Models.VaccineModel;
 using Swashbuckle.AspNetCore.Filters;
 using Vaccine.API.Models.ChildModel;
+using Vaccine.API.Models.VaccineComboModel;
+using System.Net.WebSockets;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using Microsoft.Extensions.FileProviders;
 
 namespace Vaccine.API.Controllers
 {
@@ -78,7 +82,7 @@ namespace Vaccine.API.Controllers
         {
             if (newVaccine == null)
             {
-                return BadRequest(new {message= "Vaccine data is required"});
+                return BadRequest(new { message = "Vaccine data is required" });
             }
             var vaccineEntity = new Vaccine.Repo.Entities.Vaccine
             {
@@ -90,7 +94,7 @@ namespace Vaccine.API.Controllers
             };
             _unitOfWork.VaccineRepository.Insert(vaccineEntity);
             _unitOfWork.Save();
-            return Ok(new {message = "Create new vaccine successfully"});
+            return Ok(new { message = "Create new vaccine successfully" });
         }
         [HttpPut("update-vaccine/{id}")]
         [SwaggerRequestExample(typeof(RequestUpdateVaccineModel), typeof(ExampleRequestUpdateVaccineModel))]
@@ -112,10 +116,82 @@ namespace Vaccine.API.Controllers
             found.InternalDurationDoses = updateVaccine.InternalDurationDoses;
             _unitOfWork.VaccineRepository.Update(found);
             _unitOfWork.Save();
-            return Ok(new { mesage = "Upate vaccine successfully" }); 
+            return Ok(new { mesage = "Upate vaccine successfully" });
 
         }
+        [HttpPost("create-vacccine-combo")]
+        [SwaggerRequestExample(typeof(RequestCreateVaccineComboModel), typeof(ExampleRequestCreateVaccineComboModel))]
+        public IActionResult CreateVaccineCombo(RequestCreateVaccineComboModel newCombo)
+        {
+            if (newCombo == null)
+            {
+                return BadRequest(new { message = "Combo data is required!" });
+            }
+            
+            var vaccineCombo = new VaccineCombo
+            {
+                Name = newCombo.Name,
+                Description = newCombo.Description,
+                Price = newCombo.Price
+            };
+            _unitOfWork.VaccineComboRepository.Insert(vaccineCombo);
+    
+            foreach(var vaccine in newCombo.VaccineIds)
+            {
+                var comboDetail = new VaccineComboDetail
+                {
+                    ComboId = vaccineCombo.ComboId,
+                    VaccineId = vaccine
+                };
+                _unitOfWork.VaccineComboDetailRepository.Insert(comboDetail);
+            }
+            _unitOfWork.Save();
 
+            return Ok(newCombo);
+        }
+        [HttpPut("update-vacccine-combo/{id}")]
+        [SwaggerRequestExample(typeof(RequestUpdateVaccineComboModel), typeof(ExampleRequestUpdateVaccineComboModel))]
+        public IActionResult UpdateVaccineCombo(int id, RequestUpdateVaccineComboModel updateCombo)
+        {
+            if (updateCombo == null)
+            {
+                return BadRequest(new { message = "Combo data is required!" });
+            }
+            var existingCombo = _unitOfWork.VaccineComboRepository.GetByID(id);
+            if (existingCombo == null)
+            {
+                return NotFound(new { message = "Vaccine combo not found!" });
+            }
+            // Cập nhật thông tin combo
+            existingCombo.Name = updateCombo.Name;
+            existingCombo.Description = updateCombo.Description;
+            existingCombo.Price = updateCombo.Price;
+            _unitOfWork.VaccineComboRepository.Update(existingCombo);
+            _unitOfWork.Save();
+            //Xóa vaccine cũ trong VaccineComboDetail
+            var existingVaccineComboDetais = _unitOfWork.VaccineComboDetailRepository.Get(filter: x => x.ComboId == id).ToList();
+
+            var existingDetails = _unitOfWork.VaccineComboDetailRepository.Get(filter: x => x.ComboId == existingCombo.ComboId);
+            foreach (var detail in existingDetails)
+            {
+                _unitOfWork.VaccineComboDetailRepository.Delete(detail);
+            }
+            _unitOfWork.Save();
+
+            var newDetails = updateCombo.VaccineIds.Select(vaccineId => new VaccineComboDetail
+            {
+                ComboId = id,
+                VaccineId = vaccineId
+            }).ToList();
+
+            foreach (var detail in newDetails)
+            {
+                _unitOfWork.VaccineComboDetailRepository.Insert(detail);
+            }
+
+            _unitOfWork.Save();
+            return Ok(new { message = "Vaccine combo update successfully." });
+        }
 
     }
 }

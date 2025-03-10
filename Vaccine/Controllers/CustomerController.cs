@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using MilkStore.API.Models.CustomerModel;
 using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -20,12 +21,39 @@ namespace Vaccine.API.Controllers
         [HttpGet("get-customer")]
         public IActionResult GetCustomer()
         {
-            var customerList = _unitOfWork.CustomerRepository.Get();
-            if(customerList == null) 
-            { 
-              return NotFound(new { message = "Cannot find customer"});
-            }
-            return Ok(customerList);
+            //var customerList = _unitOfWork.CustomerRepository.Get(includeProperties: "Children");
+            //if(customerList == null) 
+            //{ 
+            //  return NotFound(new { message = "Cannot find customer"});
+            //}
+            //return Ok(customerList);
+            var customers = _unitOfWork.CustomerRepository
+        .Get(includeProperties: "Children") //  Load danh sách Children
+        .Select(c => new CustomerDTO
+        {
+            CustomerId = c.CustomerId,
+            Name = c.Name,
+            Dob = c.Dob,
+            Gender = c.Gender,
+            Phone = c.Phone,
+            Email = c.Email,
+            Address = c.Address,
+            BloodType = c.BloodType,
+            UserName = c.UserName,
+
+            //  Convert Children sang DTO
+            Children = c.Children?.Select(child => new ChildDTO
+            {
+                ChildId = child.ChildId,
+                CustomerId = child.CustomerId,
+                Name = child.Name,
+                Dob = child.Dob,
+                Gender = child.Gender,
+                BloodType = child.BloodType
+            }).ToList()
+        }).ToList();
+
+            return Ok(customers);
         }
         //[HttpPost("create-customer")]
         //public IActionResult CreateCustomer(RequestCreateCustomerModel customer)
@@ -84,7 +112,6 @@ namespace Vaccine.API.Controllers
             existingCustomer.Address = updatedCustomer.Address;
             existingCustomer.BloodType = updatedCustomer.BloodType;
 
-            // Nếu có cập nhật mật khẩu, phải mã hóa lại
             // Lưu thay đổi vào database
             _unitOfWork.CustomerRepository.Update(existingCustomer);
             _unitOfWork.Save();
