@@ -24,8 +24,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IVnpay, Vnpay>();
 
 //allow cros
-builder.Services.AddCors(options => options.AddPolicy(name: "MyPolicy", policy =>
-policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .SetIsOriginAllowed(origin => true)
+              .WithExposedHeaders("Content-Disposition");
+        });
+
+});
 
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleRequestCreateChildModel>();
@@ -87,7 +98,7 @@ var app = builder.Build();
 //}
 
 //if (app.Environment.IsDevelopment())
-{
+//{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -96,11 +107,12 @@ var app = builder.Build();
         c.OAuthClientSecret("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");
         c.OAuthUsePkce(); // Bật PKCE
     });
-}
+//}
+app.UseCors("MyPolicy");
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+//app.UseCors("AllowAll");
 app.UseAuthorization();
-
 app.MapControllers();
-app.UseCors();
+
+
 app.Run();

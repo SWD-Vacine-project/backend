@@ -23,6 +23,12 @@ namespace Vaccine.Repo.Repository
             this.dbSet = context.Set<TEntity>();
         }
 
+
+        public IQueryable<TEntity> GetQueryable()
+        {
+            return dbSet;
+        } 
+
         // Updated Get method with pagination
         public virtual IEnumerable<TEntity> Get(
     Expression<Func<TEntity, bool>> filter = null,

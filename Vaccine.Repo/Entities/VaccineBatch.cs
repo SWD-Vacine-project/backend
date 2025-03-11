@@ -14,7 +14,7 @@ public partial class VaccineBatch
 
     public string? Country { get; set; }
 
-    public int? Duration { get; set; }
+    //public int? Duration { get; set; }
 
     public string? Status { get; set; }
 }

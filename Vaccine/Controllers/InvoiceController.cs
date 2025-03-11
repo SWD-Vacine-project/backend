@@ -41,13 +41,22 @@ namespace Vaccine.API.Controllers
         }
 
         [HttpPost("create-invoice")]
+        [SwaggerOperation(
+        Description = "customerID \n"
+            + " totalAmount: tổng tiền\n"
+            + " status: unpaid\n"
+            + " type: single or combo\n")]
         public IActionResult CreateInvoice(RequestCreateInvoiceModel requestCreateInvoiceModel)
         {
+            if(requestCreateInvoiceModel.CustomerId == 0)
+            {
+                return BadRequest(new { message = "Customer ID is required." });
+            }
             var invoiceEntity = new Invoice
             {
-                CustomerId = requestCreateInvoiceModel.CustomerId == 0 ? null : requestCreateInvoiceModel.CustomerId,
+                CustomerId = requestCreateInvoiceModel.CustomerId ,
                 TotalAmount = requestCreateInvoiceModel.TotalAmount,
-                //Status = "Unpaid",
+                Status = "Unpaid",
                 Type = requestCreateInvoiceModel.Type,
                 CreatedAt = requestCreateInvoiceModel.CreatedAt,
                 UpdatedAt = requestCreateInvoiceModel.UpdatedAt
@@ -58,15 +67,84 @@ namespace Vaccine.API.Controllers
             return Ok(invoiceEntity);
         }
 
-        [HttpPut("update-invoice-status/{id}")]
+        [HttpPost("create-invoice1")]
+        [SwaggerOperation(
+        Description = "customerID \n"
+            + " totalAmount: tổng tiền\n"
+            + " status: unpaid\n"
+            + " type: single or combo\n")]
+        public IActionResult CreateInvoice1(RequestCreateInvoiceModel1 requestCreateInvoiceModel)
+        {
+            if (requestCreateInvoiceModel.CustomerId ==  null)
+            {
+                return BadRequest(new { message = "Customer ID is required." });
+            }
+
+            // Determine type (Single or Combo)
+            bool hasCombo = requestCreateInvoiceModel.InvoiceDetails.Any(d => d.ComboId != null);
+
+            string invoiceType = hasCombo ? "Combo" : "Single";
+
+            var invoiceEntity = new Invoice
+            {
+                CustomerId = requestCreateInvoiceModel.CustomerId,
+                TotalAmount = requestCreateInvoiceModel.TotalAmount,
+                Status = "Unpaid",
+                Type = invoiceType,
+                CreatedAt = requestCreateInvoiceModel.CreatedAt,
+                UpdatedAt = requestCreateInvoiceModel.UpdatedAt
+
+            };
+            _unitOfWork.InvoiceRepository.Insert(invoiceEntity);
+            _unitOfWork.Save();
+
+            // Insert Invoice Details
+            var invoiceDetails = requestCreateInvoiceModel.InvoiceDetails.Select(detail => new InvoiceDetail
+            {
+                InvoiceId = invoiceEntity.InvoiceId,
+                VaccineId = detail.VaccineId,
+                AppointmentId = detail.AppointmentId,
+                ComboId = detail.ComboId,
+                Quantity = detail.Quantity,
+                Price = detail.Price
+            }).ToList();
+
+            foreach (var detail in invoiceDetails)
+            {
+                _unitOfWork.InvoiceDetailRepository.Insert(detail);
+            }
+
+            _unitOfWork.Save();
+            // Return Invoice with its Details
+            return Ok(new InvoiceDto
+            {
+                InvoiceId = invoiceEntity.InvoiceId,
+                CustomerId = invoiceEntity.CustomerId,
+                TotalAmount = invoiceEntity.TotalAmount,
+                Status = invoiceEntity.Status,
+                Type = invoiceEntity.Type,
+                CreatedAt = invoiceEntity.CreatedAt,
+                InvoiceDetails = invoiceDetails.Select(d => new InvoiceDetailDto
+                {
+                    VaccineId = d.VaccineId,
+                    AppointmentId = d.AppointmentId,
+                    ComboId = d.ComboId,
+                    Quantity = d.Quantity,
+                    Price = d.Price
+                }).ToList()
+            });
+        }
+
+        //============================================================================
+        [HttpPut("update-invoice-status-to-paid/{id}")]
         [SwaggerOperation(
         Summary = "Update status of invoice to paid",
         Description = "get id of invoice" +
             "Get purchased vaccines from InvoiceDetail "
     )]
-        public IActionResult UpdateInvoiceStatusToPaid(int id)
+        public IActionResult UpdateInvoiceStatusToPaid(int invoice_id)
         {
-            var invoice = _unitOfWork.InvoiceRepository.GetByID(id);
+            var invoice = _unitOfWork.InvoiceRepository.GetByID(invoice_id);
             if (invoice == null)
             {
                 return NotFound(new { message = "Invoice not found." });
@@ -82,7 +160,7 @@ namespace Vaccine.API.Controllers
             _unitOfWork.InvoiceRepository.Update(invoice);
 
             // Get purchased vaccines from InvoiceDetail (assuming InvoiceDetail stores vaccine purchases)
-            var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == id);
+            var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice_id);
 
             foreach (var detail in invoiceDetails)
             {

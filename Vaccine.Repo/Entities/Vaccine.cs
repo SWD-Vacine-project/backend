@@ -16,4 +16,6 @@ public partial class Vaccine
     public string? Description { get; set; }
 
     public int? InternalDurationDoses { get; set; }
+
+
 }

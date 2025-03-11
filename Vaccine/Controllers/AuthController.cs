@@ -34,7 +34,7 @@ namespace Vaccine.API.Controllers
             _httpClient = httpClientFactory.CreateClient();
         }
 
-        [HttpGet]
+        [HttpGet("link-google")]
         public IActionResult GetLink()
         {
             return Ok(accessCode);
@@ -82,6 +82,51 @@ namespace Vaccine.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a new customer using Google sign-up.
+        /// </summary>
+        /// <param name="requestCreateCustomerModel">Customer details</param>
+        /// <returns>Created customer information</returns>
+        [HttpPost("create-google")]
+        [SwaggerOperation(
+        Summary = "Create a customer",
+        Description = "Creates a new customer using Google sign-up."
+    )]
+        [SwaggerRequestExample(typeof(RequestCreateCustomerModel), typeof(ExampleCreateCustomerModel))]
+        public IActionResult CreateCustomer(RequestCreateCustomerModel requestCreateCustomerModel)
+        {
+            // Kiểm tra xem email đã tồn tại chưa
+            var existingCustomer = _unitOfWork.CustomerRepository.Get(c => c.Email == requestCreateCustomerModel.Email).FirstOrDefault();
+            if (existingCustomer != null)
+            {
+                return BadRequest(new { message = "Email đã được sử dụng để đăng ký tài khoản khác." });
+            }
+
+            // para input to create 
+            var customerEntity = new Customer
+            {
+                Name = requestCreateCustomerModel.Name,
+                Email = requestCreateCustomerModel.Email,
+                Password = requestCreateCustomerModel.Password,
+                Dob = DateOnly.FromDateTime(DateTime.Today), // Default to today's date
+                Phone = "0000000000", // Placeholder phone number
+                UserName = requestCreateCustomerModel.Email, // Use email as username
+            };
+
+            _unitOfWork.CustomerRepository.Insert(customerEntity);
+            _unitOfWork.Save();
+
+            var responseCustomer = new ResponseCreateCustomerModel
+            {
+                CustomerName = customerEntity.UserName,
+                Email = customerEntity.Email,
+                Password = customerEntity.Password,
+            };
+
+            return Ok(responseCustomer);
+        }
+
+
         // -----------------------Login Customer------------------------
         [HttpPost("login")]
         public IActionResult Login(LoginRequest login)
@@ -94,6 +139,7 @@ namespace Vaccine.API.Controllers
             dynamic user = null;
             string userRole;
             string preFix = login.UserName.Substring(0, 3);
+            Console.WriteLine(preFix);
             if (preFix == "ST_")
             {
                 user = _unitOfWork.StaffRepository.
@@ -125,39 +171,42 @@ namespace Vaccine.API.Controllers
             {
                 return Unauthorized(new { message = "Password is incorrect" });
             }
-            //return Ok(new 
-            //{ 
-            //    user.Email,
-            //    user.Name, 
-            //    user.Phone, 
-            //    user.Address,
-            //    Role = userRole,
-            //    Children = user.Children ?? new List<Child>()
-            //});
+            Console.WriteLine(user.Gender);
+
             var response = new
             {
+                Id = userRole == "Staff" ? user.StaffId :
+                     userRole == "Admin" ? user.AdminId :
+                     userRole == "Customer" ? user.CustomerId : (int?)null,
                 user.Email,
                 user.Name,
-                user.Phone,
+                Phone = userRole == "Admin" ? null : user.Phone,
+                dob = userRole == "Admin" ? null : user.Dob.ToString("yyyy-MM-dd"),
+                user.Gender,
                 Role = userRole
             };
-
+            Console.WriteLine(response.ToString());
             if (userRole == "Customer")
             {
                 return Ok(new
                 {
+                    response.Id,
                     response.Email,
                     response.Name,
                     response.Phone,
                     response.Role,
+                    response.dob,
+                    response.Gender,
                     Address = user.Address,
                     Children = user.Children ?? new List<Child>()
-                });
+                }); ;
             }
 
             return Ok(response);
 
         }
+
+
         public class LoginRequest
         {
             public string UserName { get; set; }
@@ -202,8 +251,6 @@ namespace Vaccine.API.Controllers
 
             return Ok(new { message = "Signup successful", customerId = customer.CustomerId });
         }
-
-
         public class SignupRequest
         {
             public string UserName { get; set; }

@@ -32,7 +32,7 @@ namespace Vaccine.API.Controllers
         [HttpGet("get-child/{id}")]
         public IActionResult GetChild(int id)
         {
-            var child = _unitOfWork.ChildRepository.GetByID(id);
+            var child = _unitOfWork.ChildRepository.Get(d => d.CustomerId == id);
             if (child == null)
             {
                 return NotFound(new { message = "Child not found." });
@@ -81,9 +81,21 @@ namespace Vaccine.API.Controllers
 
             _unitOfWork.ChildRepository.Update(childEntity);
             _unitOfWork.Save();
-
             return Ok(childEntity);
         }
 
+        [HttpDelete("delete-child/{id}")]
+        public IActionResult DeleteChild(int id)
+        {
+            var childEntity = _unitOfWork.ChildRepository.GetByID(id);
+            if (childEntity == null)
+            {
+                return NotFound("Child not found");
+            }
+            _unitOfWork.ChildRepository.Delete(childEntity);
+            _unitOfWork.Save();
+            return Ok(childEntity);
+        }
+        
     }
 }
