@@ -26,6 +26,31 @@ namespace Vaccine.API.Controllers
             }
             return Ok(batch);
         }
+        [HttpGet("get-vaccine-by-batch/{batchId}")]
+        public IActionResult GetVaccineByBatch(string batchId)
+        {
+            var batchDetails = _unitOfWork.VaccineBatchDetailRepository.Get(
+                v => v.BatchNumber == batchId,
+                includeProperties: "Vaccine"
+            );
+
+            if (batchDetails == null || !batchDetails.Any())
+            {
+                return NotFound(new { message = "No vaccines found for the given batch." });
+            }
+
+            var result = batchDetails.Select(v => new
+            {
+                v.BatchNumber,
+                VaccineName = v.Vaccine.Name,
+                v.Vaccine.Description,
+                v.Vaccine.Price,
+              
+            });
+
+            return Ok(result);
+        }
+
         [HttpPost("create-vaccine-batch")]
         public async Task<IActionResult> CreateVaccineBatch([FromBody] RequestCreateVaccineBatch newBatch)
         {
