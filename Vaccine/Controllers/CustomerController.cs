@@ -88,7 +88,7 @@ namespace Vaccine.API.Controllers
         //    return Ok(new { message ="Customer is created successfully"});
 
         //}
-        [HttpPost("update-customer/{id}")]
+        [HttpPut("update-customer/{id}")]
         public IActionResult UpdateCustomer(int id, RequestUpdateCustomerModel updatedCustomer)
         {
             if (updatedCustomer == null)
