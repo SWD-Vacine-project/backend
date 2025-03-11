@@ -1,11 +1,11 @@
 ﻿namespace Vaccine.API.Models.CustomerModel
 {
-    public class RequestUpdateCustomerModel
+    public class  RequestUpdateCustomerModel
     {
       
             public string? Name { get; set; }
 
-            public DateOnly? Dob { get; set; }
+            //public DateOnly? Dob { get; set; }
 
             public string? Gender { get; set; }
 
