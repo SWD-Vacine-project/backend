@@ -79,6 +79,9 @@ namespace Vaccine.API.Controllers
                 try
                 {
                     var paymentResult = _vnpay.GetPaymentResult(Request.Query);
+                    // Append all query parameters to the redirect URL
+                    var queryParams = Request.QueryString.Value;
+
 
                     if (!paymentResult.IsSuccess)
                     {
@@ -121,7 +124,8 @@ namespace Vaccine.API.Controllers
                     _unitOfWork.Save();
 
 
-                    return Redirect("http://localhost:3000/book/payment-result");
+                    //return Redirect("http://localhost:3000/book/payment-result");
+                    return Redirect($"http://localhost:3000/book/payment-result{queryParams}");
                 }
                 catch (Exception ex)
                 {
