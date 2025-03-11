@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using Vaccine.API.Models.CustomerModel;
-using Vaccine.API.Models.DoctorModel;
 using Vaccine.API.Models.StaffModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -105,7 +103,7 @@ namespace Vaccine.API.Controllers
         {
             if (string.IsNullOrEmpty(status))
             {
-                return BadRequest(new { message = "status is required" });
+                return BadRequest(new { message = "Status is required" });
             }
 
             // Tìm staff theo ID
