@@ -34,13 +34,13 @@
             smtpClient.Send(mail);
         }
 
-        [HttpGet("testEmail")]
-        public async Task<IActionResult> TestEmail()
-        {
-            SendEmail("ngminhthu3001@gmail.com", "Welcome bạn!", "Chào mừng bạn.");
+        //[HttpGet("testEmail")]
+        //public async Task<IActionResult> TestEmail()
+        //{
+        //    SendEmail("ngminhthu3001@gmail.com", "Welcome bạn!", "Chào mừng bạn.");
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
     }
 }
