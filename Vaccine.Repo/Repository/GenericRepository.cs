@@ -114,7 +114,10 @@ namespace Vaccine.Repo.Repository
         {
             dbSet.Add(entity);
         }
-
+        public virtual void InsertRange(IEnumerable<TEntity> entities)
+        {
+            dbSet.AddRange(entities);
+        }
         public virtual void Delete(object id)
         {
             TEntity entityToDelete = dbSet.Find(id);

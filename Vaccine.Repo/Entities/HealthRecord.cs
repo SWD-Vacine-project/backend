@@ -31,7 +31,7 @@ public partial class HealthRecord
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual Appointment? Appointment { get; set; }
+    public virtual Appointment Appointment { get; set; } = null!;
 
     public virtual Doctor? Doctor { get; set; }
 

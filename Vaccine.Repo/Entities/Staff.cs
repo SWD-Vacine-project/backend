@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace Vaccine.Repo.Entities;
+
 public partial class Staff
 {
     public int StaffId { get; set; }

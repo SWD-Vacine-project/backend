@@ -10,7 +10,7 @@ namespace Vaccine.API.Models.VaccineModel
         public string Name { get; set; } = null!;
 
         [Range(1, int.MaxValue, ErrorMessage = "MaxLateDate must be a positive integer")]
-        public int? MaxLateDate { get; set; }
+        public int MaxLateDate { get; set; }
 
         [Required(ErrorMessage = "Price is required")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
@@ -18,7 +18,7 @@ namespace Vaccine.API.Models.VaccineModel
 
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
         public string? Description { get; set; } 
-        public int? InternalDurationDoses { get; set; }
+        public int InternalDurationDoses { get; set; }
     }
     public class ExampleRequestCreateVaccineModel : IExamplesProvider<RequestCreateVaccineModel>
     {

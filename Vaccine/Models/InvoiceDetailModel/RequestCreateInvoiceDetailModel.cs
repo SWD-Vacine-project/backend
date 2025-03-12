@@ -5,7 +5,7 @@ namespace Vaccine.API.Models.InvoiceDetailModel
     public class RequestCreateInvoiceDetailModel
     {
 
-        public int? InvoiceId { get; set; }
+        public int InvoiceId { get; set; }
 
         public int? VaccineId { get; set; }
 

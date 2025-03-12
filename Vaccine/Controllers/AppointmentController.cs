@@ -6,6 +6,7 @@ using MilkStore.API.Models.CustomerModel;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.Runtime;
+using Vaccine.API.Models.AppointmentModel;
 using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -117,8 +118,8 @@ namespace Vaccine.API.Controllers
                 Notes = requestCreateAppointmentModel.Notes,
                 CreatedAt = requestCreateAppointmentModel.CreatedAt,
                 ChildId = requestCreateAppointmentModel.ChildId,
-                StaffId = requestCreateAppointmentModel.StaffId,
-                DoctorId = requestCreateAppointmentModel.DoctorId,
+                StaffId = null,
+                DoctorId = null,
                 // if null set null, not null require single or combo
                 VaccineType = string.IsNullOrEmpty(requestCreateAppointmentModel.VaccineType) ? null : requestCreateAppointmentModel.VaccineType,
                 ComboId = requestCreateAppointmentModel.ComboId,
@@ -137,8 +138,8 @@ namespace Vaccine.API.Controllers
                 Notes = requestCreateAppointmentModel.Notes,
                 CreatedAt = requestCreateAppointmentModel.CreatedAt,
                 ChildId = requestCreateAppointmentModel.ChildId,
-                StaffId = requestCreateAppointmentModel.StaffId,
-                DoctorId = requestCreateAppointmentModel.DoctorId,
+                StaffId = null, 
+                DoctorId = null,
                 VaccineType = requestCreateAppointmentModel.VaccineType,
                 ComboId = requestCreateAppointmentModel.ComboId,
                 CustomerId = requestCreateAppointmentModel.CustomerId,
@@ -230,6 +231,80 @@ namespace Vaccine.API.Controllers
         //    _unitOfWork.Save();
         //    return Ok(new { message = "Appointment approved successfully." });
         //}
+        [HttpPost("create-appointment-combo")]
+        public IActionResult CreateAppointmentsCombo(RequestCreateComboAppointment request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new { message = "Combo data is required" });
+            }
+            var comboDetails = _unitOfWork.VaccineComboDetailRepository.Get(filter: x => x.ComboId == request.ComboId).ToList();
+            if (comboDetails == null || !comboDetails.Any())
+            {
+                return BadRequest(new { message = "ComboId is not found" });
+            }
+            var appointmentList = new List<Appointment>();
+            DateTime currentAppointmentDate = request.AppointmentDate;
+            foreach (var detail in comboDetails)
+            {
+                // tìm kiến vaccine theo vaccineID
+                var vaccine = _unitOfWork.VaccineRepository.Get(filter: x => x.VaccineId == detail.VaccineId).FirstOrDefault();
+                if (vaccine == null)
+                {
+                    return BadRequest(new { message = $"Vaccine Error: {detail.VaccineId} does not contain internalDurationDay" });
+                }
+                // từ vaccineID => truy xuất ra ngày cần tiêm tiếp theo
+                int durationDays = vaccine.InternalDurationDoses;
+                // Kiểm tra tổng số vaccine theo vaccineID trong kho
+                var totalStock = _unitOfWork.VaccineBatchDetailRepository.Get(
+                    v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation"
+                ).Sum(v => v.Quantity);
+                // tạo mới appointment cho lần tiêm tiếp theo
+                var appointment = new Appointment
+                {
+                    AppointmentDate = currentAppointmentDate,
+                    Status = totalStock >= 10 ? "Approved" : "Pending",
+                    Notes = request.Notes,
+                    CreatedAt = DateTime.Now,
+                    ChildId = request.ChildId,
+                    StaffId = null,  // Nhân viên xử lý nếu Pending
+                    DoctorId = null,
+                    VaccineType = "Combo",
+                    ComboId = request.ComboId,
+                    CustomerId = request.CustomerId,
+                    VaccineId = detail.VaccineId
+                };
+                if (totalStock >= 10)
+                {
+                    // chọn batch của vaccine với điều kiện( gần hết ngày hết hạn nhất & số lượng còn ít trước)
+                    var availableBatch = _unitOfWork.VaccineBatchDetailRepository.Get(x => x.VaccineId == vaccine.VaccineId && x.Quantity > 0 && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.Date.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation")
+                      .OrderBy(v => v.BatchNumberNavigation.ExpiryDate)
+                      .ThenBy(v => v.Quantity)
+                      .FirstOrDefault();
+                    if(availableBatch != null)
+                    {
+                        appointment.BatchNumber= availableBatch.BatchNumber;
+                    }
+                }
+                appointmentList.Add(appointment);
 
+                currentAppointmentDate = currentAppointmentDate.AddDays(durationDays);
+            }
+            //foreach(var appointment in appointmentList)
+            //{
+            //    _unitOfWork.AppointmentRepository.Insert(appointment);
+            //    _unitOfWork.Save();
+            //}
+            _unitOfWork.AppointmentRepository.InsertRange(appointmentList);
+            _unitOfWork.Save();
+            return Ok(new
+            {
+                message = appointmentList.All(a => a.Status == "Approved") ?
+           "Tất cả lịch hẹn trong combo đã được chấp nhận." :
+           "Một số lịch hẹn đang chờ xác nhận từ nhân viên.",
+                Appointments = appointmentList
+            });
+
+        }
     }
 }
