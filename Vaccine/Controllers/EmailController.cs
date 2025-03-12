@@ -37,7 +37,7 @@
         [HttpGet("testEmail")]
         public async Task<IActionResult> TestEmail()
         {
-            SendEmail("ngminhthu3001@gmail.com", "Xin Chào", "Xin Chào");
+            SendEmail("ngminhthu3001@gmail.com", "Welcome bạn!", "Chào mừng bạn.");
 
             return Ok();
         }
