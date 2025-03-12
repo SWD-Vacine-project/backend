@@ -15,12 +15,12 @@ namespace Vaccine.API.Models.CustomerModel
 
         //public int? DoctorId { get; set; }
 
-        [RegularExpression("Single|Combo", ErrorMessage = "VaccineType must be 'Single' or 'Combo'")]
-        public string VaccineType { get; set; }
+        //[RegularExpression("Single|Combo", ErrorMessage = "VaccineType must be 'Single' or 'Combo'")]
+        //public string VaccineType { get; set; }
 
         public int VaccineId { get; set; }
 
-        public int ComboId { get; set; }
+       // public int ComboId { get; set; }
 
         [Required(ErrorMessage = "AppointmentDate is required")]
         public DateTime AppointmentDate { get; set; }

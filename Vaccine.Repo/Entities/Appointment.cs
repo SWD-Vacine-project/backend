@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Vaccine.Repo.Entities;
 
@@ -48,6 +49,6 @@ public partial class Appointment
     public virtual ICollection<InvoiceDetail> InvoiceDetails { get; set; } = new List<InvoiceDetail>();
 
     public virtual Staff? Staff { get; set; }
-
+    
     public virtual Vaccine? Vaccine { get; set; }
 }

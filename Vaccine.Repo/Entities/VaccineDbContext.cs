@@ -44,6 +44,8 @@ public partial class VaccineDbContext : DbContext
     public virtual DbSet<VaccineBatchDetail> VaccineBatchDetails { get; set; }
 
     public virtual DbSet<VaccineCombo> VaccineCombos { get; set; }
+    public virtual DbSet<VaccineComboDetail> VaccineComboDetails { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -533,7 +535,7 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<VaccineCombo>(entity =>
         {
-            entity.HasKey(e => e.ComboId).HasName("PK__VaccineC__18F74AA3700BDE57");
+            entity.HasKey(e => e.ComboId).HasName("PK__VaccineC__18F74AA37256A032");
 
             entity.ToTable("VaccineCombo");
 
@@ -545,25 +547,97 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("price");
+            //entity.HasKey(e => e.ComboId).HasName("PK__VaccineC__18F74AA3700BDE57");
 
-            entity.HasMany(d => d.Vaccines).WithMany(p => p.Combos)
-                .UsingEntity<Dictionary<string, object>>(
-                    "VaccineComboDetail",
-                    r => r.HasOne<Vaccine>().WithMany()
-                        .HasForeignKey("VaccineId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__VaccineCo__vacci__06CD04F7"),
-                    l => l.HasOne<VaccineCombo>().WithMany()
-                        .HasForeignKey("ComboId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__VaccineCo__combo__05D8E0BE"),
-                    j =>
-                    {
-                        j.HasKey("ComboId", "VaccineId").HasName("PK__VaccineC__33AE745893D809BA");
-                        j.ToTable("VaccineComboDetail");
-                        j.IndexerProperty<int>("ComboId").HasColumnName("combo_id");
-                        j.IndexerProperty<int>("VaccineId").HasColumnName("vaccine_id");
-                    });
+            //entity.ToTable("VaccineCombo");
+
+            //entity.Property(e => e.ComboId).HasColumnName("combo_id");
+            //entity.Property(e => e.Description).HasColumnName("description");
+            //entity.Property(e => e.Name)
+            //    .HasMaxLength(255)
+            //    .HasColumnName("name");
+            //entity.Property(e => e.Price)
+            //    .HasColumnType("decimal(10, 2)")
+            //    .HasColumnName("price");
+
+            //entity.HasMany(d => d.Vaccines).WithMany(p => p.Combos)
+            //    .UsingEntity<Dictionary<string, object>>(
+            //        "VaccineComboDetail",
+            //        r => r.HasOne<Vaccine>().WithMany()
+            //            .HasForeignKey("VaccineId")
+            //            .OnDelete(DeleteBehavior.ClientSetNull)
+            //            .HasConstraintName("FK__VaccineCo__vacci__06CD04F7"),
+            //        l => l.HasOne<VaccineCombo>().WithMany()
+            //            .HasForeignKey("ComboId")
+            //            .OnDelete(DeleteBehavior.ClientSetNull)
+            //            .HasConstraintName("FK__VaccineCo__combo__05D8E0BE"),
+            //        j =>
+            //        {
+            //            j.HasKey("ComboId", "VaccineId").HasName("PK__VaccineC__33AE745893D809BA");
+            //            j.ToTable("VaccineComboDetail");
+            //            j.IndexerProperty<int>("ComboId").HasColumnName("combo_id");
+            //            j.IndexerProperty<int>("VaccineId").HasColumnName("vaccine_id");
+            //        });
+        });
+        //modelBuilder.Entity<VaccineComboDetail>(entity =>
+        //{
+        //    //entity
+        //    //    .HasNoKey()
+        //    //    .ToTable("VaccineComboDetail");
+
+        //    //entity.Property(e => e.ComboId).HasColumnName("combo_id");
+        //    //entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
+
+        //    //entity.HasOne(d => d.Combo).WithMany()
+        //    //    .HasForeignKey(d => d.ComboId)
+        //    //    .OnDelete(DeleteBehavior.Cascade)
+        //    //    .HasConstraintName("FK__VaccineCo__combo__6477ECF3");
+
+        //    //entity.HasOne(d => d.Vaccine).WithMany()
+        //    //    .HasForeignKey(d => d.VaccineId)
+        //    //    .OnDelete(DeleteBehavior.Cascade)
+        //    //    .HasConstraintName("FK__VaccineCo__vacci__656C112C");
+
+        //    entity
+        //        .HasKey(e => new { e.ComboId, e.VaccineId });
+
+        //    entity.ToTable("VaccineComboDetail");
+
+        //    entity.Property(e => e.ComboId).HasColumnName("combo_id");
+        //    entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
+
+        //    entity.HasOne(d => d.Combo)
+        //        .WithMany(vc => vc.VaccineComboDetails)
+        //        .HasForeignKey(d => d.ComboId)
+        //        .OnDelete(DeleteBehavior.Cascade)
+        //        .HasConstraintName("FK__VaccineCo__combo__05D8E0BE");
+
+        //    entity.HasOne(d => d.Vaccine)
+        //        .WithMany(vc => vc.VaccineComboDetails)
+        //        .HasForeignKey(d => d.VaccineId)
+        //        .OnDelete(DeleteBehavior.Cascade)
+        //        .HasConstraintName("FK__VaccineCo__vacci__06CD04F7");
+        //});
+        modelBuilder.Entity<VaccineComboDetail>(entity =>
+        {
+            entity.HasKey(e => new { e.ComboId, e.VaccineId });
+
+            entity.ToTable("VaccineComboDetail");
+
+            entity.Property(e => e.ComboId).HasColumnName("combo_id");
+            entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
+
+            entity.HasOne(d => d.Combo)
+                .WithMany(vc => vc.VaccineComboDetails)
+                .HasForeignKey(d => d.ComboId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__VaccineCo__combo__05D8E0BE");
+
+            entity.HasOne(d => d.Vaccine)
+                .WithMany(v => v.VaccineComboDetails) // Sửa lại `vc` thành `v`
+                .HasForeignKey(d => d.VaccineId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__VaccineCo__vacci__06CD04F7");
         });
 
         OnModelCreatingPartial(modelBuilder);
