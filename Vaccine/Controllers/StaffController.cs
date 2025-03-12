@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using Vaccine.API.Models.StaffModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -37,6 +35,11 @@ namespace Vaccine.API.Controllers
             if (existingStaff != null)
             {
                 return BadRequest("Staff is already exists.");
+            }
+
+            if (!newStaff.Name.StartsWith("ST_"))
+            {
+                newStaff.Name = $"ST_{newStaff.Name}";
             }
 
             var staff = new Staff
@@ -83,6 +86,11 @@ namespace Vaccine.API.Controllers
                 return NotFound(new { message = "Staff not found" });
             }
 
+            if (!updateStaff.Name.StartsWith("ST_"))
+            {
+                updateStaff.Name =  $"ST_{updateStaff.Name}";
+            }
+
             // Cập nhật thông tin staff
             staff.Name = updateStaff.Name;
             staff.Gender = updateStaff.Gender;
@@ -123,7 +131,7 @@ namespace Vaccine.API.Controllers
             return Ok(staff);
         }
 
-        [HttpDelete("delete-status-staff/{id}")]
+        [HttpDelete("delete-staff/{id}")]
         public IActionResult DeleteStaff(int id)
         {
             // Tìm staff theo ID
