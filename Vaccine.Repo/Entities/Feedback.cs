@@ -7,7 +7,7 @@ public partial class Feedback
 {
     public int ReviewId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
     public int? DoctorId { get; set; }
 
@@ -15,7 +15,7 @@ public partial class Feedback
 
     public int? VaccineId { get; set; }
 
-    public int? AppointmentId { get; set; }
+    public int AppointmentId { get; set; }
 
     public int? Rating { get; set; }
 
@@ -25,9 +25,9 @@ public partial class Feedback
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual Appointment? Appointment { get; set; }
+    public virtual Appointment Appointment { get; set; } = null!;
 
-    public virtual Customer? Customer { get; set; }
+    public virtual Customer Customer { get; set; } = null!;
 
     public virtual Doctor? Doctor { get; set; }
 }
