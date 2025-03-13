@@ -23,6 +23,12 @@ namespace Vaccine.Repo.Repository
             this.dbSet = context.Set<TEntity>();
         }
 
+
+        public IQueryable<TEntity> GetQueryable()
+        {
+            return dbSet;
+        } 
+
         // Updated Get method with pagination
         public virtual IEnumerable<TEntity> Get(
     Expression<Func<TEntity, bool>> filter = null,
@@ -114,7 +120,10 @@ namespace Vaccine.Repo.Repository
         {
             dbSet.Add(entity);
         }
-
+        public virtual void InsertRange(IEnumerable<TEntity> entities)
+        {
+            dbSet.AddRange(entities);
+        }
         public virtual void Delete(object id)
         {
             TEntity entityToDelete = dbSet.Find(id);

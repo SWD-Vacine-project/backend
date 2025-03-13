@@ -96,6 +96,41 @@ namespace Vaccine.API.Controllers
             _unitOfWork.Save();
             return Ok(new { message = "Create new vaccine successfully" });
         }
+        [HttpGet("get-vaccine-by-name")]
+        public IActionResult GetVaccineByNameForStaff(string name)
+        {
+            var vaccines = _unitOfWork.VaccineRepository.Get(v => v.Name.Contains(name)).ToList();
+            if (vaccines == null)
+            {
+                return NotFound(new { message = "Vaccine not found." });
+            }
+
+            return Ok(vaccines);
+        }
+        [HttpGet("get-vaccine-for-staff")]
+        public IActionResult GetVaccineForStaff()
+        {
+            var vaccineBatchDetails = _unitOfWork.VaccineRepository.Get(
+                includeProperties: "VaccineBatchDetails,VaccineBatchDetails.BatchNumberNavigation"
+            ).Select(v => new
+            {
+                VaccineId = v.VaccineId,
+                VaccineName = v.Name,
+                Description = v.Description,
+                Batches = v.VaccineBatchDetails.Select(vbd => new
+                {
+                    BatchNumber = vbd.BatchNumber,
+                    Manufacturer = vbd.BatchNumberNavigation.Manufacturer,
+                    ExpiryDate = vbd.BatchNumberNavigation.ExpiryDate,
+                    Quantity = vbd.Quantity
+                }).ToList()
+            }).ToList();
+
+            return Ok(vaccineBatchDetails);
+
+
+        }
+
         [HttpPut("update-vaccine/{id}")]
         [SwaggerRequestExample(typeof(RequestUpdateVaccineModel), typeof(ExampleRequestUpdateVaccineModel))]
         public IActionResult UpdateVaccine(int id, RequestUpdateVaccineModel updateVaccine)
@@ -192,6 +227,35 @@ namespace Vaccine.API.Controllers
             _unitOfWork.Save();
             return Ok(new { message = "Vaccine combo update successfully." });
         }
+        [HttpGet("get-vaccine-combo")]
+        public IActionResult GetVaccineCombos()
+        {
+            var vaccineCombos = _unitOfWork.VaccineComboRepository.Get(
+                includeProperties: "VaccineComboDetails.Vaccine"
+            ).ToList();
+
+            if (vaccineCombos == null || !vaccineCombos.Any())
+            {
+                return NotFound(new { message = "No vaccine combos found." });
+            }
+
+            var response = vaccineCombos.Select(combo => new
+            {
+                ComboId = combo.ComboId,
+                ComboName = combo.Name,
+                Description = combo.Description,
+                Price = combo.Price,
+                Vaccines = combo.VaccineComboDetails.Select(detail => new
+                {
+                    VaccineId = detail.Vaccine.VaccineId,
+                    VaccineName = detail.Vaccine.Name,
+                    Description = detail.Vaccine.Description
+                }).ToList()
+            });
+
+            return Ok(response);
+        }
+
 
     }
 }

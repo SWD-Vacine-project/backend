@@ -50,7 +50,7 @@ namespace Vaccine.API.Controllers
         {
             var childEntity = new Child
             {
-                CustomerId = requestCreateChildModel.CustomerId == 0 ? null : requestCreateChildModel.CustomerId,
+                CustomerId =requestCreateChildModel.CustomerId,
                 Name = requestCreateChildModel.Name,
                 Dob = requestCreateChildModel.Dob,
                 Gender = requestCreateChildModel.Gender,
@@ -73,7 +73,7 @@ namespace Vaccine.API.Controllers
                 return NotFound("Child not found");
             }
 
-            childEntity.CustomerId = request.CustomerId == 0 ? null : request.CustomerId;
+            childEntity.CustomerId =  request.CustomerId;
             childEntity.Name = request.Name;
             childEntity.Dob = request.Dob;
             childEntity.Gender = request.Gender;

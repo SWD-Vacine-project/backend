@@ -1,10 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Vaccine.Repo.Entities;
 
 namespace Vaccine.Repo.Entities;
+
 public partial class VaccineDbContext : DbContext
 {
     public VaccineDbContext()
@@ -45,39 +44,24 @@ public partial class VaccineDbContext : DbContext
     public virtual DbSet<VaccineBatchDetail> VaccineBatchDetails { get; set; }
 
     public virtual DbSet<VaccineCombo> VaccineCombos { get; set; }
-
     public virtual DbSet<VaccineComboDetail> VaccineComboDetails { get; set; }
 
-    //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //        //=> optionsBuilder.UseSqlServer("Server=ALIEN\\SQLEXPRESS;Database=VaccinationSystem;Trusted_Connection=True;TrustServerCertificate=True;");
-    //        => optionsBuilder.UseSqlServer("Server=tcp:vaccinationsystem.database.windows.net,1433;Initial Catalog=VaccinationSystem;Persist Security Info=False;User ID=baohd;Password=StrongPass123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-
-    public static string GetConnectionString(string connectionStringName)
-    {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        string connectionString = config.GetConnectionString(connectionStringName);
-        return connectionString;
-    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=tcp:vaccinations-system.database.windows.net,1433;Initial Catalog=VaccinationSystem;Persist Security Info=False;User ID=swd;Password=VaccinationSystem1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.AdminId).HasName("PK__Admin__43AA4141D507E51E");
+            entity.HasKey(e => e.AdminId).HasName("PK__Admin__43AA41412325BEAC");
 
             entity.ToTable("Admin");
 
-            entity.HasIndex(e => e.UserName, "UQ__Admin__7C9273C4A5C05285").IsUnique();
+            entity.HasIndex(e => e.UserName, "UQ__Admin__7C9273C419142EEB").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Admin__AB6E61643BE6D2B2").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Admin__AB6E6164E5C92D16").IsUnique();
 
             entity.Property(e => e.AdminId).HasColumnName("admin_id");
             entity.Property(e => e.BloodType)
@@ -107,7 +91,7 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<Appointment>(entity =>
         {
-            entity.HasKey(e => e.AppointmentId).HasName("PK__Appointm__A50828FCCAF8FD8B");
+            entity.HasKey(e => e.AppointmentId).HasName("PK__Appointm__A50828FCF69887E8");
 
             entity.ToTable("Appointment");
 
@@ -115,6 +99,9 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.AppointmentDate)
                 .HasColumnType("datetime")
                 .HasColumnName("appointment_date");
+            entity.Property(e => e.BatchNumber)
+                .HasMaxLength(50)
+                .HasColumnName("batchNumber");
             entity.Property(e => e.ChildId).HasColumnName("child_id");
             entity.Property(e => e.ComboId).HasColumnName("combo_id");
             entity.Property(e => e.CreatedAt)
@@ -133,26 +120,40 @@ public partial class VaccineDbContext : DbContext
                 .HasMaxLength(10)
                 .HasColumnName("vaccine_type");
 
+            entity.HasOne(d => d.BatchNumberNavigation).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.BatchNumber)
+                .HasConstraintName("FK_Appointment_VaccineBatch");
+
             entity.HasOne(d => d.Child).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.ChildId)
-                .HasConstraintName("FK__Appointme__child__6E01572D");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Appointme__child__0D7A0286");
+
+            entity.HasOne(d => d.Combo).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.ComboId)
+                .HasConstraintName("FK__Appointme__combo__114A936A");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Appointme__custo__6D0D32F4");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Appointme__custo__0C85DE4D");
 
             entity.HasOne(d => d.Doctor).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.DoctorId)
-                .HasConstraintName("FK__Appointme__docto__6FE99F9F");
+                .HasConstraintName("FK_Appointment_Doctor");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK__Appointme__staff__6EF57B66");
+                .HasConstraintName("FK_Appointment_Staff");
+
+            entity.HasOne(d => d.Vaccine).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.VaccineId)
+                .HasConstraintName("FK__Appointme__vacci__10566F31");
         });
 
         modelBuilder.Entity<Child>(entity =>
         {
-            entity.HasKey(e => e.ChildId).HasName("PK__Child__015ADC05D6123B49");
+            entity.HasKey(e => e.ChildId).HasName("PK__Child__015ADC05C293D48F");
 
             entity.ToTable("Child");
 
@@ -175,21 +176,21 @@ public partial class VaccineDbContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Children)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Child__customer___3D5E1FD2");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Child__customer___6383C8BA");
         });
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__CD65CB8556D2BA61");
+            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__CD65CB85E799178F");
 
             entity.ToTable("Customer");
 
-            entity.HasIndex(e => e.UserName, "UQ__Customer__7C9273C49DCBDD5D").IsUnique();
+            entity.HasIndex(e => e.UserName, "UQ__Customer__7C9273C488BB26AE").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Customer__AB6E6164FB0A8D82").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Customer__AB6E61641F332227").IsUnique();
 
-            entity.HasIndex(e => e.Phone, "UQ__Customer__B43B145F32BA75DA").IsUnique();
+            entity.HasIndex(e => e.Phone, "UQ__Customer__B43B145F7904B365").IsUnique();
 
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
             entity.Property(e => e.Address)
@@ -226,11 +227,11 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<Doctor>(entity =>
         {
-            entity.HasKey(e => e.DoctorId).HasName("PK__Doctor__F39935640AC18A1B");
+            entity.HasKey(e => e.DoctorId).HasName("PK__Doctor__F399356456957BF5");
 
             entity.ToTable("Doctor");
 
-            entity.HasIndex(e => e.Phone, "UQ__Doctor__B43B145FD55A76B1").IsUnique();
+            entity.HasIndex(e => e.Phone, "UQ__Doctor__B43B145F3F38322A").IsUnique();
 
             entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
             entity.Property(e => e.Address)
@@ -258,7 +259,7 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<Feedback>(entity =>
         {
-            entity.HasKey(e => e.ReviewId).HasName("PK__Feedback__60883D90A2C3DA46");
+            entity.HasKey(e => e.ReviewId).HasName("PK__Feedback__60883D90766CC40A");
 
             entity.ToTable("Feedback");
 
@@ -281,23 +282,22 @@ public partial class VaccineDbContext : DbContext
 
             entity.HasOne(d => d.Appointment).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.AppointmentId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Feedback__appoin__7D439ABD");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Feedback__appoin__2BFE89A6");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Feedback__custom__7B5B524B");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Feedback__custom__2A164134");
 
             entity.HasOne(d => d.Doctor).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.DoctorId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Feedback__doctor__7C4F7684");
+                .HasConstraintName("FK__Feedback__doctor__2B0A656D");
         });
 
         modelBuilder.Entity<HealthRecord>(entity =>
         {
-            entity.HasKey(e => e.RecordId).HasName("PK__HealthRe__BFCFB4DD288E913D");
+            entity.HasKey(e => e.RecordId).HasName("PK__HealthRe__BFCFB4DD4AA89881");
 
             entity.ToTable("HealthRecord");
 
@@ -330,23 +330,21 @@ public partial class VaccineDbContext : DbContext
 
             entity.HasOne(d => d.Appointment).WithMany(p => p.HealthRecords)
                 .HasForeignKey(d => d.AppointmentId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__HealthRec__appoi__76969D2E");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__HealthRec__appoi__236943A5");
 
             entity.HasOne(d => d.Doctor).WithMany(p => p.HealthRecords)
                 .HasForeignKey(d => d.DoctorId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__HealthRec__docto__778AC167");
+                .HasConstraintName("FK__HealthRec__docto__245D67DE");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.HealthRecords)
                 .HasForeignKey(d => d.StaffId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__HealthRec__staff__75A278F5");
+                .HasConstraintName("FK__HealthRec__staff__22751F6C");
         });
 
         modelBuilder.Entity<Holiday>(entity =>
         {
-            entity.HasKey(e => e.HolidayId).HasName("PK__Holiday__253884EA055747A3");
+            entity.HasKey(e => e.HolidayId).HasName("PK__Holiday__253884EA6DBA9AD5");
 
             entity.ToTable("Holiday");
 
@@ -360,13 +358,12 @@ public partial class VaccineDbContext : DbContext
 
             entity.HasOne(d => d.Admin).WithMany(p => p.Holidays)
                 .HasForeignKey(d => d.AdminId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Holiday__admin_i__02FC7413");
+                .HasConstraintName("FK__Holiday__admin_i__2EDAF651");
         });
 
         modelBuilder.Entity<Invoice>(entity =>
         {
-            entity.HasKey(e => e.InvoiceId).HasName("PK__Invoice__F58DFD49FCB28C43");
+            entity.HasKey(e => e.InvoiceId).HasName("PK__Invoice__F58DFD493CA53699");
 
             entity.ToTable("Invoice");
 
@@ -392,13 +389,13 @@ public partial class VaccineDbContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Invoices)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Invoice__custome__4E88ABD4");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Invoice__custome__17F790F9");
         });
 
         modelBuilder.Entity<InvoiceDetail>(entity =>
         {
-            entity.HasKey(e => e.DetailId).HasName("PK__InvoiceD__38E9A22452EA4BDD");
+            entity.HasKey(e => e.DetailId).HasName("PK__InvoiceD__38E9A224183CAA31");
 
             entity.ToTable("InvoiceDetail");
 
@@ -412,21 +409,33 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.Quantity).HasColumnName("quantity");
             entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
 
+            entity.HasOne(d => d.Appointment).WithMany(p => p.InvoiceDetails)
+                .HasForeignKey(d => d.AppointmentId)
+                .HasConstraintName("FK__InvoiceDe__appoi__1DB06A4F");
+
+            entity.HasOne(d => d.Combo).WithMany(p => p.InvoiceDetails)
+                .HasForeignKey(d => d.ComboId)
+                .HasConstraintName("FK__InvoiceDe__combo__1EA48E88");
+
             entity.HasOne(d => d.Invoice).WithMany(p => p.InvoiceDetails)
                 .HasForeignKey(d => d.InvoiceId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__InvoiceDe__invoi__5535A963");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__InvoiceDe__invoi__1BC821DD");
+
+            entity.HasOne(d => d.Vaccine).WithMany(p => p.InvoiceDetails)
+                .HasForeignKey(d => d.VaccineId)
+                .HasConstraintName("FK__InvoiceDe__vacci__1CBC4616");
         });
 
         modelBuilder.Entity<Staff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__Staff__1963DD9C0479EEB4");
+            entity.HasKey(e => e.StaffId).HasName("PK__Staff__1963DD9CF478652A");
 
-            entity.HasIndex(e => e.UserName, "UQ__Staff__7C9273C4E5EC4089").IsUnique();
+            entity.HasIndex(e => e.UserName, "UQ__Staff__7C9273C4DBD54384").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Staff__AB6E616430E163F2").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Staff__AB6E616411F382A9").IsUnique();
 
-            entity.HasIndex(e => e.Phone, "UQ__Staff__B43B145F69B2F366").IsUnique();
+            entity.HasIndex(e => e.Phone, "UQ__Staff__B43B145F9977ADF9").IsUnique();
 
             entity.Property(e => e.StaffId).HasColumnName("staff_id");
             entity.Property(e => e.Dob).HasColumnName("dob");
@@ -461,7 +470,7 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<Vaccine>(entity =>
         {
-            entity.HasKey(e => e.VaccineId).HasName("PK__Vaccine__B593EFB3F29BBCAF");
+            entity.HasKey(e => e.VaccineId).HasName("PK__Vaccine__B593EFB3591D646C");
 
             entity.ToTable("Vaccine");
 
@@ -481,7 +490,7 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<VaccineBatch>(entity =>
         {
-            entity.HasKey(e => e.BatchNumber).HasName("PK__VaccineB__56E3783691982155");
+            entity.HasKey(e => e.BatchNumber).HasName("PK__VaccineB__56E378360CEC7A57");
 
             entity.ToTable("VaccineBatch");
 
@@ -491,7 +500,6 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.Country)
                 .HasMaxLength(255)
                 .HasColumnName("country");
-            //entity.Property(e => e.Duration).HasColumnName("duration");
             entity.Property(e => e.ExpiryDate).HasColumnName("expiry_date");
             entity.Property(e => e.ManufactureDate).HasColumnName("manufacture_date");
             entity.Property(e => e.Manufacturer)
@@ -504,26 +512,25 @@ public partial class VaccineDbContext : DbContext
 
         modelBuilder.Entity<VaccineBatchDetail>(entity =>
         {
-            entity.HasKey(vbd => new { vbd.BatchNumber, vbd.VaccineId }); // Composite primary key
-            entity
-                //.HasNoKey()
-                .ToTable("VaccineBatchDetail");
+            entity.HasKey(e => new { e.BatchNumber, e.VaccineId }).HasName("PK__VaccineB__7DBA46CD69A10EBA");
+
+            entity.ToTable("VaccineBatchDetail");
 
             entity.Property(e => e.BatchNumber)
                 .HasMaxLength(50)
                 .HasColumnName("batch_number");
-            entity.Property(e => e.Quantity).HasColumnName("quantity");
             entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
-
-            entity.HasOne(d => d.BatchNumberNavigation).WithMany()
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.PreOrderQuantity).HasDefaultValue(0);
+            entity.HasOne(d => d.BatchNumberNavigation).WithMany(p => p.VaccineBatchDetails)
                 .HasForeignKey(d => d.BatchNumber)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__VaccineBa__batch__5EBF139D");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__VaccineBa__batch__00200768");
 
-            entity.HasOne(d => d.Vaccine).WithMany()
+            entity.HasOne(d => d.Vaccine).WithMany(p => p.VaccineBatchDetails)
                 .HasForeignKey(d => d.VaccineId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__VaccineBa__vacci__5FB337D6");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__VaccineBa__vacci__01142BA1");
         });
 
         modelBuilder.Entity<VaccineCombo>(entity =>
@@ -540,29 +547,80 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("price");
-        });
+            //entity.HasKey(e => e.ComboId).HasName("PK__VaccineC__18F74AA3700BDE57");
 
-        modelBuilder.Entity<VaccineComboDetail>(entity =>
-        {
-            //entity
-            //    .HasNoKey()
-            //    .ToTable("VaccineComboDetail");
+            //entity.ToTable("VaccineCombo");
 
             //entity.Property(e => e.ComboId).HasColumnName("combo_id");
-            //entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
+            //entity.Property(e => e.Description).HasColumnName("description");
+            //entity.Property(e => e.Name)
+            //    .HasMaxLength(255)
+            //    .HasColumnName("name");
+            //entity.Property(e => e.Price)
+            //    .HasColumnType("decimal(10, 2)")
+            //    .HasColumnName("price");
 
-            //entity.HasOne(d => d.Combo).WithMany()
-            //    .HasForeignKey(d => d.ComboId)
-            //    .OnDelete(DeleteBehavior.Cascade)
-            //    .HasConstraintName("FK__VaccineCo__combo__6477ECF3");
+            //entity.HasMany(d => d.Vaccines).WithMany(p => p.Combos)
+            //    .UsingEntity<Dictionary<string, object>>(
+            //        "VaccineComboDetail",
+            //        r => r.HasOne<Vaccine>().WithMany()
+            //            .HasForeignKey("VaccineId")
+            //            .OnDelete(DeleteBehavior.ClientSetNull)
+            //            .HasConstraintName("FK__VaccineCo__vacci__06CD04F7"),
+            //        l => l.HasOne<VaccineCombo>().WithMany()
+            //            .HasForeignKey("ComboId")
+            //            .OnDelete(DeleteBehavior.ClientSetNull)
+            //            .HasConstraintName("FK__VaccineCo__combo__05D8E0BE"),
+            //        j =>
+            //        {
+            //            j.HasKey("ComboId", "VaccineId").HasName("PK__VaccineC__33AE745893D809BA");
+            //            j.ToTable("VaccineComboDetail");
+            //            j.IndexerProperty<int>("ComboId").HasColumnName("combo_id");
+            //            j.IndexerProperty<int>("VaccineId").HasColumnName("vaccine_id");
+            //        });
+        });
+        //modelBuilder.Entity<VaccineComboDetail>(entity =>
+        //{
+        //    //entity
+        //    //    .HasNoKey()
+        //    //    .ToTable("VaccineComboDetail");
 
-            //entity.HasOne(d => d.Vaccine).WithMany()
-            //    .HasForeignKey(d => d.VaccineId)
-            //    .OnDelete(DeleteBehavior.Cascade)
-            //    .HasConstraintName("FK__VaccineCo__vacci__656C112C");
+        //    //entity.Property(e => e.ComboId).HasColumnName("combo_id");
+        //    //entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
 
-            entity
-                .HasKey(e => new { e.ComboId, e.VaccineId }); 
+        //    //entity.HasOne(d => d.Combo).WithMany()
+        //    //    .HasForeignKey(d => d.ComboId)
+        //    //    .OnDelete(DeleteBehavior.Cascade)
+        //    //    .HasConstraintName("FK__VaccineCo__combo__6477ECF3");
+
+        //    //entity.HasOne(d => d.Vaccine).WithMany()
+        //    //    .HasForeignKey(d => d.VaccineId)
+        //    //    .OnDelete(DeleteBehavior.Cascade)
+        //    //    .HasConstraintName("FK__VaccineCo__vacci__656C112C");
+
+        //    entity
+        //        .HasKey(e => new { e.ComboId, e.VaccineId });
+
+        //    entity.ToTable("VaccineComboDetail");
+
+        //    entity.Property(e => e.ComboId).HasColumnName("combo_id");
+        //    entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
+
+        //    entity.HasOne(d => d.Combo)
+        //        .WithMany(vc => vc.VaccineComboDetails)
+        //        .HasForeignKey(d => d.ComboId)
+        //        .OnDelete(DeleteBehavior.Cascade)
+        //        .HasConstraintName("FK__VaccineCo__combo__05D8E0BE");
+
+        //    entity.HasOne(d => d.Vaccine)
+        //        .WithMany(vc => vc.VaccineComboDetails)
+        //        .HasForeignKey(d => d.VaccineId)
+        //        .OnDelete(DeleteBehavior.Cascade)
+        //        .HasConstraintName("FK__VaccineCo__vacci__06CD04F7");
+        //});
+        modelBuilder.Entity<VaccineComboDetail>(entity =>
+        {
+            entity.HasKey(e => new { e.ComboId, e.VaccineId });
 
             entity.ToTable("VaccineComboDetail");
 
@@ -570,16 +628,16 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
 
             entity.HasOne(d => d.Combo)
-                .WithMany()
+                .WithMany(vc => vc.VaccineComboDetails)
                 .HasForeignKey(d => d.ComboId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__VaccineCo__combo__6477ECF3");
+                .HasConstraintName("FK__VaccineCo__combo__05D8E0BE");
 
             entity.HasOne(d => d.Vaccine)
-                .WithMany()
+                .WithMany(v => v.VaccineComboDetails) // Sửa lại `vc` thành `v`
                 .HasForeignKey(d => d.VaccineId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__VaccineCo__vacci__656C112C");
+                .HasConstraintName("FK__VaccineCo__vacci__06CD04F7");
         });
 
         OnModelCreatingPartial(modelBuilder);

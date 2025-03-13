@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using MilkStore.API.Models.CustomerModel;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection.PortableExecutable;
 using System.Runtime;
+using Vaccine.API.Models.AppointmentModel;
 using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -95,58 +97,58 @@ namespace Vaccine.API.Controllers
             }
             return Ok(appointments);
         }
-        [HttpPost("create-appointment")]
-        [SwaggerOperation(
-            Description = "Create appointment with status = Pending "
-        )]
-        public IActionResult CreateAppointment(RequestCreateAppointmentModel requestCreateAppointmentModel)
-        {
-            //var existingappoint = _unitofwork.appointmentrepository.get(c => c.appointmentid == requestcreatecappointmentmodel.appointmentid).firstordefault();
-            //if (existingappoint != null)
-            //{
-            //    return badrequest(new { message = "appointment đã tồn tại." });
-            //}
+        //[HttpPost("create-appointment")]
+        //[SwaggerOperation(
+        //    Description = "Create appointment with status = Pending "
+        //)]
+        //public IActionResult CreateAppointment(RequestCreateAppointmentModel requestCreateAppointmentModel)
+        //{
+        //    //var existingappoint = _unitofwork.appointmentrepository.get(c => c.appointmentid == requestcreatecappointmentmodel.appointmentid).firstordefault();
+        //    //if (existingappoint != null)
+        //    //{
+        //    //    return badrequest(new { message = "appointment đã tồn tại." });
+        //    //}
             
 
-            // para input to create 
-            var appointEntity = new Appointment
-            {
-                //AppointmentId = requestCreateCAppointmentModel.AppointmentId,
-                AppointmentDate = requestCreateAppointmentModel.AppointmentDate,
-                Status = "Pending",
-                Notes = requestCreateAppointmentModel.Notes,
-                CreatedAt = requestCreateAppointmentModel.CreatedAt,
-                ChildId = requestCreateAppointmentModel.ChildId,
-                StaffId = requestCreateAppointmentModel.StaffId,
-                DoctorId = requestCreateAppointmentModel.DoctorId,
-                // if null set null, not null require single or combo
-                VaccineType = string.IsNullOrEmpty(requestCreateAppointmentModel.VaccineType) ? null : requestCreateAppointmentModel.VaccineType,
-                ComboId = requestCreateAppointmentModel.ComboId,
-                CustomerId = requestCreateAppointmentModel.CustomerId,
-                VaccineId = requestCreateAppointmentModel.VaccineId,
-            };
+        //    // para input to create 
+        //    var appointEntity = new Appointment
+        //    {
+        //        //AppointmentId = requestCreateCAppointmentModel.AppointmentId,
+        //        AppointmentDate = requestCreateAppointmentModel.AppointmentDate,
+        //        Status = "Pending",
+        //        Notes = requestCreateAppointmentModel.Notes,
+        //        CreatedAt = requestCreateAppointmentModel.CreatedAt,
+        //        ChildId = requestCreateAppointmentModel.ChildId,
+        //        StaffId = null,
+        //        DoctorId = null,
+        //        // if null set null, not null require single or combo
+        //        VaccineType = string.IsNullOrEmpty(requestCreateAppointmentModel.VaccineType) ? null : requestCreateAppointmentModel.VaccineType,
+        //        ComboId = requestCreateAppointmentModel.ComboId,
+        //        CustomerId = requestCreateAppointmentModel.CustomerId,
+        //        VaccineId = requestCreateAppointmentModel.VaccineId,
+        //    };
 
-            _unitOfWork.AppointmentRepository.Insert(appointEntity);
-            _unitOfWork.Save();
+        //    _unitOfWork.AppointmentRepository.Insert(appointEntity);
+        //    _unitOfWork.Save();
 
-            var responseAppoint = new RequestResponeAppointmentModel
-            {
-                AppointmentId = appointEntity.AppointmentId,
-                AppointmentDate = requestCreateAppointmentModel.AppointmentDate,
-                Status = "Pending",
-                Notes = requestCreateAppointmentModel.Notes,
-                CreatedAt = requestCreateAppointmentModel.CreatedAt,
-                ChildId = requestCreateAppointmentModel.ChildId,
-                StaffId = requestCreateAppointmentModel.StaffId,
-                DoctorId = requestCreateAppointmentModel.DoctorId,
-                VaccineType = requestCreateAppointmentModel.VaccineType,
-                ComboId = requestCreateAppointmentModel.ComboId,
-                CustomerId = requestCreateAppointmentModel.CustomerId,
-                VaccineId = requestCreateAppointmentModel.VaccineId,
-            };
+        //    var responseAppoint = new RequestResponeAppointmentModel
+        //    {
+        //        AppointmentId = appointEntity.AppointmentId,
+        //        AppointmentDate = requestCreateAppointmentModel.AppointmentDate,
+        //        Status = "Pending",
+        //        Notes = requestCreateAppointmentModel.Notes,
+        //        CreatedAt = requestCreateAppointmentModel.CreatedAt,
+        //        ChildId = requestCreateAppointmentModel.ChildId,
+        //        StaffId = null, 
+        //        DoctorId = null,
+        //        VaccineType = requestCreateAppointmentModel.VaccineType,
+        //        ComboId = requestCreateAppointmentModel.ComboId,
+        //        CustomerId = requestCreateAppointmentModel.CustomerId,
+        //        VaccineId = requestCreateAppointmentModel.VaccineId,
+        //    };
 
-            return Ok(responseAppoint);
-        }
+        //    return Ok(responseAppoint);
+        //}
 
         [HttpPut("Approved-status-appointment/{id}")]
         [SwaggerOperation(
@@ -230,6 +232,183 @@ namespace Vaccine.API.Controllers
         //    _unitOfWork.Save();
         //    return Ok(new { message = "Appointment approved successfully." });
         //}
+        [HttpPost("create-appointment-combo")]
+        [SwaggerOperation(
+            Description = "Create appointment when purchase combo"
+        )]
+        public IActionResult CreateAppointmentsCombo(RequestCreateComboAppointment request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new { message = "Combo data is required" });
+            }
+            var comboDetails = _unitOfWork.VaccineComboDetailRepository.Get(filter: x => x.ComboId == request.ComboId).ToList();
+            if (comboDetails == null || !comboDetails.Any())
+            {
+                return BadRequest(new { message = "ComboId is not found" });
+            }
+            var appointmentList = new List<Appointment>();
+            DateTime currentAppointmentDate = request.AppointmentDate;
+            foreach (var detail in comboDetails)
+            {
+                // tìm kiến vaccine theo vaccineID
+                var vaccine = _unitOfWork.VaccineRepository.Get(filter: x => x.VaccineId == detail.VaccineId).FirstOrDefault();
+                if (vaccine == null)
+                {
+                    return BadRequest(new { message = $"Vaccine Error: {detail.VaccineId} does not contain internalDurationDay" });
+                }
+                // từ vaccineID => truy xuất ra ngày cần tiêm tiếp theo
+                int durationDays = vaccine.InternalDurationDoses;
+                // Kiểm tra tổng số vaccine theo vaccineID trong kho
+                var totalStock = _unitOfWork.VaccineBatchDetailRepository.Get(
+                    v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation"
+                ).Sum(v => v.Quantity);
+               
+                if (totalStock < 10)
+                {
+                    return BadRequest(new { message = $"Insufficient stock for vaccine {detail.VaccineId}. Appointment combo cannot be scheduled." });
+                }
+                               // tạo mới appointment cho lần tiêm tiếp theo
+                var appointment = new Appointment
+                {
+                    AppointmentDate = currentAppointmentDate,
+                    Status = totalStock >= 10 ? "Approved" : "Pending",
+                    Notes = request.Notes,
+                    CreatedAt = DateTime.Now,
+                    ChildId = request.ChildId,
+                    StaffId = null,  // Nhân viên xử lý nếu Pending
+                    DoctorId = null,
+                    VaccineType = "Combo",
+                    ComboId = request.ComboId,
+                    CustomerId = request.CustomerId,
+                    VaccineId = detail.VaccineId
+                };
+                if (totalStock >= 10)
+                {
+                    // chọn batch của vaccine với điều kiện( gần hết ngày hết hạn nhất & số lượng còn ít trước)
+                    var availableBatch = _unitOfWork.VaccineBatchDetailRepository.Get(x => x.VaccineId == vaccine.VaccineId && x.Quantity > 0 && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.Date.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation")
+                      .OrderBy(v => v.BatchNumberNavigation.ExpiryDate)
+                      .ThenBy(v => v.Quantity)
+                      .FirstOrDefault();
+                    if(availableBatch != null)
+                    {
+                        appointment.BatchNumber= availableBatch.BatchNumber;
+                        //availableBatch.PreOrderQuantity++;
+                    }
+                    
+                }
+                appointmentList.Add(appointment);
 
+                currentAppointmentDate = currentAppointmentDate.AddDays(durationDays);
+            }
+            _unitOfWork.AppointmentRepository.InsertRange(appointmentList);
+            _unitOfWork.Save();
+            return Ok(new
+            {
+                message = appointmentList.All(a => a.Status == "Approved") ?
+           "Tất cả lịch hẹn trong combo đã được chấp nhận." :
+           "Một số lịch hẹn đang chờ xác nhận từ nhân viên.",
+                Appointments = appointmentList
+            });
+
+        }
+        [HttpPost("create-appointment")]
+        [SwaggerOperation(
+            Description = "Create appointment single"
+        )]
+        public  IActionResult CreateAppointment(RequestCreateAppointmentModel request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new { message = "Appointment data is required !" });
+            }
+            // kiểm tra số lượng trong kho => nếu còn đủ thì set status approve
+            // xét 2 điều kiện, một là quantity >10, hai là  expireDate phải lớn hơn ngày đặt lịch + số ngày giới hạn của policy dời lịch: 3 ngày
+            var vaccine=  _unitOfWork.VaccineRepository.Get(x=> x.VaccineId== request.VaccineId).FirstOrDefault();
+            if (vaccine == null)
+            {
+                return BadRequest(new { message = $"Vaccine with id {request.VaccineId} is not found !" });
+            }
+            var totalStock = _unitOfWork.VaccineBatchDetailRepository.Get(
+                   v => v.VaccineId == request.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(request.AppointmentDate.Date.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation").Sum(v => v.Quantity);
+            //Nếu không đủ vaccine, giữ trạng thái "Pending" và gửi cho nhân viên xử lý
+            if (totalStock < 10)
+            {
+                var appointEntity = new Appointment
+                {
+                    AppointmentDate = request.AppointmentDate,
+                    Status = "Pending",
+                    Notes = request.Notes,
+                    CreatedAt = request.CreatedAt,
+                    ChildId = request.ChildId,
+                    StaffId = null,
+                    DoctorId = null,
+                    // if null set null, not null require single or combo
+                    VaccineType = "Single",
+                    ComboId = null,
+                    CustomerId = request.CustomerId,
+                    VaccineId = request.VaccineId,
+                    BatchNumber = null,
+                };
+                _unitOfWork.AppointmentRepository.Insert(appointEntity);
+                _unitOfWork.Save();
+                return Ok(new
+                {
+                    message = "Appointment is in pending status, please wait for the staff to approve.",
+                    appointment = appointEntity
+                });
+            }
+           var batchNumberAvailable = _unitOfWork.VaccineBatchDetailRepository.Get(filter: x=> x.VaccineId== request.VaccineId && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(request.AppointmentDate.Date.AddDays(3)), includeProperties: "BatchNumberNavigation").
+                OrderBy(x=> x.BatchNumberNavigation.ExpiryDate).
+                ThenBy(x=> x.Quantity).
+                FirstOrDefault();
+            // para input to create
+            if(batchNumberAvailable == null)
+            {
+                return BadRequest(new { message = $"There is no vaccine batch of vaccine {request.VaccineId}" });
+            }
+            var appointEntityAuto = new Appointment
+            {
+                AppointmentDate = request.AppointmentDate,
+                Status = "Pending",
+                Notes = request.Notes,
+                CreatedAt = request.CreatedAt,
+                ChildId = request.ChildId,
+                StaffId = null,
+                DoctorId = null,
+                // if null set null, not null require single or combo
+                VaccineType = "Single",
+                ComboId = null,
+                CustomerId = request.CustomerId,
+                VaccineId = request.VaccineId,
+                BatchNumber= batchNumberAvailable.BatchNumber,
+            };
+            //batchNumberAvailable.PreOrderQuantity++;
+            _unitOfWork.AppointmentRepository.Insert(appointEntityAuto);
+            _unitOfWork.Save();
+
+            var responseAppoint = new RequestResponeAppointmentModel
+            {
+                AppointmentId = appointEntityAuto.AppointmentId,
+                AppointmentDate = request.AppointmentDate,
+                Status = "Pending",
+                Notes = request.Notes,
+                CreatedAt = request.CreatedAt,
+                ChildId = request.ChildId,
+                StaffId = null,
+                DoctorId = null,
+                VaccineType = "Single",
+                ComboId = null,
+                CustomerId = request.CustomerId,
+                VaccineId = request.VaccineId,
+            };
+            
+            return Ok(new
+            {
+                message = "Appointment is approved.",
+                appointment = responseAppoint
+            });
+            
+        }
     }
 }

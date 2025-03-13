@@ -8,7 +8,7 @@ namespace Vaccine.API.Models.InvoiceModel
     {
         //public int InvoiceId { get; set; }
 
-        public int? CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         [Required(ErrorMessage = "Total Amount is required")]
         public decimal TotalAmount { get; set; }
@@ -30,7 +30,7 @@ namespace Vaccine.API.Models.InvoiceModel
     {
         //public int InvoiceId { get; set; }
 
-        public int? CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         [Required(ErrorMessage = "Total Amount is required")]
         public decimal TotalAmount { get; set; }
