@@ -293,7 +293,9 @@ namespace Vaccine.API.Controllers
                     if(availableBatch != null)
                     {
                         appointment.BatchNumber= availableBatch.BatchNumber;
+                        //availableBatch.PreOrderQuantity++;
                     }
+                    
                 }
                 appointmentList.Add(appointment);
 
@@ -381,7 +383,7 @@ namespace Vaccine.API.Controllers
                 VaccineId = request.VaccineId,
                 BatchNumber= batchNumberAvailable.BatchNumber,
             };
-
+            //batchNumberAvailable.PreOrderQuantity++;
             _unitOfWork.AppointmentRepository.Insert(appointEntityAuto);
             _unitOfWork.Save();
 
@@ -400,6 +402,7 @@ namespace Vaccine.API.Controllers
                 CustomerId = request.CustomerId,
                 VaccineId = request.VaccineId,
             };
+            
             return Ok(new
             {
                 message = "Appointment is approved.",
