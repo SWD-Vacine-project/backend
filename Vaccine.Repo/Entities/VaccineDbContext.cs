@@ -521,7 +521,7 @@ public partial class VaccineDbContext : DbContext
                 .HasColumnName("batch_number");
             entity.Property(e => e.VaccineId).HasColumnName("vaccine_id");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
-
+            entity.Property(e => e.PreOrderQuantity).HasDefaultValue(0);
             entity.HasOne(d => d.BatchNumberNavigation).WithMany(p => p.VaccineBatchDetails)
                 .HasForeignKey(d => d.BatchNumber)
                 .OnDelete(DeleteBehavior.ClientSetNull)
