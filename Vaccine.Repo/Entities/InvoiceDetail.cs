@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 
 namespace Vaccine.Repo.Entities;
+
 public partial class InvoiceDetail
 {
     public int DetailId { get; set; }
 
-    public int? InvoiceId { get; set; }
+    public int InvoiceId { get; set; }
 
     public int? VaccineId { get; set; }
 
@@ -18,5 +19,11 @@ public partial class InvoiceDetail
 
     public decimal Price { get; set; }
 
-    public virtual Invoice? Invoice { get; set; }
+    public virtual Appointment? Appointment { get; set; }
+
+    public virtual VaccineCombo? Combo { get; set; }
+
+    public virtual Invoice Invoice { get; set; } = null!;
+
+    public virtual Vaccine? Vaccine { get; set; }
 }

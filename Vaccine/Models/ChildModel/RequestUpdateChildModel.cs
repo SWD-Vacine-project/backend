@@ -9,7 +9,7 @@ namespace Vaccine.API.Models.ChildModel
     {
         //public int ChildId { get; set; }
 
-        public int? CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; } = null!;
