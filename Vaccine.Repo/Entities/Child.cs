@@ -7,7 +7,7 @@ public partial class Child
 {
     public int ChildId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
     public string Name { get; set; } = null!;
 
@@ -19,5 +19,5 @@ public partial class Child
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-    public virtual Customer? Customer { get; set; }
+    public virtual Customer Customer { get; set; } = null!;
 }

@@ -1,5 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Quartz;
+using Swashbuckle.AspNetCore.Filters;
+using Vaccine.API.Jobs;
+using Vaccine.API.Models.ChildModel;
+using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
 using VNPAY.NET;
@@ -19,12 +24,33 @@ builder.Services.AddSwaggerGen();
 // Add VNPAY service to the container.
 builder.Services.AddSingleton<IVnpay, Vnpay>();
 
+// ChatGPT
+
+
+//allow cros
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .SetIsOriginAllowed(origin => true)
+              .WithExposedHeaders("Content-Disposition");
+        });
+
+});
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleRequestCreateChildModel>();
 
 // Thêm Swagger
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SWD392- Vaccine", Version = "v1" });
+    c.EnableAnnotations(); // Optional for better documentation
+    c.ExampleFilters();    // Register example filters
     c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.OAuth2,
@@ -63,9 +89,36 @@ builder.Services.AddSwaggerGen(c =>
 // Register UnitOfWork
 builder.Services.AddScoped<UnitOfWork>();
 
+// đăng kí cho Quartz
+
+builder.Services.AddScoped<DailyJob>();
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("SendEmail");
+
+    q.AddJob<DailyJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("dailyTrigger")
+        .WithCronSchedule("0 0 0 * * ?")
+    );
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
 // DbContext
 builder.Services.AddDbContext<VaccineDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbContext")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -80,16 +133,18 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Vaccine Shop");
         c.OAuthClientId("1006543489483-mrg7qa1pas18ulb0hvnadiagh8jajghs.apps.googleusercontent.com"); // Thay YOUR_GOOGLE_CLIENT_ID bằng Client ID đã lấy từ Google
         c.OAuthClientSecret("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");
         c.OAuthUsePkce(); // Bật PKCE
     });
 //}
+app.UseCors("MyPolicy");
+
 app.UseHttpsRedirection();
-
+//app.UseCors("AllowAll");
 app.UseAuthorization();
-
 app.MapControllers();
+
 
 app.Run();

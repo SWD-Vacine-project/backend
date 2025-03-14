@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 
 namespace Vaccine.Repo.Entities;
+
 public partial class Customer
 {
     public int CustomerId { get; set; }
 
     public string Name { get; set; } = null!;
 
-    public DateOnly Dob { get; set; }
+    public DateOnly? Dob { get; set; }
 
     public string? Gender { get; set; }
 

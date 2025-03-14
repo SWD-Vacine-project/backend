@@ -11,6 +11,9 @@
 # Các file tạo bởi Visual Studio
 .vs/
 .vscode/
+appsettings.json
+appsettings.Development.json
+
 
 # Thư mục build và kết quả biên dịch
 [Bb]in/
@@ -50,3 +53,5 @@ ehthumbs.db
 # -----------------------------
 _ReSharper*/
 *.[Rr]e[Ss]harper
+/.github/workflows
+/.github/workflows
