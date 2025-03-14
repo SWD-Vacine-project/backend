@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using MilkStore.API.Models.CustomerModel;
 using Swashbuckle.AspNetCore.Annotations;
 using Vaccine.API.Models;
+using Vaccine.API.Models.AppointmentModel;
 using Vaccine.API.Models.CustomerModel;
+using Vaccine.API.Models.HealthRecordsModel;
+using Vaccine.API.Models.InvoiceModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
 
@@ -29,15 +32,42 @@ namespace Vaccine.API.Controllers
             return Ok(healths);
         }
 
-        [HttpGet("get-health/{id}")]
-        public IActionResult GetHealthRecordsByID(int id)
+        [HttpGet("get-health-records/{recordId}")]
+        public IActionResult GetHealthRecordsByID(int recordId)
         {
-            var health = _unitOfWork.HealthRecordRepository.GetByID(id);
+            //var health = _unitOfWork.HealthRecordRepository.GetByID(recordId);
+            var health = _unitOfWork.HealthRecordRepository
+        .Get(filter: h => h.RecordId == recordId, includeProperties: "Appointment")
+        .FirstOrDefault();
+
             if (health == null)
             {
                 return NotFound(new { message = "Health records not found." });
             }
-            return Ok(health);
+            //return Ok(health);
+            return Ok(new 
+            {
+                RecordId = health.RecordId,
+                StaffId = health.StaffId,
+                AppointmentId = health.AppointmentId,
+                DoctorId = health.DoctorId,
+                BloodPressure = health.BloodPressure,
+                HeartRate = health.HeartRate,
+                Height = health.Height,
+                Weight = health.Weight,
+                Temperature = health.Temperature,
+                AteBeforeVaccine = health.AteBeforeVaccine,
+                ConditionOk = health.ConditionOk,
+                ReactionNotes = health.ReactionNotes,
+                CreatedAt = health.CreatedAt,
+                // get appointment by appoint_id
+                Appointment = health.Appointment != null ? new 
+                {
+                    AppointmentId = health.Appointment.AppointmentId,
+                    AppointmentDate = health.Appointment.AppointmentDate,
+                    Status = health.Appointment.Status
+                } : null
+            });
         }
 
         [HttpPost("create-health-record")]

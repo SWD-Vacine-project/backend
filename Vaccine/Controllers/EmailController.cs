@@ -20,7 +20,7 @@
         [HttpPost("sendEmail")]
         public IActionResult SendEmail(RequestSendEmailModel requestSendEmailModel)
         {
-            // check email có đúng cú pháp không?
+            // check email có đúng cú pháp không
             if (!Utils.IsValidEmail(requestSendEmailModel.Email)) {
                 return BadRequest("Email trong hợp lệ");
             }

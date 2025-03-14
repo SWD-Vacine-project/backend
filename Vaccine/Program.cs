@@ -8,7 +8,6 @@ using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
 using VNPAY.NET;
-using static Vaccine.API.Controllers.AuthController;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +23,9 @@ builder.Services.AddSwaggerGen();
 
 // Add VNPAY service to the container.
 builder.Services.AddSingleton<IVnpay, Vnpay>();
+
+// ChatGPT
+
 
 //allow cros
 builder.Services.AddCors(options =>
@@ -138,6 +140,7 @@ var app = builder.Build();
     });
 //}
 app.UseCors("MyPolicy");
+
 app.UseHttpsRedirection();
 //app.UseCors("AllowAll");
 app.UseAuthorization();
