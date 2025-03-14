@@ -118,6 +118,7 @@ var app = builder.Build();
     });
 //}
 app.UseCors("MyPolicy");
+
 app.UseHttpsRedirection();
 //app.UseCors("AllowAll");
 app.UseAuthorization();
