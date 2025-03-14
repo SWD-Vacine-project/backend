@@ -30,4 +30,6 @@ public partial class Feedback
     public virtual Customer? Customer { get; set; }
 
     public virtual Doctor? Doctor { get; set; }
+
+    public virtual Staff? Staff { get; set; }
 }
