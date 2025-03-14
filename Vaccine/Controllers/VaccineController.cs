@@ -244,6 +244,7 @@ namespace Vaccine.API.Controllers
                 ComboId = combo.ComboId,
                 ComboName = combo.Name,
                 Description = combo.Description,
+                Price = combo.Price,
                 Vaccines = combo.VaccineComboDetails.Select(detail => new
                 {
                     VaccineId = detail.Vaccine.VaccineId,

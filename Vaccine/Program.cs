@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Quartz;
 using Swashbuckle.AspNetCore.Filters;
+using Vaccine.API.Jobs;
 using Vaccine.API.Models.ChildModel;
 using Vaccine.API.Models.CustomerModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
 using VNPAY.NET;
-using static Vaccine.API.Controllers.AuthController;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,9 @@ builder.Services.AddSwaggerGen();
 
 // Add VNPAY service to the container.
 builder.Services.AddSingleton<IVnpay, Vnpay>();
+
+// ChatGPT
+
 
 //allow cros
 builder.Services.AddCors(options =>
@@ -85,6 +89,24 @@ builder.Services.AddSwaggerGen(c =>
 // Register UnitOfWork
 builder.Services.AddScoped<UnitOfWork>();
 
+// đăng kí cho Quartz
+
+builder.Services.AddScoped<DailyJob>();
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("SendEmail");
+
+    q.AddJob<DailyJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("dailyTrigger")
+        .WithCronSchedule("0 0 0 * * ?")
+    );
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
 // DbContext
 builder.Services.AddDbContext<VaccineDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -118,6 +140,7 @@ var app = builder.Build();
     });
 //}
 app.UseCors("MyPolicy");
+
 app.UseHttpsRedirection();
 //app.UseCors("AllowAll");
 app.UseAuthorization();

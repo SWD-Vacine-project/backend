@@ -206,5 +206,79 @@ namespace Vaccine.API.Controllers
             return Ok(staffs);
 
         }
+
+        [HttpGet("get-all-data-entry")]
+        public IActionResult GetDataEntrys()
+        {
+            var staffs = _unitOfWork.StaffRepository.GetQueryable().Where(x => x.Role == "Data Entry").Select(x => new
+            {
+                x.StaffId,
+                x.Name,
+                x.Role,
+                x.Gender,
+                x.Phone,
+                x.Dob,
+                x.Email,
+                x.Status,
+                x.UserName
+            }).ToList();
+
+            if (staffs.Count == 0)
+            {
+                return Ok();
+            }
+
+            return Ok(staffs);
+
+        }
+
+        [HttpGet("get-all-nurse")]
+        public IActionResult GetNurses()
+        {
+            var staffs = _unitOfWork.StaffRepository.GetQueryable().Where(x => x.Role == "Nurse").Select(x => new
+            {
+                x.StaffId,
+                x.Name,
+                x.Role,
+                x.Gender,
+                x.Phone,
+                x.Dob,
+                x.Email,
+                x.Status,
+                x.UserName
+            }).ToList();
+
+            if (staffs.Count == 0)
+            {
+                return Ok();
+            }
+
+            return Ok(staffs);
+
+        }
+
+        [HttpGet("get-all-receptionist")]
+        public IActionResult GetReceptionist()
+        {
+            var staffs = _unitOfWork.StaffRepository.GetQueryable().Where(x => x.Role == "Receptionist").Select(x => new
+            {
+                x.StaffId,
+                x.Name,
+                x.Role,
+                x.Gender,
+                x.Phone,
+                x.Dob,
+                x.Email,
+                x.Status,
+                x.UserName
+            }).ToList();
+
+            if (staffs.Count == 0)
+            {
+                return Ok();
+            }
+
+            return Ok(staffs);
+        }
     }
 }
