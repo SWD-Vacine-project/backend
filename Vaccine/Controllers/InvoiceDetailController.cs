@@ -41,7 +41,7 @@ namespace Vaccine.API.Controllers
         [HttpGet("get-invoice/{invoiceId}")]
         public IActionResult GetInvoice(int invoiceId)
         {
-            var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(filter: d => d.InvoiceId == invoiceId);
+            var invoiceDetails = _unitOfWork.InvoiceRepository.Get(filter: d => d.InvoiceId == invoiceId);
             if (invoiceDetails == null || !invoiceDetails.Any())
             {
                 return NotFound(new { message = "No invoice details found for this invoice." });
