@@ -84,5 +84,56 @@ namespace Vaccine.API.Controllers
             return Ok(new { Message = "Doctor updated successfully", doctor });
         }
 
+        [HttpGet("get-doctor-by-id/{id}")]
+        public IActionResult GetDoctorById(int id)
+        {
+            {
+                var doctor = _unitOfWork.DoctorRepository.GetQueryable().Where(x => x.DoctorId == id).Select(x => new
+                {
+                    x.DoctorId,
+                    x.Name,
+                    x.Age,
+                    x.Gender,
+                    x.Phone,
+                    x.Address,
+                    x.Degree,
+                    x.ExperienceYears,
+                }).FirstOrDefault();
+
+                if (doctor == null)
+                {
+                    return NotFound(new { message = "Doctor not found" });
+                }
+
+                return Ok(doctor);
+
+            }
+        }
+
+        [HttpGet("get-doctors")]
+        public IActionResult GetDoctors()
+        {
+            var doctors = _unitOfWork.DoctorRepository.GetQueryable().Select(x => new
+            {
+                x.DoctorId,
+                x.Name,
+                x.Age,
+                x.Gender,
+                x.Phone,
+                x.Address,
+                x.Degree,
+                x.ExperienceYears,
+            }).ToList();
+
+            if (doctors.Count == 0)
+            {
+                return Ok();
+            }
+
+            return Ok(doctors);
+
+        }
+
     }
+
 }
