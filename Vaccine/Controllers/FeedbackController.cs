@@ -19,7 +19,7 @@ namespace Vaccine.API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpPost("create-holiday")]
+        [HttpPost("create-feedback")]
         public async Task<IActionResult> CreateHoliday([FromBody] RequestCreateFeedBackModel newFeedBack)
         {
             if (!ModelState.IsValid)
