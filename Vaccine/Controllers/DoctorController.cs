@@ -25,7 +25,7 @@ namespace Vaccine.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Kiểm tra số điện thoại đã tồn tại chưa
+            // Kiểm tra số điện thoại đã tồn tại chưa //
             var existingDoctor = _unitOfWork.DoctorRepository
                 .Get(d => d.Phone == newDoctor.Phone)
                 .FirstOrDefault();
