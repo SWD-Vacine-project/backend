@@ -17,7 +17,7 @@ namespace Vaccine.API.Controllers
             _unitOfWork= unitOfWork;
         }
         [HttpGet("get-vaccine-batch")]
-        public IActionResult GetAllVaccineBacth()
+        public IActionResult GetAllVaccineBatch()
         {
             var batch = _unitOfWork.VaccineBatchRepository.Get();
             if(batch == null)
@@ -50,6 +50,40 @@ namespace Vaccine.API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("get-batch-by-vaccineID/{vaccineID}/{appointmentDate}")]
+        public IActionResult GetVaccineBatchByVaccineID(int vaccineID, DateTime appointmentDate)
+        {
+            // loc theo dieu kien : expiredDate phai lon hon ngay di chich +3, 
+            var batchDetails = _unitOfWork.VaccineBatchDetailRepository // expiryDate phai lon hon ngay hom nay
+            .Get(v => v.VaccineId == vaccineID && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(appointmentDate).AddDays(3) && v.Quantity > 0, includeProperties: "Vaccine,BatchNumberNavigation")
+            .OrderBy(v => v.BatchNumberNavigation.ExpiryDate)
+            .ThenBy(v => v.Quantity)
+            .ToList();
+
+
+            if (batchDetails == null || !batchDetails.Any())
+            {
+                return NotFound(new { message = "No vaccines found for the given batch." });
+            }
+
+            var result = batchDetails.
+              Select(v => new
+              {
+                  v.BatchNumber,
+                  VaccineName = v.Vaccine.Name,
+                  v.VaccineId,
+                  v.Vaccine.Description,
+                  v.Vaccine.Price,
+                  v.Quantity,
+                  v.PreOrderQuantity,
+                  v.BatchNumberNavigation.ExpiryDate
+              });
+
+
+            return Ok(result);
+        }
+
+
 
         [HttpPost("create-vaccine-batch")]
         public async Task<IActionResult> CreateVaccineBatch([FromBody] RequestCreateVaccineBatch newBatch)
