@@ -13,7 +13,6 @@
 .vscode/
 appsettings.json
 appsettings.Development.json
-.github
 
 
 # Thư mục build và kết quả biên dịch

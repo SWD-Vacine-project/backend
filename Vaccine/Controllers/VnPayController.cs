@@ -102,24 +102,24 @@ namespace Vaccine.API.Controllers
                     _unitOfWork.InvoiceRepository.Update(invoice);
 
                     // Lấy danh sách vaccine từ InvoiceDetail
-                    var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice.InvoiceId);
+                    //var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice.InvoiceId);
 
-                    foreach (var detail in invoiceDetails)
-                    {
-                        var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
-                            .Get(vb => vb.VaccineId == detail.VaccineId)
-                            .OrderBy(vb => vb.BatchNumber)
-                            .FirstOrDefault();
+                    //foreach (var detail in invoiceDetails)
+                    //{
+                    //    var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
+                    //        .Get(vb => vb.VaccineId == detail.VaccineId)
+                    //        .OrderBy(vb => vb.BatchNumber)
+                    //        .FirstOrDefault();
 
-                        if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
-                        {
-                            return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
-                        }
+                    //    if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
+                    //    {
+                    //        return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
+                    //    }
 
-                        // Trừ số lượng vaccine trong kho
-                        vaccineBatch.Quantity -= detail.Quantity;
-                        _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
-                    }
+                    //    // Trừ số lượng vaccine trong kho
+                    //    vaccineBatch.Quantity -= detail.Quantity;
+                    //    _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
+                    //}
 
                     _unitOfWork.Save();
 
