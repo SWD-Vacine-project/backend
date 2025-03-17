@@ -13,5 +13,9 @@
         public string? Role { get; set; }
 
         public string Password { get; set; } = null!;
+
+        public string? Degree { get; set; }
+
+        public int? ExperienceYears { get; set; }
     }
 }

@@ -52,6 +52,8 @@ namespace Vaccine.API.Controllers
                 Role = newStaff.Role,
                 UserName = newStaff.UserName,
                 Password = newStaff.Password,
+                Degree = newStaff.Degree,
+                ExperienceYears = newStaff.ExperienceYears,
                 Status = "Active"
 
             };
@@ -98,6 +100,8 @@ namespace Vaccine.API.Controllers
             staff.Email = updateStaff.Email;
             staff.Role = updateStaff.Role;
             staff.Password = updateStaff.Password;
+            staff.ExperienceYears = updateStaff.ExperienceYears;
+            staff.Degree = updateStaff.Degree;
 
             // Lưu thay đổi vào database
             _unitOfWork.StaffRepository.Update(staff);
@@ -170,6 +174,8 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
+                x.ExperienceYears,
+                x.Degree,
                 x.UserName
             }).FirstOrDefault();
 
@@ -195,7 +201,9 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
-                x.UserName
+                x.UserName,
+                x.ExperienceYears,
+                x.Degree,
             }).ToList();
 
             if (staffs.Count == 0)
@@ -220,7 +228,9 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
-                x.UserName
+                x.UserName,
+                x.ExperienceYears,
+                x.Degree,
             }).ToList();
 
             if (staffs.Count == 0)
@@ -245,7 +255,9 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
-                x.UserName
+                x.UserName,
+                x.ExperienceYears,
+                x.Degree,
             }).ToList();
 
             if (staffs.Count == 0)
@@ -270,7 +282,9 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
-                x.UserName
+                x.UserName,
+                x.ExperienceYears,
+                x.Degree,
             }).ToList();
 
             if (staffs.Count == 0)
