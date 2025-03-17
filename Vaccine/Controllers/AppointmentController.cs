@@ -98,6 +98,22 @@ namespace Vaccine.API.Controllers
             }
             return Ok(appointments);
         }
+        [HttpGet("get-appointment-in-progress")]
+        public IActionResult GetAppointmentsInProgress()
+        {
+
+            var allAppointments = _unitOfWork.AppointmentRepository.Get().ToList();
+
+            var appointments = allAppointments
+                .Where(x => x.Status=="InProgress")
+                .ToList();
+
+            if (appointments == null)
+            {
+                return NotFound(new { message = "No appointments found for today" });
+            }
+            return Ok(appointments);
+        }
         //[HttpPost("create-appointment")]
         //[SwaggerOperation(
         //    Description = "Create appointment with status = Pending "
@@ -151,12 +167,16 @@ namespace Vaccine.API.Controllers
         //    return Ok(responseAppoint);
         //}
 
-        [HttpPut("Approved-status-appointment/{id}")]
+        [HttpPut("Approved-status-appointment/{id}/{batchNumber}")]
         [SwaggerOperation(
             Description = "Confirm an appointment by setting the status to Approved."
         )]
-        public IActionResult ApprovedAppointment(int id)
+        public IActionResult ApprovedAppointment(int id, string batchNumber)
         {
+            if (string.IsNullOrEmpty(batchNumber) || id==null)
+            {
+                return BadRequest(new { message = "Batch number and appointmentID is required." });
+            }
             var appointment = _unitOfWork.AppointmentRepository.GetByID(id);
             if (appointment == null)
             {
@@ -167,9 +187,9 @@ namespace Vaccine.API.Controllers
             {
                 return BadRequest(new { message = "Appointment is already confirmed." });
             }
-            var batchPreOrderQuanity = _unitOfWork.VaccineBatchDetailRepository.Get(filter: x => x.BatchNumber == appointment.BatchNumber && x.VaccineId == appointment.VaccineId).FirstOrDefault();
+            var batchPreOrderQuanity = _unitOfWork.VaccineBatchDetailRepository.Get(filter: x => x.BatchNumber == batchNumber && x.VaccineId == appointment.VaccineId).FirstOrDefault();
 
-            if (string.IsNullOrEmpty(appointment.BatchNumber))
+            if (string.IsNullOrEmpty(batchNumber))
             {
                 return BadRequest(new { message = "Appointment batch number is missing" });
             }
@@ -177,8 +197,14 @@ namespace Vaccine.API.Controllers
             {
                 return BadRequest(new { message = "Not enough quanity in batch for this vaccine." });
             }
+            if (batchPreOrderQuanity.PreOrderQuantity >= batchPreOrderQuanity.Quantity)
+            {
+                return BadRequest(new { message = "Not enough available quantity in the batch for this vaccine." });
+            }
+
             // Update the appointment status to Confirmed
             appointment.Status = "Approved";
+            appointment.BatchNumber = batchNumber;
             batchPreOrderQuanity.PreOrderQuantity += 1;
             _unitOfWork.AppointmentRepository.Update(appointment);
             _unitOfWork.VaccineBatchDetailRepository.Update(batchPreOrderQuanity);
