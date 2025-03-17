@@ -87,13 +87,13 @@ namespace Vaccine.API.Controllers
         /// </summary>
         /// <param name="requestCreateCustomerModel">Customer details</param>
         /// <returns>Created customer information</returns>
-        [HttpPost("create-google")]
+        [HttpPost("create-customer-by-google")]
         [SwaggerOperation(
         Summary = "Create a customer",
         Description = "Creates a new customer using Google sign-up."
     )]
-        [SwaggerRequestExample(typeof(RequestCreateCustomerModel), typeof(ExampleCreateCustomerModel))]
-        public IActionResult CreateCustomer(RequestCreateCustomerModel requestCreateCustomerModel)
+        //[SwaggerRequestExample(typeof(RequestCreateCustomerModel), typeof(ExampleCreateCustomerModel))]
+        public IActionResult CreateCustomer(RequestCreateGoogleCustomerModel requestCreateCustomerModel)
         {
             // Kiểm tra xem email đã tồn tại chưa
             var existingCustomer = _unitOfWork.CustomerRepository.Get(c => c.Email == requestCreateCustomerModel.Email).FirstOrDefault();
@@ -105,21 +105,21 @@ namespace Vaccine.API.Controllers
             // para input to create 
             var customerEntity = new Customer
             {
-                Name = requestCreateCustomerModel.Name,
-                Email = requestCreateCustomerModel.Email,
-                Password = requestCreateCustomerModel.Password,
-                Dob = DateOnly.FromDateTime(DateTime.Today), // Default to today's date
-                Phone = "0000000000", // Placeholder phone number
+                Name = requestCreateCustomerModel.Name, // name
+                Email = requestCreateCustomerModel.Email, //email
                 UserName = requestCreateCustomerModel.Email, // Use email as username
+                Password = requestCreateCustomerModel.Password, // payload ( google id)
+                Phone = "0000000000" // Use default if not provided
             };
 
             _unitOfWork.CustomerRepository.Insert(customerEntity);
             _unitOfWork.Save();
 
-            var responseCustomer = new ResponseCreateCustomerModel
+            var responseCustomer = new ResponseCreateGoogleCustomerModel
             {
-                CustomerName = customerEntity.UserName,
+                CustomerName = customerEntity.Name,
                 Email = customerEntity.Email,
+                UserName = customerEntity.UserName,
                 Password = customerEntity.Password,
             };
 
