@@ -11,6 +11,17 @@ namespace MilkStore.API.Models.CustomerModel
         public string Password { get; set; } = null!;
 
     }
+    public class ResponseCreateGoogleCustomerModel
+    {
+        public string CustomerName { get; set; } = null!;
+
+        public string UserName { get; set; } = null!;
+
+        public string Email { get; set; } = null!;
+
+        public string Password { get; set; } = null!;
+
+    }
     public class CustomerDTO
     {
         public int CustomerId { get; set; }
