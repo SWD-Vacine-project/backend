@@ -19,6 +19,9 @@ namespace Vaccine.API.Models.StaffModel
         public string UserName { get; set; } = null!;
 
         public string Password { get; set; } = null!;
+        public string? Degree { get; set; }
+
+        public int? ExperienceYears { get; set; }
 
     }
 }

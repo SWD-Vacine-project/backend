@@ -466,6 +466,10 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.UserName)
                 .HasMaxLength(50)
                 .HasColumnName("user_name");
+            entity.Property(e => e.ExperienceYears).HasColumnName("experience_years");
+            entity.Property(e => e.Degree)
+                .HasMaxLength(255)
+                .HasColumnName("degree");
         });
 
         modelBuilder.Entity<Vaccine>(entity =>

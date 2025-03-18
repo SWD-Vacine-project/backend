@@ -101,6 +101,8 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("dailyTrigger")
+        //0 * * * * ? mỗi phút
+        //0 0 0 * * ? mỗi ngày 0AM
         .WithCronSchedule("0 0 0 * * ?")
     );
 });
