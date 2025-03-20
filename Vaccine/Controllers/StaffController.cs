@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Vaccine.API.Helper;
+using Vaccine.API.Models.EmailModel;
 using Vaccine.API.Models.StaffModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -29,17 +31,26 @@ namespace Vaccine.API.Controllers
             // Kiểm tra số staff đã tồn tại chưa (phone, email, userName)
             var existingStaff = _unitOfWork.StaffRepository
                 .Get(x => x.Phone == newStaff.Phone || x.Email == newStaff.Email || x.UserName == newStaff.UserName )
-                .FirstOrDefault();
-           
+            .FirstOrDefault();
+
+            if (!Utils.IsValidEmail(newStaff.Email))
+            {
+                return BadRequest("Email không hợp lệ");
+            }
+
+            if (!Utils.IsValidPhoneNumber(newStaff.Phone))
+            {
+                return BadRequest("Số điện thoại không hợp lệ");
+            }
 
             if (existingStaff != null)
             {
                 return BadRequest("Staff is already exists.");
             }
 
-            if (!newStaff.Name.StartsWith("ST_"))
+            if (!newStaff.UserName.StartsWith("ST_"))
             {
-                newStaff.Name = $"ST_{newStaff.Name}";
+                newStaff.UserName = $"ST_{newStaff.UserName}";
             }
 
             var staff = new Staff
@@ -72,6 +83,16 @@ namespace Vaccine.API.Controllers
                 return BadRequest(new { message = "Staff data is required" });
             }
 
+            if (!Utils.IsValidEmail(updateStaff.Email))
+            {
+                return BadRequest("Email không hợp lệ");
+            }
+
+            if (!Utils.IsValidPhoneNumber(updateStaff.Phone))
+            {
+                return BadRequest("Số điện thoại không hợp lệ");
+            }
+
             var existingStaff = _unitOfWork.StaffRepository
                .Get(x => x.Phone == updateStaff.Phone || x.Email == updateStaff.Email)
                .FirstOrDefault();
@@ -86,11 +107,6 @@ namespace Vaccine.API.Controllers
             if (staff == null)
             {
                 return NotFound(new { message = "Staff not found" });
-            }
-
-            if (!updateStaff.Name.StartsWith("ST_"))
-            {
-                updateStaff.Name =  $"ST_{updateStaff.Name}";
             }
 
             // Cập nhật thông tin staff

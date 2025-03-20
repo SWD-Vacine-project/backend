@@ -28,6 +28,20 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 
 
 
+//allow cros
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // Cho phép frontend truy cập
+
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials() // Nếu có xác thực bằng cookie/token
+                  .WithExposedHeaders("Content-Disposition");
+        });
+});
 
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleRequestCreateChildModel>();

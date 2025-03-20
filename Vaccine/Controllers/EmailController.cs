@@ -22,7 +22,7 @@
         {
             // check email có đúng cú pháp không
             if (!Utils.IsValidEmail(requestSendEmailModel.Email)) {
-                return BadRequest("Email trong hợp lệ");
+                return BadRequest("Email không hợp lệ");
             }
 
             EmailRepository.SendEmail(requestSendEmailModel.Email, requestSendEmailModel.Subject, requestSendEmailModel.Body);
