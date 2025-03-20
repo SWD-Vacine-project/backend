@@ -27,20 +27,7 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 // ChatGPT
 
 
-//allow cros
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("MyPolicy",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .SetIsOriginAllowed(origin => true)
-              .WithExposedHeaders("Content-Disposition");
-        });
 
-});
 
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleRequestCreateChildModel>();
