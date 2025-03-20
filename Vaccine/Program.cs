@@ -27,19 +27,20 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 // ChatGPT
 
 
+
 //allow cros
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyPolicy",
         policy =>
         {
-            policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .SetIsOriginAllowed(origin => true)
-              .WithExposedHeaders("Content-Disposition");
-        });
+            policy.WithOrigins("http://localhost:3000") // Cho phép frontend truy cập
 
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials() // Nếu có xác thực bằng cookie/token
+                  .WithExposedHeaders("Content-Disposition");
+        });
 });
 
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
