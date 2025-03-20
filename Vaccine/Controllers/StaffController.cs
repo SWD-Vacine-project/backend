@@ -35,12 +35,12 @@ namespace Vaccine.API.Controllers
 
             if (!Utils.IsValidEmail(newStaff.Email))
             {
-                return BadRequest("Email không hợp lệ");
+                return BadRequest("Invalid email");
             }
 
             if (!Utils.IsValidPhoneNumber(newStaff.Phone))
             {
-                return BadRequest("Số điện thoại không hợp lệ");
+                return BadRequest("Invalid phone number");
             }
 
             if (existingStaff != null)
@@ -85,12 +85,12 @@ namespace Vaccine.API.Controllers
 
             if (!Utils.IsValidEmail(updateStaff.Email))
             {
-                return BadRequest("Email không hợp lệ");
+                return BadRequest("Invalid email");
             }
 
             if (!Utils.IsValidPhoneNumber(updateStaff.Phone))
             {
-                return BadRequest("Số điện thoại không hợp lệ");
+                return BadRequest("Invalid phone number");
             }
 
             var existingStaff = _unitOfWork.StaffRepository

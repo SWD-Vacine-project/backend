@@ -28,7 +28,7 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 
 
 
-//allow cros
+//allow cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyPolicy",
