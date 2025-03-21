@@ -273,6 +273,88 @@ namespace Vaccine.API.Controllers
         //}
 
 
+        //[HttpPost("create-appointment-combo")]
+        //[SwaggerOperation(
+        //    Description = "Create appointment when purchase combo"
+        //)]
+        //public IActionResult CreateAppointmentsCombo(RequestCreateComboAppointment request)
+        //{
+        //    if (request == null)
+        //    {
+        //        return BadRequest(new { message = "Combo data is required" });
+        //    }
+        //    var comboDetails = _unitOfWork.VaccineComboDetailRepository.Get(filter: x => x.ComboId == request.ComboId).ToList();
+        //    if (comboDetails == null || !comboDetails.Any())
+        //    {
+        //        return BadRequest(new { message = "ComboId is not found" });
+        //    }
+        //    var appointmentList = new List<Appointment>();
+        //    DateTime currentAppointmentDate = request.AppointmentDate;
+        //    foreach (var detail in comboDetails)
+        //    {
+        //        // tìm kiến vaccine theo vaccineID
+        //        var vaccine = _unitOfWork.VaccineRepository.Get(filter: x => x.VaccineId == detail.VaccineId).FirstOrDefault();
+        //        if (vaccine == null)
+        //        {
+        //            return BadRequest(new { message = $"Vaccine Error: {detail.VaccineId} does not contain internalDurationDay" });
+        //        }
+        //        // từ vaccineID => truy xuất ra ngày cần tiêm tiếp theo
+        //        int durationDays = vaccine.InternalDurationDoses;
+        //        // Kiểm tra tổng số vaccine theo vaccineID trong kho
+        //        var totalStock = _unitOfWork.VaccineBatchDetailRepository.Get(
+        //            v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation"
+        //        ).Sum(v => v.Quantity);
+
+        //        if (totalStock < 10)
+        //        {
+        //            return BadRequest(new { message = $"Insufficient stock for vaccine {detail.VaccineId}. Appointment combo cannot be scheduled." });
+        //        }
+        //                       // tạo mới appointment cho lần tiêm tiếp theo
+        //        var appointment = new Appointment
+        //        {
+        //            AppointmentDate = currentAppointmentDate,
+        //            Status = totalStock >= 10 ? "Approved" : "Pending",
+        //            Notes = request.Notes,
+        //            CreatedAt = DateTime.Now,
+        //            ChildId = request.ChildId,
+        //            StaffId = null,  // Nhân viên xử lý nếu Pending
+        //            DoctorId = null,
+        //            VaccineType = "Combo",
+        //            ComboId = request.ComboId,
+        //            CustomerId = request.CustomerId,
+        //            VaccineId = detail.VaccineId
+        //        };
+        //        if (totalStock >= 10)
+        //        {
+        //            // chọn batch của vaccine với điều kiện( gần hết ngày hết hạn nhất & số lượng còn ít trước)
+        //            var availableBatch = _unitOfWork.VaccineBatchDetailRepository.Get(x => x.VaccineId == vaccine.VaccineId && x.Quantity > 0 && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.Date.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation")
+        //              .OrderBy(v => v.BatchNumberNavigation.ExpiryDate)
+        //              .ThenBy(v => v.Quantity)
+        //              .FirstOrDefault();
+        //            if(availableBatch != null)
+        //            {
+        //                appointment.BatchNumber= availableBatch.BatchNumber;
+        //                //availableBatch.PreOrderQuantity++;
+        //            }
+
+        //        }
+        //        appointmentList.Add(appointment);
+
+        //        currentAppointmentDate = currentAppointmentDate.AddDays(durationDays);
+        //    }
+        //    _unitOfWork.AppointmentRepository.InsertRange(appointmentList);
+
+        //    _unitOfWork.Save();
+        //    return Ok(new
+        //    {
+        //        message = appointmentList.All(a => a.Status == "Approved") ?
+        //   "Tất cả lịch hẹn trong combo đã được chấp nhận." :
+        //   "Một số lịch hẹn đang chờ xác nhận từ nhân viên.",
+        //        Appointments = appointmentList
+        //    });
+
+        //}
+
         [HttpPost("create-appointment-combo")]
         [SwaggerOperation(
             Description = "Create appointment when purchase combo"
@@ -284,16 +366,17 @@ namespace Vaccine.API.Controllers
                 return BadRequest(new { message = "Combo data is required" });
             }
             var comboDetails = _unitOfWork.VaccineComboDetailRepository.Get(filter: x => x.ComboId == request.ComboId).ToList();
-            if (comboDetails == null )
+            if (comboDetails == null)
             {
                 return BadRequest(new { message = "ComboId is not found " });
             }
             if (!comboDetails.Any())
             {
                 return BadRequest(new { message = "ComboId does not contain any vaccine" });
-            } 
+            }
             var appointmentList = new List<Appointment>();
             DateTime currentAppointmentDate = request.AppointmentDate;
+            var selectedBatches = new Dictionary<int, List<VaccineBatchDetail>>();
             bool pendingFound = false;
             foreach (var detail in comboDetails)
             {
@@ -307,7 +390,7 @@ namespace Vaccine.API.Controllers
                 int durationDays = vaccine.InternalDurationDoses;
                 // Kiểm tra tổng số vaccine theo vaccineID trong kho
                 var totalStock = _unitOfWork.VaccineBatchDetailRepository.Get(
-                    v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation"
+                    v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.AddDays(vaccine.MaxLateDate)) && v.BatchNumberNavigation.Status.ToLower() == "available", includeProperties: "BatchNumberNavigation"
                 ).Sum(v => v.Quantity);
 
                 //if (totalStock < 10)
@@ -334,17 +417,21 @@ namespace Vaccine.API.Controllers
                     CustomerId = request.CustomerId,
                     VaccineId = detail.VaccineId
                 };
-                if (totalStock >= 10 && pendingFound==false)
+                if (totalStock >= 10 && pendingFound == false)
                 {
                     // chọn batch của vaccine với điều kiện( gần hết ngày hết hạn nhất & số lượng còn ít trước)
-                    var availableBatch = _unitOfWork.VaccineBatchDetailRepository.Get(x => x.VaccineId == vaccine.VaccineId && x.Quantity > 0 && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.Date.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation")
+                    var availableBatch = _unitOfWork.VaccineBatchDetailRepository.Get(x => x.VaccineId == vaccine.VaccineId && x.Quantity > 0 && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.Date.AddDays(vaccine.MaxLateDate)) && x.BatchNumberNavigation.Status.ToLower()=="available", includeProperties: "BatchNumberNavigation")
                       .OrderBy(v => v.BatchNumberNavigation.ExpiryDate)
                       .ThenBy(v => v.Quantity)
                       .FirstOrDefault();
                     if (availableBatch != null)
                     {
                         appointment.BatchNumber = availableBatch.BatchNumber;
-                        //availableBatch.PreOrderQuantity++;
+                        if (!selectedBatches.ContainsKey(detail.VaccineId))
+                        {
+                            selectedBatches[detail.VaccineId] = new List<VaccineBatchDetail>();
+                        }
+                        selectedBatches[detail.VaccineId].Add(availableBatch);
                     }
 
                 }
@@ -359,8 +446,18 @@ namespace Vaccine.API.Controllers
                     appt.Status = "Pending";
                 }
             }
+            else
+            {
+                foreach (var batchList in selectedBatches.Values)
+                {
+                    foreach (var batch in batchList)
+                    {
+                        batch.PreOrderQuantity++;
+                        _unitOfWork.VaccineBatchDetailRepository.Update(batch);
+                    }
+                }
+            }
             _unitOfWork.AppointmentRepository.InsertRange(appointmentList);
-
             _unitOfWork.Save();
             return Ok(new
             {
@@ -480,7 +577,7 @@ namespace Vaccine.API.Controllers
                 return BadRequest(new { message = $"Vaccine with id {request.VaccineId} is not found !" });
             }
             var totalStock = _unitOfWork.VaccineBatchDetailRepository.Get(
-                   v => v.VaccineId == request.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(request.AppointmentDate.Date.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation").Sum(v => v.Quantity);
+                   v => v.VaccineId == request.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(request.AppointmentDate.Date.AddDays(vaccine.MaxLateDate)) && v.BatchNumberNavigation.Status == "Available", includeProperties: "BatchNumberNavigation").Sum(v => v.Quantity);
             //Nếu không đủ vaccine, giữ trạng thái "Pending" và gửi cho nhân viên xử lý
             if (totalStock < 10)
             {
@@ -508,7 +605,7 @@ namespace Vaccine.API.Controllers
                     appointment = appointEntity
                 });
             }
-            var batchNumberAvailable = _unitOfWork.VaccineBatchDetailRepository.Get(filter: x => x.VaccineId == request.VaccineId && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(request.AppointmentDate.Date.AddDays(3)), includeProperties: "BatchNumberNavigation").
+            var batchNumberAvailable = _unitOfWork.VaccineBatchDetailRepository.Get(filter: x => x.VaccineId == request.VaccineId && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime (request.AppointmentDate.Date.AddDays(3)) && x.BatchNumberNavigation.Status.ToLower() == "available",  includeProperties: "BatchNumberNavigation").
                  OrderBy(x => x.BatchNumberNavigation.ExpiryDate).
                  ThenBy(x => x.Quantity).
                  FirstOrDefault();
@@ -551,6 +648,7 @@ namespace Vaccine.API.Controllers
                 ComboId = null,
                 CustomerId = request.CustomerId,
                 VaccineId = request.VaccineId,
+                
             };
 
             return Ok(new
