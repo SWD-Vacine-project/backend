@@ -227,10 +227,10 @@ namespace Vaccine.API.Controllers
         }
 
 
-        [HttpPut("update-appointment-date/{id}")]
-        public async Task<IActionResult> UpdateAppointmentDate(int id, [FromBody] DateTime newDate)
+        [HttpPut("update-appointment-date/{appointment_id}")]
+        public async Task<IActionResult> UpdateAppointmentDate(int appointment_id, [FromBody] DateTime newDate)
         {
-            var appointment = _unitOfWork.AppointmentRepository.GetByID(id);
+            var appointment = _unitOfWork.AppointmentRepository.GetByID(appointment_id);
             if (appointment == null)
             {
                 return NotFound(new { message = "Appointment not found." });
@@ -242,8 +242,14 @@ namespace Vaccine.API.Controllers
                 return BadRequest(new { message = "Cannot update to a past date." });
             }
 
+            if ((newDate - appointment.AppointmentDate).TotalDays > 3)
+            {
+                return BadRequest(new { message = "Cannot update more than 3 days." });
+            }
+
             // Update only the AppointmentDate field
             appointment.AppointmentDate = newDate;
+            _unitOfWork.AppointmentRepository.Update(appointment);
             _unitOfWork.Save();
 
             return Ok(new { message = "Appointment date updated successfully." });
@@ -274,15 +280,14 @@ namespace Vaccine.API.Controllers
 
 
         [HttpPost("create-appointment-combo")]
-        [SwaggerOperation(
-            Description = "Create appointment when purchase combo"
-        )]
+        [SwaggerOperation(Description = "Tạo lịch hẹn khi khách hàng mua combo vaccine")]
         public IActionResult CreateAppointmentsCombo(RequestCreateComboAppointment request)
         {
             if (request == null)
             {
-                return BadRequest(new { message = "Combo data is required" });
+                return BadRequest(new { message = "Thiếu dữ liệu combo" });
             }
+
             var comboDetails = _unitOfWork.VaccineComboDetailRepository.Get(filter: x => x.ComboId == request.ComboId).ToList();
             if (comboDetails == null )
             {
@@ -297,17 +302,15 @@ namespace Vaccine.API.Controllers
             bool pendingFound = false;
             foreach (var detail in comboDetails)
             {
-                // tìm kiến vaccine theo vaccineID
                 var vaccine = _unitOfWork.VaccineRepository.Get(filter: x => x.VaccineId == detail.VaccineId).FirstOrDefault();
                 if (vaccine == null)
                 {
-                    return BadRequest(new { message = $"Vaccine Error: {detail.VaccineId} does not contain internalDurationDay" });
+                    return BadRequest(new { message = $"Lỗi vaccine: Không tìm thấy VaccineId {detail.VaccineId}." });
                 }
-                // từ vaccineID => truy xuất ra ngày cần tiêm tiếp theo
-                int durationDays = vaccine.InternalDurationDoses;
-                // Kiểm tra tổng số vaccine theo vaccineID trong kho
+
                 var totalStock = _unitOfWork.VaccineBatchDetailRepository.Get(
-                    v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.AddDays(vaccine.MaxLateDate)), includeProperties: "BatchNumberNavigation"
+                    v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.AddDays(vaccine.MaxLateDate)),
+                    includeProperties: "BatchNumberNavigation"
                 ).Sum(v => v.Quantity);
 
                 //if (totalStock < 10)
@@ -327,7 +330,7 @@ namespace Vaccine.API.Controllers
                     Notes = request.Notes,
                     CreatedAt = DateTime.Now,
                     ChildId = request.ChildId,
-                    StaffId = null,  // Nhân viên xử lý nếu Pending
+                    StaffId = null,
                     DoctorId = null,
                     VaccineType = "Combo",
                     ComboId = request.ComboId,
@@ -350,6 +353,13 @@ namespace Vaccine.API.Controllers
                 }
                 appointmentList.Add(appointment);
 
+                if (availableBatch != null)
+                {
+                    appointment.BatchNumber = availableBatch.BatchNumber;
+                    availableBatch.PreOrderQuantity++;
+                }
+
+                appointmentList.Add(appointment);
                 currentAppointmentDate = currentAppointmentDate.AddDays(durationDays);
             }
             if (pendingFound)
@@ -362,14 +372,12 @@ namespace Vaccine.API.Controllers
             _unitOfWork.AppointmentRepository.InsertRange(appointmentList);
 
             _unitOfWork.Save();
+
             return Ok(new
             {
-                message = appointmentList.All(a => a.Status == "Approved") ?
-           "Tất cả lịch hẹn trong combo đã được chấp nhận." :
-           "Một số lịch hẹn đang chờ xác nhận từ nhân viên.",
+                message = "Tất cả lịch hẹn trong combo đã được chấp nhận.",
                 Appointments = appointmentList
             });
-
         }
         //[HttpPost("create-appointment-combo")]
         //[SwaggerOperation(Description = "Tạo lịch hẹn khi khách hàng mua combo vaccine")]
