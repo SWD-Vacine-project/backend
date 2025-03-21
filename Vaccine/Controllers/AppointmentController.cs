@@ -227,10 +227,10 @@ namespace Vaccine.API.Controllers
         }
 
 
-        [HttpPut("update-appointment-date/{id}")]
-        public async Task<IActionResult> UpdateAppointmentDate(int id, [FromBody] DateTime newDate)
+        [HttpPut("update-appointment-date/{appointment_id}")]
+        public async Task<IActionResult> UpdateAppointmentDate(int appointment_id, [FromBody] DateTime newDate)
         {
-            var appointment = _unitOfWork.AppointmentRepository.GetByID(id);
+            var appointment = _unitOfWork.AppointmentRepository.GetByID(appointment_id);
             if (appointment == null)
             {
                 return NotFound(new { message = "Appointment not found." });
@@ -242,8 +242,14 @@ namespace Vaccine.API.Controllers
                 return BadRequest(new { message = "Cannot update to a past date." });
             }
 
+            if ((newDate - appointment.AppointmentDate).TotalDays > 3)
+            {
+                return BadRequest(new { message = "Cannot update more than 3 days." });
+            }
+
             // Update only the AppointmentDate field
             appointment.AppointmentDate = newDate;
+            _unitOfWork.AppointmentRepository.Update(appointment);
             _unitOfWork.Save();
 
             return Ok(new { message = "Appointment date updated successfully." });
