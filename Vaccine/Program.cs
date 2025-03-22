@@ -153,11 +153,12 @@ var app = builder.Build();
     });
 //}
 app.UseRouting();
-app.UseCors("MyPolicy");
+
 
 app.UseHttpsRedirection();
 //app.UseCors("AllowAll");
 app.UseAuthorization();
+app.UseCors("MyPolicy");
 app.MapGet("/", () => "Hello from Vaccine API!");
 app.MapControllers();
 
