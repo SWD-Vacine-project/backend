@@ -158,8 +158,9 @@ app.UseCors("MyPolicy");
 app.UseHttpsRedirection();
 //app.UseCors("AllowAll");
 app.UseAuthorization();
-app.MapControllers();
 app.MapGet("/", () => "Hello from Vaccine API!");
+app.MapControllers();
+
 
 
 app.Run();
