@@ -152,6 +152,7 @@ var app = builder.Build();
         c.OAuthUsePkce(); // Bật PKCE
     });
 //}
+app.UseRouting();
 app.UseCors("MyPolicy");
 
 app.UseHttpsRedirection();
