@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MilkStore.API.Models.CustomerModel;
@@ -8,9 +9,12 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Net.WebSockets;
 using System.Reflection.PortableExecutable;
 using System.Runtime;
+using Vaccine.API.Helper;
 using Vaccine.API.Models.AppointmentModel;
 using Vaccine.API.Models.CustomerModel;
+using Vaccine.API.Models.EmailModel;
 using Vaccine.Repo.Entities;
+using Vaccine.Repo.Repository;
 using Vaccine.Repo.UnitOfWork;
 
 namespace Vaccine.API.Controllers
@@ -390,7 +394,7 @@ namespace Vaccine.API.Controllers
                 int durationDays = vaccine.InternalDurationDoses;
                 // Kiểm tra tổng số vaccine theo vaccineID trong kho
                 var totalStock = _unitOfWork.VaccineBatchDetailRepository.Get(
-                    v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate.AddDays(vaccine.MaxLateDate)) && v.BatchNumberNavigation.Status.ToLower() == "available", includeProperties: "BatchNumberNavigation"
+                    v => v.VaccineId == detail.VaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(currentAppointmentDate).AddDays(vaccine.MaxLateDate) && v.BatchNumberNavigation.Status.ToLower() == "available", includeProperties: "BatchNumberNavigation"
                 ).Sum(v => v.Quantity);
 
                 //if (totalStock < 10)
@@ -459,6 +463,127 @@ namespace Vaccine.API.Controllers
             }
             _unitOfWork.AppointmentRepository.InsertRange(appointmentList);
             _unitOfWork.Save();
+            //---------------------------------------------------------------------------------------
+            // Tạo Invoice trạng thái Unpaid
+            //----------------------------------------------------------------------------------------
+            //  Gửi email nếu tất cả lịch hẹn đều được phê duyệt
+            if (appointmentList.All(a => a.Status == "Approved"))
+            {
+                var customer = _unitOfWork.CustomerRepository.GetByID(request.CustomerId);
+
+                if (customer != null && !string.IsNullOrEmpty(customer.Email))
+                {
+                    // Tạo danh sách ngày tiêm từng mũi
+                    string appointmentDetails = "";
+                    foreach (var appointment in appointmentList)
+                    {
+                        var vaccine = appointment.VaccineId.HasValue
+                                        ? _unitOfWork.VaccineRepository.GetByID(appointment.VaccineId.Value)
+                                        : null;
+                        string vaccineName = vaccine != null ? vaccine.Name : "Vaccine không xác định";
+
+                        appointmentDetails += $@"
+                                                <tr>
+                                                    <td><b>{vaccineName}</b></td>
+                                                    <td>{appointment.AppointmentDate:dd/MM/yyyy}</td>
+                                                    <td>{appointment.Status}</td>
+                                                </tr>";
+                                                    }
+
+                                                    // Tạo nội dung email
+                                                    string emailBody = $@"
+                                        <html>
+                                        <head>
+                                            <style>
+                                                body {{
+                                                    font-family: Arial, sans-serif;
+                                                    line-height: 1.6;
+                                                    color: #333;
+                                                    background-color: #f4f4f4;
+                                                    padding: 20px;
+                                                }}
+                                                .container {{
+                                                    max-width: 600px;
+                                                    margin: 0 auto;
+                                                    background: #ffffff;
+                                                    padding: 20px;
+                                                    border-radius: 8px;
+                                                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                                                }}
+                                                h2 {{
+                                                    color: #007bff;
+                                                }}
+                                                table {{
+                                                    width: 100%;
+                                                    border-collapse: collapse;
+                                                    margin-top: 15px;
+                                                    background: #fff;
+                                                }}
+                                                th, td {{
+                                                    border: 1px solid #ddd;
+                                                    padding: 10px;
+                                                    text-align: left;
+                                                }}
+                                                th {{
+                                                    background-color: #007bff;
+                                                    color: white;
+                                                    text-align: center;
+                                                }}
+                                                .footer {{
+                                                    margin-top: 20px;
+                                                    padding-top: 15px;
+                                                    border-top: 1px solid #ddd;
+                                                    font-size: 12px;
+                                                    color: #666;
+                                                    text-align: center;
+                                                }}
+                                            </style>
+                                        </head>
+                                        <body>
+                                            <div class='container'>
+                                                <h2>Xin chào {(string.IsNullOrEmpty(customer.Name) ? "bạn" : customer.Name)},</h2>
+                                                <p>Lịch hẹn tiêm chủng của bạn đã được xác nhận. Dưới đây là lịch tiêm chi tiết:</p>
+                                                <table>
+                                                    <tr>
+                                                        <th>Vaccine</th>
+                                                        <th>Ngày tiêm</th>
+                                                        <th>Trạng thái</th>
+                                                    </tr>
+                                                    {appointmentDetails}
+                                                </table>
+                                                <p class='footer'>
+                                                    Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi. Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ trung tâm y tế.
+                                                </p>
+                                            </div>
+                                        </body>
+                                        </html>";
+
+                    // Khởi tạo email request
+                    var emailRequest = new RequestSendEmailModel
+                    {
+                        Email = customer.Email,
+                        Subject = "Xác nhận lịch hẹn tiêm chủng",
+                        Body = emailBody
+                    };
+
+                    try
+                    {
+                        bool emailSent = SendEmail(emailRequest);
+                        if (!emailSent)
+                        {
+                            Console.WriteLine("⚠ Gửi email thất bại!");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"❌ Lỗi khi gửi email: {ex.Message}");
+                    }
+                }
+            }
+
+
+
+
             return Ok(new
             {
                 message = appointmentList.All(a => a.Status == "Approved") ?
@@ -706,6 +831,27 @@ namespace Vaccine.API.Controllers
             _unitOfWork.AppointmentRepository.Update(appointment);
             _unitOfWork.Save();
             return Ok(new { message = "Updated rejected status for appointment" });
+        }
+        //---------------------------------------------------------------------------
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public bool SendEmail(RequestSendEmailModel requestSendEmailModel)
+        {
+            // check email có đúng cú pháp không
+            if (!Utils.IsValidEmail(requestSendEmailModel.Email))
+            {
+                Console.WriteLine("Email không hợp lệ");
+                return false;
+            }
+            try
+            {
+                EmailRepository.SendEmail(requestSendEmailModel.Email, requestSendEmailModel.Subject, requestSendEmailModel.Body);
+                return true;
+            }catch(Exception ex) 
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+                       
         }
     }
 }
