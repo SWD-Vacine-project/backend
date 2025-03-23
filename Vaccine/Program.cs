@@ -29,30 +29,30 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 
 
 //allow cors
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("MyPolicy",
-//        policy =>
-//        {
-//            policy.WithOrigins("http://localhost:3000") // Cho phép frontend truy cập
-
-//                  .AllowAnyMethod()
-//                  .AllowAnyHeader()
-//                  .AllowCredentials() // Nếu có xác thực bằng cookie/token
-//                  .WithExposedHeaders("Content-Disposition");
-//        });
-//});
-//allow cros
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("MyPolicy",
-		policy =>
-		{
-			policy.AllowAnyOrigin() // Cho phép tất cả domain (*)
-				  .AllowAnyMethod() // Cho phép tất cả HTTP methods (GET, POST, PUT, DELETE, ...)
-				  .AllowAnyHeader(); // Cho phép tất cả headers
-		});
+    options.AddPolicy("MyPolicy",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // Cho phép frontend truy cập
+
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials() // Nếu có xác thực bằng cookie/token
+                  .WithExposedHeaders("Content-Disposition");
+        });
 });
+//allow cros
+//builder.Services.AddCors(options =>
+//{
+//	options.AddPolicy("MyPolicy",
+//		policy =>
+//		{
+//			policy.AllowAnyOrigin() // Cho phép tất cả domain (*)
+//				  .AllowAnyMethod() // Cho phép tất cả HTTP methods (GET, POST, PUT, DELETE, ...)
+//				  .AllowAnyHeader(); // Cho phép tất cả headers
+//		});
+//});
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleRequestCreateChildModel>();
 
