@@ -43,7 +43,7 @@ namespace Vaccine.API.Controllers
             {
                 BatchNumber = batch.BatchNumber,
                 Manufacturer = batch.Manufacturer,
-                ProductionDate = batch.ManufactureDate,
+                ManufactureDate = batch.ManufactureDate,
                 ExpiryDate = batch.ExpiryDate,
                 Country = batch.Country,
                 Status = batch.Status,
