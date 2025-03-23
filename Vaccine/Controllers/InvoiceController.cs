@@ -180,5 +180,81 @@ namespace Vaccine.API.Controllers
             _unitOfWork.Save();
             return Ok(new { message = "Invoice updated to Paid " });
         }
+        //======================================================================================
+        // nay cua nguyen 
+        [HttpGet("pending-invoices")]
+        public IActionResult GetPendingInvoices()
+        {
+            var pendingInvoices = _unitOfWork.InvoiceRepository
+            .Get(filter: i => i.Status == "Pending", includeProperties: "InvoiceDetails.Appointment")
+            .Select(invoice => new
+            {
+                InvoiceId = invoice.InvoiceId,
+                CustomerId = invoice.CustomerId,
+                TotalAmount = invoice.TotalAmount,
+                Status = invoice.Status,
+                Type = invoice.Type,
+                CreatedAt = invoice.CreatedAt,
+                InvoiceDetails = invoice.InvoiceDetails.Select(detail => new
+                {
+                    AppointmentId = detail.AppointmentId,
+                    AppointmentDate = detail.Appointment != null ? detail.Appointment.AppointmentDate : (DateTime?)null, // ✅ Lấy ngày hẹn
+                    VaccineId = detail.VaccineId,
+                    ComboId = detail.ComboId,
+                    Quantity = detail.Quantity,
+                    Price = detail.Price
+                }).ToList()
+            })
+            .ToList();
+
+            if (!pendingInvoices.Any())
+            {
+                return NotFound(new { message = "No pending invoices found." });
+            }
+
+            return Ok(pendingInvoices);
+        }
+        [HttpPut("update-invoice-status-unpaid/{invoiceId}")]
+        public IActionResult UpdateInvoiceStatusUnPaid(int invoiceId)
+        {
+            var invoice = _unitOfWork.InvoiceRepository.GetByID(invoiceId);
+
+            if (invoice == null)
+            {
+                return NotFound(new { message = "Invoice not found." });
+            }
+
+            if (invoice.Status != "Pending")
+            {
+                return BadRequest(new { message = "Only invoices with 'Pending' status can be updated to 'Unpaid'." });
+            }
+
+            invoice.Status = "Unpaid"; //Cập nhật trạng thái
+            invoice.UpdatedAt = DateTime.UtcNow;
+
+            _unitOfWork.InvoiceRepository.Update(invoice);
+            _unitOfWork.Save();
+
+            return Ok(new { message = "Invoice status updated to 'Unpaid' successfully.", Invoice = invoice });
+        }
+        [HttpPut("update-invoice-status-canceled/{invoiceId}")]
+        public IActionResult UpdateInvoiceStatusCanceled (int invoiceId)
+        {
+            var invoice = _unitOfWork.InvoiceRepository.GetByID(invoiceId);
+
+            if (invoice == null)
+            {
+                return NotFound(new { message = "Invoice not found." });
+            }
+            invoice.Status = "Cancelled"; //Cập nhật trạng thái
+            invoice.UpdatedAt = DateTime.UtcNow;
+
+            _unitOfWork.InvoiceRepository.Update(invoice);
+            _unitOfWork.Save();
+
+            return Ok(new { message = "Invoice status updated to 'Canceled' successfully.", Invoice = invoice });
+        }
+
+
     }
 }
