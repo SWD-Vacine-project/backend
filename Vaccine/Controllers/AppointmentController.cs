@@ -650,23 +650,8 @@ namespace Vaccine.API.Controllers
                 };
                 _unitOfWork.AppointmentRepository.Insert(appointEntity);
                 _unitOfWork.Save();
-                return Ok(new
-                {
-                    message = "Appointment is in pending status, please wait for the staff to approve.",
-                    appointment = appointEntity
-                });
-            }
-            var batchNumberAvailable = _unitOfWork.VaccineBatchDetailRepository.Get(filter: x => x.VaccineId == request.VaccineId && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime (request.AppointmentDate.Date.AddDays(3)) && x.BatchNumberNavigation.Status.ToLower() == "available",  includeProperties: "BatchNumberNavigation").
-                 OrderBy(x => x.BatchNumberNavigation.ExpiryDate).
-                 ThenBy(x => x.Quantity).
-                 FirstOrDefault();
-            // para input to create
-            //if (batchNumberAvailable == null)
-            //{
-            //    return BadRequest(new { message = $"There is no vaccine batch of vaccine {request.VaccineId}" });
-            //}
-            if (totalStock < 10)
-            {
+               
+            
                 var pendingAppointment = new Appointment
                 {
                     AppointmentDate = request.AppointmentDate,
@@ -685,7 +670,7 @@ namespace Vaccine.API.Controllers
 
                 _unitOfWork.AppointmentRepository.Insert(pendingAppointment);
                 _unitOfWork.Save();
-
+               
                 // **Chỉ tạo `Invoice` nếu `Appointment` là `"Pending"`**
                 var invoice = CreateInvoice(new RequestCreateInvoiceModel
                 {
@@ -695,9 +680,8 @@ namespace Vaccine.API.Controllers
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                 });
-                invoice.Status = "Pending";
-                _unitOfWork.InvoiceRepository.Update(invoice);
-                _unitOfWork.Save();
+
+                Console.WriteLine(invoice.Status);
                 // *Tạo `InvoiceDetail` liên kết với `Pending Appointment`*
                 CreateInvoiceDetail(new RequestCreateInvoiceDetailModel
                 {
@@ -708,15 +692,23 @@ namespace Vaccine.API.Controllers
                     Quantity = 1,
                     Price = vaccine.Price
                 });
-
+               
                 return Ok(new
                 {
                     message = "Appointment is in pending status, invoice has been created.",
                     appointment = pendingAppointment,
                     invoice = invoice
                 });
-            }
 
+            }
+            var batchNumberAvailable = _unitOfWork.VaccineBatchDetailRepository.Get(filter: x => x.VaccineId == request.VaccineId && x.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(request.AppointmentDate.Date.AddDays(3)) && x.BatchNumberNavigation.Status.ToLower() == "available", includeProperties: "BatchNumberNavigation").
+                     OrderBy(x => x.BatchNumberNavigation.ExpiryDate).
+                     ThenBy(x => x.Quantity).
+                     FirstOrDefault();
+            //if (batchNumberAvailable == null)
+            //{
+            //    return BadRequest(new { message = $"There is no vaccine batch of vaccine {request.VaccineId}" });
+            //}
             var appointEntityAuto = new Appointment
             {
                 AppointmentDate = request.AppointmentDate,
@@ -939,12 +931,12 @@ namespace Vaccine.API.Controllers
                 bool emailSent = SendEmail(emailRequest);
                 if (!emailSent)
                 {
-                    Console.WriteLine("⚠ Gửi email thất bại!");
+                    Console.WriteLine("Gửi email thất bại!");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Lỗi khi gửi email: {ex.Message}");
+                Console.WriteLine($" Lỗi khi gửi email: {ex.Message}");
             }
         }
 
