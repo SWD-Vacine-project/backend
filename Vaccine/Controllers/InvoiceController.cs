@@ -136,11 +136,9 @@ namespace Vaccine.API.Controllers
         }
 
         //============================================================================
-        [HttpPut("update-invoice-status-to-paid/{id}")]
+        [HttpPut("update-invoice-status-to-paid/{invoice_id}")]
         [SwaggerOperation(
-        Summary = "Update status of invoice to paid",
-        Description = "get id of invoice" +
-            "Get purchased vaccines from InvoiceDetail "
+        Summary = "Update status of invoice to paid"        
     )]
         public IActionResult UpdateInvoiceStatusToPaid(int invoice_id)
         {
@@ -159,28 +157,28 @@ namespace Vaccine.API.Controllers
             invoice.Status = "Paid";
             _unitOfWork.InvoiceRepository.Update(invoice);
 
-            // Get purchased vaccines from InvoiceDetail (assuming InvoiceDetail stores vaccine purchases)
-            var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice_id);
+            //// Get purchased vaccines from InvoiceDetail (assuming InvoiceDetail stores vaccine purchases)
+            //var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice_id);
 
-            foreach (var detail in invoiceDetails)
-            {
-                var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
-                    .Get(vb => vb.VaccineId == detail.VaccineId)
-                    .OrderBy(vb => vb.BatchNumber)
-                    .FirstOrDefault();
+            //foreach (var detail in invoiceDetails)
+            //{
+            //    var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
+            //        .Get(vb => vb.VaccineId == detail.VaccineId)
+            //        .OrderBy(vb => vb.BatchNumber)
+            //        .FirstOrDefault();
 
-                if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
-                {
-                    return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
-                }
+            //    if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
+            //    {
+            //        return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
+            //    }
 
-                // Deduct vaccine quantity
-                vaccineBatch.Quantity -= detail.Quantity;
-                _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
-            }
+            //    // Deduct vaccine quantity
+            //    vaccineBatch.Quantity -= detail.Quantity;
+            //    _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
+            //}
 
             _unitOfWork.Save();
-            return Ok(new { message = "Invoice updated to Paid and stock deducted." });
+            return Ok(new { message = "Invoice updated to Paid " });
         }
     }
 }
