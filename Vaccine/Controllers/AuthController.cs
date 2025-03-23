@@ -139,13 +139,34 @@ namespace Vaccine.API.Controllers
             dynamic user = null;
             string userRole;
             string preFix = login.UserName.Substring(0, 3);
+            var status = "Active";
             Console.WriteLine(preFix);
             if (preFix == "ST_")
             {
                 user = _unitOfWork.StaffRepository.
                     Get(s => s.UserName == login.UserName).
                     FirstOrDefault();
-                userRole = "Staff";
+                userRole = user?.Role ?? "Staff";
+                status= user.Status;    
+                if (user != null)
+                {
+
+                    switch (user.Role)
+                    {
+                        case "Data Entry":
+                            userRole = "Data Entry";
+                            break;
+                        case "Nurse":
+                            userRole = "Nurse";
+                            break;
+                        case "Receptionist":
+                            userRole = "Receptionist";
+                            break;
+                        default:
+                            userRole = "Staff"; // Nếu không có role cụ thể, giữ mặc định là "Staff"
+                            break;
+                    }
+                }
             }
             else if (preFix == "AD_")
             {
@@ -163,7 +184,7 @@ namespace Vaccine.API.Controllers
             }
 
 
-            if (user == null)
+            if (user == null || status =="Inactive")
             {
                 return Unauthorized(new { message = "Account does not exist" });
             }
@@ -175,7 +196,7 @@ namespace Vaccine.API.Controllers
 
             var response = new
             {
-                Id = userRole == "Staff" ? user.StaffId :
+                Id =(userRole == "Data Entry" || userRole == "Nurse" || userRole == "Receptionist") ? user.StaffId :
                      userRole == "Admin" ? user.AdminId :
                      userRole == "Customer" ? user.CustomerId : (int?)null,
                 user.Email,
