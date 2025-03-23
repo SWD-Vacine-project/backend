@@ -31,4 +31,5 @@ public partial class Staff
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
     public virtual ICollection<HealthRecord> HealthRecords { get; set; } = new List<HealthRecord>();
+    public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 }

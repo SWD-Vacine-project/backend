@@ -101,25 +101,16 @@ namespace Vaccine.API.Controllers
                                                                         .Include(x => x.Doctor)
                                                                         .Include(x => x.Staff)
                                                                         .Where(x => x.ReviewId == id)
-                                                                        .Select(x => new
-                                                                        {
-                                                                            x.ReviewId,
-                                                                            x.CustomerId,
-                                                                            x.StaffId,
-                                                                            x.VaccineId,
-                                                                            x.AppointmentId,
-                                                                            x.Rating,
-                                                                            x.Comment,
-                                                                            x.CreatedAt,
-                                                                            x.UpdatedAt,
-                                                                        }).FirstOrDefault();
+                                                                        .FirstOrDefault();
 
             if (feedback == null)
             {
                 return NotFound(new { message = "Feedback not found" });
             }
 
-            return Ok(feedback);
+            var feedbackViewModel = new FeedbackViewModel(feedback);
+
+            return Ok(feedbackViewModel);
 
         }
 
@@ -130,24 +121,16 @@ namespace Vaccine.API.Controllers
                                                                        .Include(x => x.Appointment)
                                                                        .Include(x => x.Doctor)
                                                                        .Include(x => x.Staff)
-                                                                       .Select(x => new
-                                                                       {
-                                                                           x.ReviewId,
-                                                                           x.CustomerId,
-                                                                           x.StaffId,
-                                                                           x.VaccineId,
-                                                                           x.AppointmentId,
-                                                                           x.Rating,
-                                                                           x.Comment,
-                                                                           x.CreatedAt,
-                                                                           x.UpdatedAt,
-                                                                       }).ToList();
+                                                                       .Include(x => x.Vaccine)
+                                                                       .ToList();
 
             if (feedback.Count == 0)
             {
                 return Ok();
             }
-            return Ok(feedback);
+
+            var result = feedback.Select(x => new FeedbackViewModel(x));
+            return Ok(result);
 
         }
     }

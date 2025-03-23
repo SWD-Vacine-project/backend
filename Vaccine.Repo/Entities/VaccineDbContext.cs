@@ -293,6 +293,17 @@ public partial class VaccineDbContext : DbContext
             entity.HasOne(d => d.Doctor).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.DoctorId)
                 .HasConstraintName("FK__Feedback__doctor__2B0A656D");
+
+            entity.HasOne(d => d.Staff).WithMany(p => p.Feedbacks)
+               .HasForeignKey(d => d.StaffId)
+               .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.Vaccine).WithMany(p => p.Feedbacks)
+               .HasForeignKey(d => d.VaccineId)
+               .OnDelete(DeleteBehavior.ClientSetNull);
+
+
+
         });
 
         modelBuilder.Entity<HealthRecord>(entity =>
