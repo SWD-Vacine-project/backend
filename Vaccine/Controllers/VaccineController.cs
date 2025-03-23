@@ -117,6 +117,9 @@ namespace Vaccine.API.Controllers
                 VaccineId = v.VaccineId,
                 VaccineName = v.Name,
                 Description = v.Description,
+                Price = v.Price,
+                MaxLateDate= v.MaxLateDate,
+                InternaDurationDose= v.InternalDurationDoses,
                 Batches = v.VaccineBatchDetails.Select(vbd => new
                 {
                     BatchNumber = vbd.BatchNumber,

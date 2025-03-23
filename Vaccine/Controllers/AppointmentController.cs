@@ -13,6 +13,8 @@ using Vaccine.API.Helper;
 using Vaccine.API.Models.AppointmentModel;
 using Vaccine.API.Models.CustomerModel;
 using Vaccine.API.Models.EmailModel;
+using Vaccine.API.Models.InvoiceDetailModel;
+using Vaccine.API.Models.InvoiceModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.Repository;
 using Vaccine.Repo.UnitOfWork;
@@ -469,118 +471,42 @@ namespace Vaccine.API.Controllers
             //  Gửi email nếu tất cả lịch hẹn đều được phê duyệt
             if (appointmentList.All(a => a.Status == "Approved"))
             {
-                var customer = _unitOfWork.CustomerRepository.GetByID(request.CustomerId);
 
-                if (customer != null && !string.IsNullOrEmpty(customer.Email))
+                SendAppointmentConfirmationEmail(request.CustomerId, appointmentList);
+            }
+            //------------------------------------------------------------------------
+            // tạo invoice status pending
+            Invoice? invoice = null;
+            if (pendingFound)
+            {
+                var comboPrice = _unitOfWork.VaccineComboRepository
+                                .Get(filter: c => c.ComboId == request.ComboId)
+                                .FirstOrDefault()?.Price ?? 0;
+                invoice = CreateInvoice(new RequestCreateInvoiceModel
                 {
-                    // Tạo danh sách ngày tiêm từng mũi
-                    string appointmentDetails = "";
-                    foreach (var appointment in appointmentList)
-                    {
-                        var vaccine = appointment.VaccineId.HasValue
-                                        ? _unitOfWork.VaccineRepository.GetByID(appointment.VaccineId.Value)
-                                        : null;
-                        string vaccineName = vaccine != null ? vaccine.Name : "Vaccine không xác định";
+                    CustomerId = request.CustomerId,
+                    Type = "Combo",
+                    TotalAmount = comboPrice,// Lấy giá combo
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                });
 
-                        appointmentDetails += $@"
-                                                <tr>
-                                                    <td><b>{vaccineName}</b></td>
-                                                    <td>{appointment.AppointmentDate:dd/MM/yyyy}</td>
-                                                    <td>{appointment.Status}</td>
-                                                </tr>";
-                                                    }
-
-                                                    // Tạo nội dung email
-                                                    string emailBody = $@"
-                                        <html>
-                                        <head>
-                                            <style>
-                                                body {{
-                                                    font-family: Arial, sans-serif;
-                                                    line-height: 1.6;
-                                                    color: #333;
-                                                    background-color: #f4f4f4;
-                                                    padding: 20px;
-                                                }}
-                                                .container {{
-                                                    max-width: 600px;
-                                                    margin: 0 auto;
-                                                    background: #ffffff;
-                                                    padding: 20px;
-                                                    border-radius: 8px;
-                                                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-                                                }}
-                                                h2 {{
-                                                    color: #007bff;
-                                                }}
-                                                table {{
-                                                    width: 100%;
-                                                    border-collapse: collapse;
-                                                    margin-top: 15px;
-                                                    background: #fff;
-                                                }}
-                                                th, td {{
-                                                    border: 1px solid #ddd;
-                                                    padding: 10px;
-                                                    text-align: left;
-                                                }}
-                                                th {{
-                                                    background-color: #007bff;
-                                                    color: white;
-                                                    text-align: center;
-                                                }}
-                                                .footer {{
-                                                    margin-top: 20px;
-                                                    padding-top: 15px;
-                                                    border-top: 1px solid #ddd;
-                                                    font-size: 12px;
-                                                    color: #666;
-                                                    text-align: center;
-                                                }}
-                                            </style>
-                                        </head>
-                                        <body>
-                                            <div class='container'>
-                                                <h2>Xin chào {(string.IsNullOrEmpty(customer.Name) ? "bạn" : customer.Name)},</h2>
-                                                <p>Lịch hẹn tiêm chủng của bạn đã được xác nhận. Dưới đây là lịch tiêm chi tiết:</p>
-                                                <table>
-                                                    <tr>
-                                                        <th>Vaccine</th>
-                                                        <th>Ngày tiêm</th>
-                                                        <th>Trạng thái</th>
-                                                    </tr>
-                                                    {appointmentDetails}
-                                                </table>
-                                                <p class='footer'>
-                                                    Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi. Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ trung tâm y tế.
-                                                </p>
-                                            </div>
-                                        </body>
-                                        </html>";
-
-                    // Khởi tạo email request
-                    var emailRequest = new RequestSendEmailModel
+                foreach (var appointment in appointmentList.Where(a => a.Status == "Pending"))
+                {
+                    var vaccinePrice = _unitOfWork.VaccineRepository
+                                        .Get(filter: x => x.VaccineId == appointment.VaccineId)
+                                        .FirstOrDefault()?.Price ?? 0;
+                    CreateInvoiceDetail(new RequestCreateInvoiceDetailModel
                     {
-                        Email = customer.Email,
-                        Subject = "Xác nhận lịch hẹn tiêm chủng",
-                        Body = emailBody
-                    };
-
-                    try
-                    {
-                        bool emailSent = SendEmail(emailRequest);
-                        if (!emailSent)
-                        {
-                            Console.WriteLine("⚠ Gửi email thất bại!");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"❌ Lỗi khi gửi email: {ex.Message}");
-                    }
+                        InvoiceId = invoice.InvoiceId,
+                        VaccineId = appointment.VaccineId,
+                        AppointmentId = appointment.AppointmentId,
+                        ComboId = request.ComboId,
+                        Quantity = 1,
+                        Price = vaccinePrice // Không cần giá vì đã set trong Invoice
+                    });
                 }
             }
-
 
 
 
@@ -735,10 +661,62 @@ namespace Vaccine.API.Controllers
                  ThenBy(x => x.Quantity).
                  FirstOrDefault();
             // para input to create
-            if (batchNumberAvailable == null)
+            //if (batchNumberAvailable == null)
+            //{
+            //    return BadRequest(new { message = $"There is no vaccine batch of vaccine {request.VaccineId}" });
+            //}
+            if (totalStock < 10)
             {
-                return BadRequest(new { message = $"There is no vaccine batch of vaccine {request.VaccineId}" });
+                var pendingAppointment = new Appointment
+                {
+                    AppointmentDate = request.AppointmentDate,
+                    Status = "Pending",
+                    Notes = request.Notes,
+                    CreatedAt = DateTime.UtcNow,
+                    ChildId = request.ChildId,
+                    StaffId = null,
+                    DoctorId = null,
+                    VaccineType = "Single",
+                    ComboId = null,
+                    CustomerId = request.CustomerId,
+                    VaccineId = request.VaccineId,
+                    BatchNumber = null,
+                };
+
+                _unitOfWork.AppointmentRepository.Insert(pendingAppointment);
+                _unitOfWork.Save();
+
+                // **Chỉ tạo `Invoice` nếu `Appointment` là `"Pending"`**
+                var invoice = CreateInvoice(new RequestCreateInvoiceModel
+                {
+                    CustomerId = request.CustomerId,
+                    Type = "Single",
+                    TotalAmount = vaccine.Price, //  Giá của vaccine
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                });
+                invoice.Status = "Pending";
+                _unitOfWork.InvoiceRepository.Update(invoice);
+                _unitOfWork.Save();
+                // *Tạo `InvoiceDetail` liên kết với `Pending Appointment`*
+                CreateInvoiceDetail(new RequestCreateInvoiceDetailModel
+                {
+                    InvoiceId = invoice.InvoiceId,
+                    VaccineId = request.VaccineId,
+                    AppointmentId = pendingAppointment.AppointmentId,
+                    ComboId = null,
+                    Quantity = 1,
+                    Price = vaccine.Price
+                });
+
+                return Ok(new
+                {
+                    message = "Appointment is in pending status, invoice has been created.",
+                    appointment = pendingAppointment,
+                    invoice = invoice
+                });
             }
+
             var appointEntityAuto = new Appointment
             {
                 AppointmentDate = request.AppointmentDate,
@@ -773,8 +751,9 @@ namespace Vaccine.API.Controllers
                 ComboId = null,
                 CustomerId = request.CustomerId,
                 VaccineId = request.VaccineId,
-                
             };
+            
+
 
             return Ok(new
             {
@@ -852,6 +831,167 @@ namespace Vaccine.API.Controllers
                 return false;
             }
                        
+        }
+        private void SendAppointmentConfirmationEmail(int customerId, List<Appointment> appointmentList)
+        {
+            var customer = _unitOfWork.CustomerRepository.GetByID(customerId);
+            if (customer == null || string.IsNullOrEmpty(customer.Email))
+            {
+                Console.WriteLine("Không thể gửi email: Khách hàng không tồn tại hoặc không có email.");
+                return;
+            }
+
+            // 🔥 Tạo danh sách lịch hẹn theo bảng HTML
+            string appointmentDetails = "";
+            foreach (var appointment in appointmentList)
+            {
+                var vaccine = appointment.VaccineId.HasValue
+                                ? _unitOfWork.VaccineRepository.GetByID(appointment.VaccineId.Value)
+                                : null;
+                string vaccineName = vaccine != null ? vaccine.Name : "Vaccine không xác định";
+
+                appointmentDetails += $@"
+            <tr>
+                <td><b>{vaccineName}</b></td>
+                <td>{appointment.AppointmentDate:dd/MM/yyyy}</td>
+                <td>{appointment.Status}</td>
+            </tr>";
+            }
+
+            // 🔥 Tạo nội dung email
+            string emailBody = $@"
+        <html>
+        <head>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #333;
+                    background-color: #f4f4f4;
+                    padding: 20px;
+                }}
+                .container {{
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background: #ffffff;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                }}
+                h2 {{
+                    color: #007bff;
+                }}
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 15px;
+                    background: #fff;
+                }}
+                th, td {{
+                    border: 1px solid #ddd;
+                    padding: 10px;
+                    text-align: left;
+                }}
+                th {{
+                    background-color: #007bff;
+                    color: white;
+                    text-align: center;
+                }}
+                .footer {{
+                    margin-top: 20px;
+                    padding-top: 15px;
+                    border-top: 1px solid #ddd;
+                    font-size: 12px;
+                    color: #666;
+                    text-align: center;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <h2>Xin chào {(string.IsNullOrEmpty(customer.Name) ? "bạn" : customer.Name)},</h2>
+                <p>Lịch hẹn tiêm chủng của bạn đã được xác nhận. Dưới đây là lịch tiêm chi tiết:</p>
+                <table>
+                    <tr>
+                        <th>Vaccine</th>
+                        <th>Ngày tiêm</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                    {appointmentDetails}
+                </table>
+                <p class='footer'>
+                    Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi. Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ trung tâm y tế.
+                </p>
+            </div>
+        </body>
+        </html>";
+
+            // 🔥 Tạo email request
+            var emailRequest = new RequestSendEmailModel
+            {
+                Email = customer.Email,
+                Subject = "Xác nhận lịch hẹn tiêm chủng",
+                Body = emailBody
+            };
+
+            try
+            {
+                bool emailSent = SendEmail(emailRequest);
+                if (!emailSent)
+                {
+                    Console.WriteLine("⚠ Gửi email thất bại!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi khi gửi email: {ex.Message}");
+            }
+        }
+
+        //----------------------------------------------------------------------------
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public Invoice CreateInvoice(RequestCreateInvoiceModel requestCreateInvoiceModel)
+        {
+            //if (requestCreateInvoiceModel.CustomerId == 0)
+            //{
+            //    return BadRequest(new { message = "Customer ID is required." });
+            //}
+            var invoiceEntity = new Invoice
+            {
+                CustomerId = requestCreateInvoiceModel.CustomerId,
+                TotalAmount = requestCreateInvoiceModel.TotalAmount,
+                Status = "Pending",
+                Type = requestCreateInvoiceModel.Type,
+                CreatedAt = requestCreateInvoiceModel.CreatedAt,
+                UpdatedAt = requestCreateInvoiceModel.UpdatedAt
+
+            };
+            _unitOfWork.InvoiceRepository.Insert(invoiceEntity);
+            _unitOfWork.Save();
+            return invoiceEntity;
+        }
+        //----------------------------------------------------------------------------------
+        // nay tao invoice va invoice details
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public InvoiceDetail CreateInvoiceDetail(RequestCreateInvoiceDetailModel requestCreateInvoiceDetailModel)
+        {
+            //if (requestCreateInvoiceDetailModel.Quantity == null || requestCreateInvoiceDetailModel.Quantity <= 0)
+            //{
+            //    return BadRequest("Quantity must be greater than 0.");
+            //}
+
+            var invoiceDetailEntity = new InvoiceDetail
+            {
+                InvoiceId = requestCreateInvoiceDetailModel.InvoiceId,
+                VaccineId = requestCreateInvoiceDetailModel.VaccineId,
+                AppointmentId = requestCreateInvoiceDetailModel.AppointmentId,
+                ComboId = requestCreateInvoiceDetailModel.ComboId,
+                Quantity = requestCreateInvoiceDetailModel.Quantity,
+                Price = requestCreateInvoiceDetailModel.Price
+            };
+            _unitOfWork.InvoiceDetailRepository.Insert(invoiceDetailEntity);
+            _unitOfWork.Save();
+            return invoiceDetailEntity;
         }
     }
 }
