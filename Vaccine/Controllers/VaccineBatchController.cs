@@ -90,12 +90,12 @@ namespace Vaccine.API.Controllers
 
             return Ok(result);
         }
-        [HttpGet("get-batch-by-vaccineID/{vaccineID}/{appointmentDate}")]
-        public IActionResult GetVaccineBatchByVaccineID(int vaccineID, DateTime appointmentDate)
+        [HttpGet("get-batch-by-vaccineID/{vaccineId}/{appointmentDate}")]
+        public IActionResult GetVaccineBatchByVaccineID(int vaccineId, DateTime appointmentDate)
         {
             // loc theo dieu kien : expiredDate phai lon hon ngay di chich +3, 
             var batchDetails = _unitOfWork.VaccineBatchDetailRepository // expiryDate phai lon hon ngay hom nay
-            .Get(v => v.VaccineId == vaccineID && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(appointmentDate).AddDays(3) && v.Quantity > 0, includeProperties: "Vaccine,BatchNumberNavigation")
+            .Get(v => v.VaccineId == vaccineId && v.BatchNumberNavigation.ExpiryDate > DateOnly.FromDateTime(appointmentDate).AddDays(3) && v.Quantity > 0, includeProperties: "Vaccine,BatchNumberNavigation")
             .OrderBy(v => v.BatchNumberNavigation.ExpiryDate)
             .ThenBy(v => v.Quantity)
             .ToList();
