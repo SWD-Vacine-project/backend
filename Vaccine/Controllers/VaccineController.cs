@@ -117,6 +117,9 @@ namespace Vaccine.API.Controllers
                 VaccineId = v.VaccineId,
                 VaccineName = v.Name,
                 Description = v.Description,
+                Price = v.Price,
+                MaxLateDate= v.MaxLateDate,
+                InternaDurationDose= v.InternalDurationDoses,
                 Batches = v.VaccineBatchDetails.Select(vbd => new
                 {
                     BatchNumber = vbd.BatchNumber,
@@ -170,8 +173,9 @@ namespace Vaccine.API.Controllers
                 Price = newCombo.Price
             };
             _unitOfWork.VaccineComboRepository.Insert(vaccineCombo);
-    
-            foreach(var vaccine in newCombo.VaccineIds)
+            _unitOfWork.Save();
+
+            foreach (var vaccine in newCombo.VaccineIds)
             {
                 var comboDetail = new VaccineComboDetail
                 {

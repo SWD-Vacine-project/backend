@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Vaccine.API.Helper;
+using Vaccine.API.Models.EmailModel;
 using Vaccine.API.Models.StaffModel;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
@@ -29,17 +31,26 @@ namespace Vaccine.API.Controllers
             // Kiểm tra số staff đã tồn tại chưa (phone, email, userName)
             var existingStaff = _unitOfWork.StaffRepository
                 .Get(x => x.Phone == newStaff.Phone || x.Email == newStaff.Email || x.UserName == newStaff.UserName )
-                .FirstOrDefault();
-           
+            .FirstOrDefault();
+
+            if (!Utils.IsValidEmail(newStaff.Email))
+            {
+                return BadRequest("Invalid email");
+            }
+
+            if (!Utils.IsValidPhoneNumber(newStaff.Phone))
+            {
+                return BadRequest("Invalid phone number");
+            }
 
             if (existingStaff != null)
             {
                 return BadRequest("Staff is already exists.");
             }
 
-            if (!newStaff.Name.StartsWith("ST_"))
+            if (!newStaff.UserName.StartsWith("ST_"))
             {
-                newStaff.Name = $"ST_{newStaff.Name}";
+                newStaff.UserName = $"ST_{newStaff.UserName}";
             }
 
             var staff = new Staff
@@ -52,6 +63,8 @@ namespace Vaccine.API.Controllers
                 Role = newStaff.Role,
                 UserName = newStaff.UserName,
                 Password = newStaff.Password,
+                Degree = newStaff.Degree,
+                ExperienceYears = newStaff.ExperienceYears,
                 Status = "Active"
 
             };
@@ -70,6 +83,16 @@ namespace Vaccine.API.Controllers
                 return BadRequest(new { message = "Staff data is required" });
             }
 
+            if (!Utils.IsValidEmail(updateStaff.Email))
+            {
+                return BadRequest("Invalid email");
+            }
+
+            if (!Utils.IsValidPhoneNumber(updateStaff.Phone))
+            {
+                return BadRequest("Invalid phone number");
+            }
+
             var existingStaff = _unitOfWork.StaffRepository
                .Get(x => x.Phone == updateStaff.Phone || x.Email == updateStaff.Email)
                .FirstOrDefault();
@@ -86,11 +109,6 @@ namespace Vaccine.API.Controllers
                 return NotFound(new { message = "Staff not found" });
             }
 
-            if (!updateStaff.Name.StartsWith("ST_"))
-            {
-                updateStaff.Name =  $"ST_{updateStaff.Name}";
-            }
-
             // Cập nhật thông tin staff
             staff.Name = updateStaff.Name;
             staff.Gender = updateStaff.Gender;
@@ -98,6 +116,8 @@ namespace Vaccine.API.Controllers
             staff.Email = updateStaff.Email;
             staff.Role = updateStaff.Role;
             staff.Password = updateStaff.Password;
+            staff.ExperienceYears = updateStaff.ExperienceYears;
+            staff.Degree = updateStaff.Degree;
 
             // Lưu thay đổi vào database
             _unitOfWork.StaffRepository.Update(staff);
@@ -170,6 +190,8 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
+                x.ExperienceYears,
+                x.Degree,
                 x.UserName
             }).FirstOrDefault();
 
@@ -195,7 +217,9 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
-                x.UserName
+                x.UserName,
+                x.ExperienceYears,
+                x.Degree,
             }).ToList();
 
             if (staffs.Count == 0)
@@ -220,7 +244,9 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
-                x.UserName
+                x.UserName,
+                x.ExperienceYears,
+                x.Degree,
             }).ToList();
 
             if (staffs.Count == 0)
@@ -245,7 +271,9 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
-                x.UserName
+                x.UserName,
+                x.ExperienceYears,
+                x.Degree,
             }).ToList();
 
             if (staffs.Count == 0)
@@ -270,7 +298,9 @@ namespace Vaccine.API.Controllers
                 x.Dob,
                 x.Email,
                 x.Status,
-                x.UserName
+                x.UserName,
+                x.ExperienceYears,
+                x.Degree,
             }).ToList();
 
             if (staffs.Count == 0)

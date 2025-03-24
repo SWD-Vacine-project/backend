@@ -17,7 +17,7 @@ namespace Vaccine.Repo.Repository
             mail.To.Add(toEmail);
             mail.Subject = subject;
             mail.Body = body;
-
+            mail.IsBodyHtml = true;
             SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
             smtpClient.Credentials = new NetworkCredential("thunm300104@gmail.com", "pyzy ogej ysgq criv");
             smtpClient.EnableSsl = true;

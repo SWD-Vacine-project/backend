@@ -49,7 +49,7 @@ public partial class VaccineDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=tcp:vaccinations-system.database.windows.net,1433;Initial Catalog=VaccinationSystem;Persist Security Info=False;User ID=swd;Password=VaccinationSystem1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        => optionsBuilder.UseSqlServer("Server=tcp:vaccinationsystem1.database.windows.net,1433;Initial Catalog=VaccinationSystem1;Persist Security Info=False;User ID=swd;Password=VaccinationSystem1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -293,6 +293,17 @@ public partial class VaccineDbContext : DbContext
             entity.HasOne(d => d.Doctor).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.DoctorId)
                 .HasConstraintName("FK__Feedback__doctor__2B0A656D");
+
+            entity.HasOne(d => d.Staff).WithMany(p => p.Feedbacks)
+               .HasForeignKey(d => d.StaffId)
+               .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.Vaccine).WithMany(p => p.Feedbacks)
+               .HasForeignKey(d => d.VaccineId)
+               .OnDelete(DeleteBehavior.ClientSetNull);
+
+
+
         });
 
         modelBuilder.Entity<HealthRecord>(entity =>
@@ -466,6 +477,10 @@ public partial class VaccineDbContext : DbContext
             entity.Property(e => e.UserName)
                 .HasMaxLength(50)
                 .HasColumnName("user_name");
+            entity.Property(e => e.ExperienceYears).HasColumnName("experience_years");
+            entity.Property(e => e.Degree)
+                .HasMaxLength(255)
+                .HasColumnName("degree");
         });
 
         modelBuilder.Entity<Vaccine>(entity =>

@@ -74,6 +74,9 @@ namespace Vaccine.API.Controllers
         [SwaggerOperation(Description = "Creates a health record. Requires appointment_id.")]
         public IActionResult CreateHealthRecord([FromBody] RequestCreateHealthRecordsModel request)
         {
+            // Retrieve the appointment
+            var appointment = _unitOfWork.AppointmentRepository.GetByID(request.AppointmentId);
+
             if (request == null || request.AppointmentId == null)
             {
                 return BadRequest(new { message = "Appointment ID is required." });
@@ -96,6 +99,11 @@ namespace Vaccine.API.Controllers
             };
 
             _unitOfWork.HealthRecordRepository.Insert(healthEntity);
+
+            // Update appointment status to "Success"
+            appointment.Status = "Success";
+            _unitOfWork.AppointmentRepository.Update(appointment);
+
             _unitOfWork.Save();
             return Ok(healthEntity);
         }

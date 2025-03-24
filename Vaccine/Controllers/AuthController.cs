@@ -87,13 +87,13 @@ namespace Vaccine.API.Controllers
         /// </summary>
         /// <param name="requestCreateCustomerModel">Customer details</param>
         /// <returns>Created customer information</returns>
-        [HttpPost("create-google")]
+        [HttpPost("create-customer-by-google")]
         [SwaggerOperation(
         Summary = "Create a customer",
         Description = "Creates a new customer using Google sign-up."
     )]
-        [SwaggerRequestExample(typeof(RequestCreateCustomerModel), typeof(ExampleCreateCustomerModel))]
-        public IActionResult CreateCustomer(RequestCreateCustomerModel requestCreateCustomerModel)
+        //[SwaggerRequestExample(typeof(RequestCreateCustomerModel), typeof(ExampleCreateCustomerModel))]
+        public IActionResult CreateCustomer(RequestCreateGoogleCustomerModel requestCreateCustomerModel)
         {
             // Kiểm tra xem email đã tồn tại chưa
             var existingCustomer = _unitOfWork.CustomerRepository.Get(c => c.Email == requestCreateCustomerModel.Email).FirstOrDefault();
@@ -105,21 +105,21 @@ namespace Vaccine.API.Controllers
             // para input to create 
             var customerEntity = new Customer
             {
-                Name = requestCreateCustomerModel.Name,
-                Email = requestCreateCustomerModel.Email,
-                Password = requestCreateCustomerModel.Password,
-                Dob = DateOnly.FromDateTime(DateTime.Today), // Default to today's date
-                Phone = "0000000000", // Placeholder phone number
+                Name = requestCreateCustomerModel.Name, // name
+                Email = requestCreateCustomerModel.Email, //email
                 UserName = requestCreateCustomerModel.Email, // Use email as username
+                Password = requestCreateCustomerModel.Password, // payload ( google id)
+                Phone = "0000000000" // Use default if not provided
             };
 
             _unitOfWork.CustomerRepository.Insert(customerEntity);
             _unitOfWork.Save();
 
-            var responseCustomer = new ResponseCreateCustomerModel
+            var responseCustomer = new ResponseCreateGoogleCustomerModel
             {
-                CustomerName = customerEntity.UserName,
+                CustomerName = customerEntity.Name,
                 Email = customerEntity.Email,
+                UserName = customerEntity.UserName,
                 Password = customerEntity.Password,
             };
 
@@ -139,13 +139,34 @@ namespace Vaccine.API.Controllers
             dynamic user = null;
             string userRole;
             string preFix = login.UserName.Substring(0, 3);
+            var status = "Active";
             Console.WriteLine(preFix);
             if (preFix == "ST_")
             {
                 user = _unitOfWork.StaffRepository.
                     Get(s => s.UserName == login.UserName).
                     FirstOrDefault();
-                userRole = "Staff";
+                userRole = user?.Role ?? "Staff";
+                status= user.Status;    
+                if (user != null)
+                {
+
+                    switch (user.Role)
+                    {
+                        case "Data Entry":
+                            userRole = "Data Entry";
+                            break;
+                        case "Nurse":
+                            userRole = "Nurse";
+                            break;
+                        case "Receptionist":
+                            userRole = "Receptionist";
+                            break;
+                        default:
+                            userRole = "Staff"; // Nếu không có role cụ thể, giữ mặc định là "Staff"
+                            break;
+                    }
+                }
             }
             else if (preFix == "AD_")
             {
@@ -163,7 +184,7 @@ namespace Vaccine.API.Controllers
             }
 
 
-            if (user == null)
+            if (user == null || status =="Inactive")
             {
                 return Unauthorized(new { message = "Account does not exist" });
             }
@@ -175,7 +196,7 @@ namespace Vaccine.API.Controllers
 
             var response = new
             {
-                Id = userRole == "Staff" ? user.StaffId :
+                Id =(userRole == "Data Entry" || userRole == "Nurse" || userRole == "Receptionist") ? user.StaffId :
                      userRole == "Admin" ? user.AdminId :
                      userRole == "Customer" ? user.CustomerId : (int?)null,
                 user.Email,

@@ -27,21 +27,32 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 // ChatGPT
 
 
-//allow cros
+
+//allow cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyPolicy",
         policy =>
         {
-            policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .SetIsOriginAllowed(origin => true)
-              .WithExposedHeaders("Content-Disposition");
+            policy.WithOrigins("http://localhost:3000") // Cho phép frontend truy cập
+
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials() // Nếu có xác thực bằng cookie/token
+                  .WithExposedHeaders("Content-Disposition");
         });
-
 });
-
+//allow cros
+//builder.Services.AddCors(options =>
+//{
+//	options.AddPolicy("MyPolicy",
+//		policy =>
+//		{
+//			policy.AllowAnyOrigin() // Cho phép tất cả domain (*)
+//				  .AllowAnyMethod() // Cho phép tất cả HTTP methods (GET, POST, PUT, DELETE, ...)
+//				  .AllowAnyHeader(); // Cho phép tất cả headers
+//		});
+//});
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleCreateCustomerModel>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ExampleRequestCreateChildModel>();
 
@@ -101,6 +112,8 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("dailyTrigger")
+        //0 * * * * ? mỗi phút
+        //0 0 0 * * ? mỗi ngày 0AM
         .WithCronSchedule("0 0 0 * * ?")
     );
 });
@@ -139,12 +152,16 @@ var app = builder.Build();
         c.OAuthUsePkce(); // Bật PKCE
     });
 //}
-app.UseCors("MyPolicy");
+app.UseRouting();
+
 
 app.UseHttpsRedirection();
 //app.UseCors("AllowAll");
 app.UseAuthorization();
+app.UseCors("MyPolicy");
+app.MapGet("/", () => "Hello from Vaccine API!");
 app.MapControllers();
+
 
 
 app.Run();

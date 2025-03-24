@@ -27,5 +27,6 @@ public partial class Vaccine
     public virtual ICollection<VaccineCombo> Combos { get; set; } = new List<VaccineCombo>();
  
     public virtual ICollection<VaccineComboDetail> VaccineComboDetails { get; set; } = new List<VaccineComboDetail>();
+    public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
 }
