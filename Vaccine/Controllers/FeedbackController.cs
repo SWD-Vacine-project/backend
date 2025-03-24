@@ -133,5 +133,40 @@ namespace Vaccine.API.Controllers
             return Ok(result);
 
         }
+        [HttpGet("get-success-appointments-pending-feedback/{customerId}")]
+        public IActionResult GetSuccessAppointmentsPendingFeedback(int customerId)
+        {
+            // Lấy danh sách cuộc hẹn có trạng thái "Success" của khách hàng
+            var successAppointments = _unitOfWork.AppointmentRepository.GetQueryable()
+                .Where(a => a.CustomerId == customerId && a.Status == "Success")
+                .Select(a => new
+                {
+                    a.AppointmentId,
+                    a.AppointmentDate,
+                    a.VaccineId,
+                    VaccineName = a.Vaccine.Name,
+                    VaccineType = a.VaccineType,
+                    DoctorName = a.Doctor != null ? a.Doctor.Name : "N/A"
+                })
+                .ToList();
+
+            // Lấy danh sách các cuộc hẹn đã có feedback của khách hàng
+            var appointmentsWithFeedback = _unitOfWork.FeedbackRepository.GetQueryable()
+                .Where(f => f.CustomerId == customerId)
+                .Select(f => f.AppointmentId)
+                .ToList();
+
+            // Lọc ra các cuộc hẹn chưa có feedback
+            var pendingAppointments = successAppointments
+                .Where(a => !appointmentsWithFeedback.Contains(a.AppointmentId))
+                .ToList();
+
+            if (!pendingAppointments.Any())
+            {
+                return Ok(new { message = "There is no response from this appointment." });
+            }
+
+            return Ok(pendingAppointments);
+        }
     }
 }
