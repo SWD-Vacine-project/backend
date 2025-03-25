@@ -144,6 +144,7 @@ namespace Vaccine.API.Controllers
                     a.AppointmentId,
                     a.AppointmentDate,
                     a.VaccineId,
+                    a.StaffId,
                     VaccineName = a.Vaccine.Name,
                     VaccineType = a.VaccineType,
                     DoctorName = a.Doctor != null ? a.Doctor.Name : "N/A"
