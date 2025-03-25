@@ -6,8 +6,6 @@ namespace Vaccine.API.Models.FeedbackModel
     {
         public int ReviewId { get; set; }
         public string? CustomerName { get; set; }
-
-        public string? StaffName { get; set; }
         public string? DoctorName { get; set; }
         public int AppointmentId { get; set; }
         public string? AppointmentDate { get; set; }
@@ -25,7 +23,6 @@ namespace Vaccine.API.Models.FeedbackModel
         {
             ReviewId = feedback.ReviewId;
             CustomerName = feedback.Customer?.Name;
-            StaffName = feedback.Staff?.Name;
             VaccineName = feedback.Vaccine?.Name;
             DoctorName = feedback.Doctor?.Name;
             AppointmentId = feedback.AppointmentId;

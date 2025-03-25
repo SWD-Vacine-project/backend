@@ -35,10 +35,6 @@ namespace Vaccine.API.Controllers
             var doctor = _unitOfWork.DoctorRepository
                .GetQueryable().Where(x => x.DoctorId == newFeedBack.DoctorId)
                .FirstOrDefault();
-            // Kiểm tra xem StaffId có đúng không
-            var staff = _unitOfWork.StaffRepository
-               .GetQueryable().Where(x => x.StaffId == newFeedBack.StaffId)
-               .FirstOrDefault();
             // Kiểm tra xem VaccineId có đúng không
             var vaccine = _unitOfWork.VaccineRepository
                .GetQueryable().Where(x => x.VaccineId == newFeedBack.VaccineId)
@@ -56,11 +52,6 @@ namespace Vaccine.API.Controllers
             if (doctor == null)
             {
                 return BadRequest("Doctor not found");
-            }
-
-            if (staff == null)
-            {
-                return BadRequest("Staff not found");
             }
 
             if (vaccine == null)
