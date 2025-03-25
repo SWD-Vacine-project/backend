@@ -77,7 +77,6 @@ namespace Vaccine.API.Controllers
             {
                 CustomerId = newFeedBack.CustomerId,
                 DoctorId = newFeedBack.DoctorId,
-                StaffId = newFeedBack.StaffId,
                 VaccineId = newFeedBack.VaccineId,
                 AppointmentId = newFeedBack.AppointmentId,
                 Rating = newFeedBack.Rating,
@@ -146,8 +145,7 @@ namespace Vaccine.API.Controllers
                     a.VaccineId,
                     VaccineName = a.Vaccine.Name,
                     VaccineType = a.VaccineType,
-                    DoctorName = a.Doctor != null ? a.Doctor.Name : "N/A",
-                    a.StaffId
+                    DoctorName = a.Doctor != null ? a.Doctor.Name : "N/A"
                 })
                 .ToList();
 
