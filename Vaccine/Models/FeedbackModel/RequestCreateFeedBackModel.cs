@@ -6,8 +6,6 @@
 
         public int? DoctorId { get; set; }
 
-        public int? StaffId { get; set; }
-
         public int? VaccineId { get; set; }
 
         public int AppointmentId { get; set; }
