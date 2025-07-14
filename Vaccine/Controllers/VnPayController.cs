@@ -72,69 +72,155 @@ namespace Vaccine.API.Controllers
         }
 
         [HttpGet("Callback")]
+        // public IActionResult Callback()
+        // {
+        //     if (Request.QueryString.HasValue)
+        //     {
+        //         try
+        //         {
+        //             var paymentResult = _vnpay.GetPaymentResult(Request.Query);
+        //             // Append all query parameters to the redirect URL
+        //             var queryParams = Request.QueryString.Value;
+
+
+        //             if (!paymentResult.IsSuccess)
+        //             {
+        //                 //return BadRequest("Payment failed.");
+        //                 return Redirect("http://localhost:3000/book/payment-result");
+        //             }
+
+        //             // Kiểm tra xem PaymentId có khớp với invoiceId không
+        //             var invoice = _unitOfWork.InvoiceRepository.GetByID((int)paymentResult.PaymentId);
+
+        //             if (invoice == null)
+        //             {
+        //                 return NotFound(new { message = "Invoice not found." });
+        //             }
+
+        //             // Cập nhật trạng thái hóa đơn
+        //             invoice.Status = "Paid";
+        //             _unitOfWork.InvoiceRepository.Update(invoice);
+
+        //             // Lấy danh sách vaccine từ InvoiceDetail
+        //             //var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice.InvoiceId);
+
+        //             //foreach (var detail in invoiceDetails)
+        //             //{
+        //             //    var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
+        //             //        .Get(vb => vb.VaccineId == detail.VaccineId)
+        //             //        .OrderBy(vb => vb.BatchNumber)
+        //             //        .FirstOrDefault();
+
+        //             //    if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
+        //             //    {
+        //             //        return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
+        //             //    }
+
+        //             //    // Trừ số lượng vaccine trong kho
+        //             //    vaccineBatch.Quantity -= detail.Quantity;
+        //             //    _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
+        //             //}
+
+        //             _unitOfWork.Save();
+
+
+        //             //return Redirect("http://localhost:3000/book/payment-result");
+        //             return Redirect($"http://localhost:3000/book/payment-result{queryParams}");
+        //         }
+        //         catch (Exception ex)
+        //         {
+        //             _logger.LogError("Lỗi Callback: {Message}", ex.Message);
+        //             return BadRequest(ex.Message);
+        //         }
+        //     }
+
+        //     return NotFound("Không tìm thấy thông tin thanh toán.");
+        // }
         public IActionResult Callback()
+{
+    if (Request.QueryString.HasValue)
+    {
+        try
         {
-            if (Request.QueryString.HasValue)
-            {
-                try
+            // 1. Lấy nguồn gọi (mặc định web nếu không có)
+            var source = Request.Query["source"].ToString().ToLower() ?? "web";
+
+            var paymentResult = _vnpay.GetPaymentResult(Request.Query);
+            // Append all query parameters to the redirect URL
+            var queryParams = Request.QueryString.Value;
+
+
+            //if (!paymentResult.IsSuccess)
+            //{
+            //    //return BadRequest("Payment failed.");
+            //    return Redirect("http://localhost:3000/book/payment-result");
+            //}
+
+            if (!paymentResult.IsSuccess)
                 {
-                    var paymentResult = _vnpay.GetPaymentResult(Request.Query);
-                    // Append all query parameters to the redirect URL
-                    var queryParams = Request.QueryString.Value;
+                // Nếu mobile thì trả JSON, nếu web thì redirect
+                if (Request.Headers["User-Agent"].ToString().ToLower().Contains("android"))
+                    return Ok(new { success = false, message = "Payment failed" });
 
-
-                    if (!paymentResult.IsSuccess)
-                    {
-                        //return BadRequest("Payment failed.");
-                        return Redirect("http://localhost:3000/book/payment-result");
-                    }
-
-                    // Kiểm tra xem PaymentId có khớp với invoiceId không
-                    var invoice = _unitOfWork.InvoiceRepository.GetByID((int)paymentResult.PaymentId);
-
-                    if (invoice == null)
-                    {
-                        return NotFound(new { message = "Invoice not found." });
-                    }
-
-                    // Cập nhật trạng thái hóa đơn
-                    invoice.Status = "Paid";
-                    _unitOfWork.InvoiceRepository.Update(invoice);
-
-                    // Lấy danh sách vaccine từ InvoiceDetail
-                    //var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice.InvoiceId);
-
-                    //foreach (var detail in invoiceDetails)
-                    //{
-                    //    var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
-                    //        .Get(vb => vb.VaccineId == detail.VaccineId)
-                    //        .OrderBy(vb => vb.BatchNumber)
-                    //        .FirstOrDefault();
-
-                    //    if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
-                    //    {
-                    //        return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
-                    //    }
-
-                    //    // Trừ số lượng vaccine trong kho
-                    //    vaccineBatch.Quantity -= detail.Quantity;
-                    //    _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
-                    //}
-
-                    _unitOfWork.Save();
-
-
-                    //return Redirect("http://localhost:3000/book/payment-result");
-                    return Redirect($"http://localhost:3000/book/payment-result{queryParams}");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Lỗi Callback: {Message}", ex.Message);
-                    return BadRequest(ex.Message);
-                }
+                return Redirect("http://localhost:3000/book/payment-result");
             }
 
-            return NotFound("Không tìm thấy thông tin thanh toán.");
+            // Kiểm tra xem PaymentId có khớp với invoiceId không
+            var invoice = _unitOfWork.InvoiceRepository.GetByID((int)paymentResult.PaymentId);
+
+            if (invoice == null)
+            {
+                return NotFound(new { message = "Invoice not found." });
+            }
+
+            // Cập nhật trạng thái hóa đơn
+            invoice.Status = "Paid";
+            _unitOfWork.InvoiceRepository.Update(invoice);
+
+            // Lấy danh sách vaccine từ InvoiceDetail
+            //var invoiceDetails = _unitOfWork.InvoiceDetailRepository.Get(d => d.InvoiceId == invoice.InvoiceId);
+
+            //foreach (var detail in invoiceDetails)
+            //{
+            //    var vaccineBatch = _unitOfWork.VaccineBatchDetailRepository
+            //        .Get(vb => vb.VaccineId == detail.VaccineId)
+            //        .OrderBy(vb => vb.BatchNumber)
+            //        .FirstOrDefault();
+
+            //    if (vaccineBatch == null || vaccineBatch.Quantity < detail.Quantity)
+            //    {
+            //        return BadRequest(new { message = $"Insufficient stock for vaccine ID {detail.VaccineId}" });
+            //    }
+
+            //    // Trừ số lượng vaccine trong kho
+            //    vaccineBatch.Quantity -= detail.Quantity;
+            //    _unitOfWork.VaccineBatchDetailRepository.Update(vaccineBatch);
+            //}
+
+            _unitOfWork.Save();
+
+            var userAgent = Request.Headers["User-Agent"].ToString().ToLower();
+            if (userAgent.Contains("android") || userAgent.Contains("iphone") || userAgent.Contains("mobile"))
+            {
+                return Ok(new
+                {
+                    success = true,
+                    invoiceId = invoice.InvoiceId,
+                    message = "Payment success"
+                });
+            }
+
+            //return Redirect("http://localhost:3000/book/payment-result");
+            return Redirect($"http://localhost:3000/book/payment-result{queryParams}");
         }
+        catch (Exception ex)
+        {
+            _logger.LogError("Lỗi Callback: {Message}", ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    return NotFound("Không tìm thấy thông tin thanh toán.");
+}
     }
 }
