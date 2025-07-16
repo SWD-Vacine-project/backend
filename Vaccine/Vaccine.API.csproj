@@ -56,4 +56,11 @@
     <ProjectReference Include="..\Vaccine.Repo\Vaccine.Repo.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+  <Content Include="wwwroot\tessdata\**\*.*">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+  </Content>
+</ItemGroup>
+
 </Project>
