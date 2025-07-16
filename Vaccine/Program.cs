@@ -5,6 +5,7 @@ using Swashbuckle.AspNetCore.Filters;
 using Vaccine.API.Jobs;
 using Vaccine.API.Models.ChildModel;
 using Vaccine.API.Models.CustomerModel;
+using Vaccine.API.Services;
 using Vaccine.Repo.Entities;
 using Vaccine.Repo.UnitOfWork;
 using VNPAY.NET;
@@ -24,7 +25,8 @@ builder.Services.AddSwaggerGen();
 // Add VNPAY service to the container.
 builder.Services.AddSingleton<IVnpay, Vnpay>();
 
-// ChatGPT
+// tesseract
+builder.Services.AddScoped<IOcrService, OcrService>();
 
 
 
